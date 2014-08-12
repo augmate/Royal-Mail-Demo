@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">scanner</string>
-    <string name="scanner_viz_title">Scanner Visualizer</string>
-
 </resources>

@@ -1,42 +1,78 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:keepScreenOn="true"
-                tools:context="${packageName}.${activityClass}">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@android:color/black"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    android:orientation="vertical"
+    tools:context="${packageName}.${activityClass}">
 
-    <TextView
-        android:text="Please tap to scan."
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:textSize="20dp"
-        android:id="@+id/instructionText"/>
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:layout_gravity="left"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:src="@drawable/company_logo"
+            android:scaleType="fitStart"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:id="@+id/company_logo"
+            android:adjustViewBounds="true" />
+
+        <TextView
+            android:text="Tap to scan"
+            android:layout_toRightOf="@id/company_logo"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:textSize="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignWithParentIfMissing="true"
+            android:id="@+id/instructionText" />
+
+    </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:gravity="center"
-        android:visibility="invisible"
+        android:visibility="visible"
+        android:background="#121212"
+        android:layout_margin="10dp"
         android:id="@+id/barcodeScanResultContainer">
 
         <TextView
-            android:text="last barcode:"
+            android:text="Last scanned barcode:"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:textSize="20dp"
-            android:id="@+id/textView"/>
+            android:id="@+id/textView" />
 
         <TextView
             android:text="50"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:textSize="35dp"
-            android:id="@+id/lastBarcode"/>
+            android:textSize="20dp"
+            android:textColor="#ffffff"
+            android:id="@+id/lastBarcode"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>
