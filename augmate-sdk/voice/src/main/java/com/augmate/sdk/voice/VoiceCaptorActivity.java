@@ -24,7 +24,7 @@ import com.augmate.sdk.logger.Log;
 
 import java.util.ArrayList;
 
-public class VoiceCaptorPlaceholder extends Activity implements IAudioDoneCallback,SensorEventListener {
+public class VoiceCaptorActivity extends Activity implements IAudioDoneCallback,SensorEventListener {
     AugmateRecognitionListener listener;
     SpeechRecognizer speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
     private TextView promptText, resultsText;
