@@ -24,7 +24,7 @@ import com.augmate.sdk.logger.Log;
 
 import java.util.ArrayList;
 
-public class VoiceCaptorActivity extends Activity implements IAudioDoneCallback,SensorEventListener {
+public class VoiceCaptorActivity extends Activity implements IAudioDoneCallback, SensorEventListener {
     AugmateRecognitionListener listener;
     SpeechRecognizer speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
     private TextView promptText, resultsText;
@@ -32,15 +32,13 @@ public class VoiceCaptorActivity extends Activity implements IAudioDoneCallback,
     private SliderView mProgress;
     private Animation voiceAnim;
     private MediaPlayer start_sound, success_sound, error_sound;
-    private String[] recog_errors = {"NETWORK TIMEOUT","NETWORK","AUDIO","SERVER","CLIENT",
-            "SPEECH_TIMEOUT","NO_MATCH","RECOGNIZER_BUSY","INSUFFICIENT_PERMISSIONS"};
+    private String[] recog_errors = {"NETWORK TIMEOUT", "NETWORK", "AUDIO", "SERVER", "CLIENT",
+            "SPEECH_TIMEOUT", "NO_MATCH", "RECOGNIZER_BUSY", "INSUFFICIENT_PERMISSIONS"};
     private boolean gyroLock = false;
     private SensorManager mSensorManager;
-    final Runnable showLoadingBar = new Runnable()
-    {
-        public void run()
-        {
-            if(listener.isProcessing()) mProgress.setVisibility(View.VISIBLE);
+    final Runnable showLoadingBar = new Runnable() {
+        public void run() {
+            if (listener.isProcessing()) mProgress.setVisibility(View.VISIBLE);
         }
     };
 
@@ -96,14 +94,13 @@ public class VoiceCaptorActivity extends Activity implements IAudioDoneCallback,
     }
 
 
-
     @Override
     public void onPartial(ArrayList<String> results) {
         resultsText.setText(TextUtils.join(", ", results));
     }
 
     @Override
-    public void onResults(ArrayList<String> results){
+    public void onResults(ArrayList<String> results) {
         success_sound.start();
         resultsText.setText(TextUtils.join(", ", results));
         promptText.setText("Ready");
@@ -123,7 +120,7 @@ public class VoiceCaptorActivity extends Activity implements IAudioDoneCallback,
     @Override
     public void onError(int error) {
         error_sound.start();
-        promptText.setText("Error " + error + ": " + recog_errors[error-1] + " ERROR");
+        promptText.setText("Error " + error + ": " + recog_errors[error - 1] + " ERROR");
         logo.setImageResource(R.drawable.augmate_logo_red_solid);
         mProgress.setVisibility(View.INVISIBLE);
         error_icon.setVisibility(View.VISIBLE);
@@ -163,41 +160,40 @@ public class VoiceCaptorActivity extends Activity implements IAudioDoneCallback,
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         finish();
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         closeMediaPlayer(start_sound);
         closeMediaPlayer(error_sound);
         closeMediaPlayer(success_sound);
-        if(speechRecognizer!=null)
+        if (speechRecognizer != null)
             speechRecognizer.destroy();
         super.onDestroy();
     }
 
-    private void closeMediaPlayer(MediaPlayer m){
+    private void closeMediaPlayer(MediaPlayer m) {
         m.reset();
         m.release();
     }
 
     public void onSensorChanged(SensorEvent event) {
-        double gyroX = event.values[1];
-        double gyroY = event.values[0];
-        if(event.sensor.getType() == Sensor.TYPE_GYROSCOPE && !gyroLock){
-            if(gyroY<-1){  //nod down
+        double gyroX = event.values[1]; // [-180, 180]
+        double gyroY = event.values[0]; // [0, 360] this is "azimuth" what you want is "roll" which is values[2] and thats [-90,90]
+        if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE && !gyroLock) {
+            if (gyroY < -1) {  //nod down
                 this.onKeyDown(KeyEvent.KEYCODE_DPAD_CENTER, null);
                 gyroLock = true;
-            }
-            else if(gyroY>1); //nod up
-            else if(gyroX>1);  //right
-            else if(gyroX<-1); //left
-            if(gyroY<1 && gyroY>-1); //stable
+            } else if (gyroY > 1) ; //nod up
+            else if (gyroX > 1) ;  //right
+            else if (gyroX < -1) ; //left
+            if (gyroY < 1 && gyroY > -1) ; //stable
         }
     }
-
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
 }
