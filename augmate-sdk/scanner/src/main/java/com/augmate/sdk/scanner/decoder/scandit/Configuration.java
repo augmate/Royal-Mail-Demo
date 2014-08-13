@@ -19,7 +19,7 @@ public class Configuration {
             {
                 filesDir = ctx.getFilesDir();
                 platformAppId = ctx.getPackageName();
-                deviceId = Settings.Secure.getString(ctx.getContentResolver(), "android_id");
+                deviceId = Settings.Secure.getString(ctx.getContentResolver(), Settings.Secure.ANDROID_ID);
             }
         };
     }
