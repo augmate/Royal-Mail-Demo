@@ -1,0 +1,3 @@
+[submodule "augmate-sdk"]
+	path = augmate-sdk
+	url = git@github.com:augmate/warehouse-sdk.git
