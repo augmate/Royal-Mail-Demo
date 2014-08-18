@@ -1,55 +1,103 @@
 package com.augmate.employeescanner;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.content.Context;
+import android.media.AudioManager;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.WindowManager;
+import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.widget.TextView;
 
-import com.augmate.sdk.logger.Log;
+import com.google.android.glass.media.Sounds;
+import com.google.android.glass.touchpad.Gesture;
+import com.google.android.glass.touchpad.GestureDetector;
 
-
+/**
+ * Created by premnirmal on 8/18/14.
+ */
 public class MainActivity extends Activity {
 
-    public static final int REQUEST_BOX_SCAN = 0x01;
+    private Employee employee;
+    private Handler handler;
+
+    private AudioManager mAudioManager;
+    private GestureDetector mGestureDetector;
+
+    private final GestureDetector.BaseListener mBaseListener = new GestureDetector.BaseListener() {
+        @Override
+        public boolean onGesture(Gesture gesture) {
+            if (gesture == Gesture.TAP) {
+                mAudioManager.playSoundEffect(Sounds.TAP);
+                openOptionsMenu();
+                return true;
+            } else {
+                return false;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // turn screen on when application is deployed (makes testing easier)
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        handler = new Handler();
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mGestureDetector = new GestureDetector(this).setBaseListener(mBaseListener);
+
+        employee = getIntent().getParcelableExtra(Constants.EMPLOYEE_KEY);
+        setContentView(R.layout.activity_main_welcome);
+        ((TextView) findViewById(R.id.welcome_text)).setText(getString(R.string.welcome_employee, employee.getName()));
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                openOptionsMenu();
+            }
+        }, Constants.PROMPT_DURATION_MS);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_BOX_SCAN && resultCode == RESULT_OK) {
-            String value = data.getStringExtra("employeeString");
-            Log.debug("Got employeeString value=%s", value);
-
-            // update result view
-            ((TextView) findViewById(R.id.lastEmployee)).setText(value);
-            findViewById(R.id.employeeScanResultContainer).setVisibility(View.VISIBLE);
-
-            ((TextView) findViewById(R.id.instructionText)).setText("Thanks for scanning! Tap to scan again.");
-        } else {
-            Log.debug("Got no employee results");
-            ((TextView) findViewById(R.id.instructionText)).setText("Scanning is good for you. Tap to scan.");
-            findViewById(R.id.employeeScanResultContainer).setVisibility(View.INVISIBLE);
-        }
+    public boolean onGenericMotionEvent(MotionEvent event) {
+        return mGestureDetector.onMotionEvent(event);
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-            Log.debug("Starting employee scanning activity..");
-
-            Intent intent = new Intent(this, IDScannerActivity.class);
-            startActivityForResult(intent, REQUEST_BOX_SCAN);
-        }
-
-        return super.onKeyDown(keyCode, event);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.location_history:
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        openLocationHistory();
+                    }
+                });
+                return true;
+            case R.id.cycle_count:
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        openCycleCount();
+                    }
+                });
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void openLocationHistory() {
+
+    }
+
+    private void openCycleCount() {
+
+    }
+
+
 }

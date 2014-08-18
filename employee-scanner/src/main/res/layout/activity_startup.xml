@@ -29,12 +29,13 @@
             android:adjustViewBounds="true" />
 
         <TextView
-            android:text="Tap to scan"
+            android:text="@string/tap_to_scan"
             android:layout_toRightOf="@id/company_logo"
+            android:textColor="@color/white"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textSize="30dp"
+            android:textSize="@dimen/large_text"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_alignWithParentIfMissing="true"
@@ -50,7 +51,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:visibility="invisible"
-        android:background="#121212"
+        android:background="@color/black"
         android:layout_margin="10dp"
         android:id="@+id/employeeScanResultContainer">
 
@@ -67,8 +68,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:textSize="20dp"
-            android:textColor="#ffffff"
+            android:textSize="@dimen/medium_text"
+            android:textColor="@color/white"
             android:id="@+id/lastEmployee"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
