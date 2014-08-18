@@ -16,6 +16,6 @@ public class MockEmployeeBin implements IEmployeeBin {
 
     @Override
     public Employee getEmployee(String id) {
-        return new Employee("Arnold Schwarzenegger", id);
+        return new Employee(id.replace("user_", ""), id);
     }
 }

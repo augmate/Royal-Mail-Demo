@@ -33,7 +33,11 @@ public class StartupActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_BOX_SCAN && resultCode == RESULT_OK) {
             String value = data.getStringExtra("employeeString");
-            scanSuccessful(value);
+            if (value.startsWith("user_")) {
+                scanSuccessful(value);
+            } else {
+                scanError();
+            }
         } else {
             scanError();
         }
