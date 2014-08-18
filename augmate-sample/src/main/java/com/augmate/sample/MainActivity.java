@@ -1,4 +1,4 @@
-package com.augmate.counter;
+package com.augmate.sample;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +7,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+
+import com.augmate.sample.counter.BoxCountingActivity;
 import com.augmate.sdk.logger.Log;
 
 public class MainActivity extends Activity {

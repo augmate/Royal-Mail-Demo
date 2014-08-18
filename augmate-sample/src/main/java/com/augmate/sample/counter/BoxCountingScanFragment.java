@@ -1,10 +1,11 @@
-package com.augmate.counter;
+package com.augmate.sample.counter;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import com.augmate.sample.R;
 import com.augmate.sdk.scanner.ScannerFragmentBase;
 import com.augmate.sdk.scanner.ScannerVisualDebugger;
 

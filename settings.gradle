@@ -1,1 +1,1 @@
-include ':sample-box-counter', ':augmate-sdk:scanner', ':augmate-sdk:voice', ':augmate-sdk:logger', ':employee-scanner'
+include ':augmate-sample', ':augmate-sdk:scanner', ':augmate-sdk:voice', ':augmate-sdk:logger', ':employee-scanner'

@@ -2,3 +2,4 @@ Switch to TextureViews that will give app developers more flexibility
 Configuration Class change parameters of camera
 Use a default layout but allow override via a xml property, gives flexibility and provides a safe default
 move boilerplate and allow to connect to voice service from anywhere
+Logger should be started from a more generic call. Augmate.start();

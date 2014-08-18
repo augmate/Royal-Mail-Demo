@@ -1,8 +1,9 @@
-package com.augmate.counter;
+package com.augmate.sample.counter;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import com.augmate.sample.R;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.ScannerFragmentBase;
 
