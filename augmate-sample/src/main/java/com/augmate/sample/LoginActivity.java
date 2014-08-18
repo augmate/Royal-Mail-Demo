@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.augmate.sample.common.FlowUtils;
+import com.augmate.sample.common.UserUtils;
 import com.augmate.sample.scanner.ScannerActivity;
 import com.augmate.sdk.logger.Log;
 
@@ -41,6 +42,8 @@ public class LoginActivity extends BaseActivity {
                 String employeeName = value.replace("user_","");
                 responseImage.setImageResource(android.R.drawable.ic_menu_add);
                 responseText.setText(getString(R.string.welcome,employeeName));
+                UserUtils.setUser(employeeName);
+                goToApplications();
             } else {
                 //invalid code
                 responseImage.setImageResource(android.R.drawable.ic_menu_camera);
@@ -77,5 +80,11 @@ public class LoginActivity extends BaseActivity {
         Log.debug("Starting scanner activity..");
         Intent intent = new Intent(this, ScannerActivity.class);
         startActivityForResult(intent, REQUEST_BARCODE_SCAN);
+    }
+
+    private void goToApplications() {
+        Intent intent = new Intent(this, ApplicationsActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
