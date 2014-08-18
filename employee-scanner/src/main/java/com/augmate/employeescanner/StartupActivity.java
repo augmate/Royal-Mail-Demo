@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.augmate.employeescanner.scanner.IDScannerActivity;
 import com.augmate.sdk.logger.Log;
 
 
@@ -17,6 +18,7 @@ public class StartupActivity extends Activity {
     public static final int REQUEST_BOX_SCAN = 0x01;
 
     private Handler handler;
+    private IEmployeeBin employeeBin = MockEmployeeBin.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +47,7 @@ public class StartupActivity extends Activity {
         findViewById(R.id.employeeScanResultContainer).setVisibility(View.VISIBLE);
 
         ((TextView) findViewById(R.id.instructionText)).setText(R.string.scan_success);
-        Employee employee = MockEmployeeBin.getInstance().getEmployee(id);
+        Employee employee = employeeBin.getEmployee(id);
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(Constants.EMPLOYEE_KEY, employee);
         startActivity(intent);
@@ -68,6 +70,13 @@ public class StartupActivity extends Activity {
             launchScanActivity();
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        employeeBin = null;
+        handler = null;
+    }
 
     private void launchScanActivity() {
         Log.debug("Starting employee scanning activity..");
