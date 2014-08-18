@@ -12,17 +12,29 @@ public class ScannerActivity extends FragmentActivity implements ScannerFragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.box_scan_activity);
+        setContentView(R.layout.activity_box_scan);
         Log.debug("Created activity that uses barcode scanner");
     }
 
     @Override
     public void onBarcodeScanSuccess(String result) {
         Log.debug("Got scanning result: [%s]", result);
-
         Intent resultIntent = new Intent();
         resultIntent.putExtra("barcodeString", result);
         setResult(RESULT_OK, resultIntent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("exited", true);
+        setResult(RESULT_OK, resultIntent);
+        finish();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
     }
 }

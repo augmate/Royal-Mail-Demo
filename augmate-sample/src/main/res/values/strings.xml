@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Augmate Sample</string>
+    <string name="lets_login">Let\'s Login</string>
+    <string name="tap_to_scanid">Tap to scan ID</string>
+    <string name="welcome">Welcome %s</string>
+    <string name="invalid_scan">Scan Error\nTry Again</string>
+    <string name="scan_error">Scan Error\nTry Again</string>
 </resources>

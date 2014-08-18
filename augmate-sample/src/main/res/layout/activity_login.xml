@@ -1,0 +1,49 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MatchParent.AppBackground"
+    android:orientation="vertical"
+    tools:context="${packageName}.${activityClass}">
+
+    <RelativeLayout
+        android:id="@+id/login_help"
+        style="@style/MatchParent.EqualFill">
+
+        <TextView
+            style="@style/WrapContent.DefaultTextView"
+            android:text="@string/lets_login"
+            android:layout_margin="@dimen/pad_edge"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:id="@+id/lets_login"/>
+
+        <TextView
+            style="@style/WrapContent.DefaultTextView"
+            android:text="@string/tap_to_scanid"
+            android:layout_margin="@dimen/pad_edge"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/tap_to_scan" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        style="@style/MatchParent.EqualFill"
+        android:visibility="invisible"
+        android:id="@+id/login_response">
+
+        <ImageView
+            style="@style/MatchParent.EqualFill"
+            android:scaleType="center"
+            android:src="@android:drawable/ic_menu_call"
+            android:id="@+id/response_image" />
+
+        <TextView
+            style="@style/MatchParent.DefaultTextView"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingRight="@dimen/pad_edge"
+            android:id="@+id/response_text" />
+    </LinearLayout>
+
+</LinearLayout>

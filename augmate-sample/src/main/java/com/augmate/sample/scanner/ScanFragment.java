@@ -18,7 +18,7 @@ import com.augmate.sdk.scanner.ScannerVisualDebugger;
 public class ScanFragment extends ScannerFragmentBase {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.box_scan_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_box_scan, container, false);
 
         ScannerVisualDebugger dbg = (ScannerVisualDebugger) view.findViewById(R.id.scanner_visual_debugger);
         SurfaceView sv = (SurfaceView) view.findViewById(R.id.camera_preview);
