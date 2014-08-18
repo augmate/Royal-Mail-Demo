@@ -8,6 +8,8 @@ import android.os.Parcelable;
  */
 public class Employee implements Parcelable {
 
+    protected static final EmployeeCreator CREATOR = new EmployeeCreator();
+
     private String id;
     private String name;
 
@@ -49,5 +51,14 @@ public class Employee implements Parcelable {
         dest.writeStringArray(new String[]{
                 this.id, this.name
         });
+    }
+
+    public static class EmployeeCreator implements Parcelable.Creator<Employee> {
+        public Employee createFromParcel(Parcel source) {
+            return new Employee(source);
+        }
+        public Employee[] newArray(int size) {
+            return new Employee[size];
+        }
     }
 }

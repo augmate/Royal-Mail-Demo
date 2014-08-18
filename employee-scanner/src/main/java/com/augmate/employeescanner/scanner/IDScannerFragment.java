@@ -1,4 +1,4 @@
-package com.augmate.employeescanner;
+package com.augmate.employeescanner.scanner;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -6,6 +6,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.augmate.employeescanner.R;
 import com.augmate.sdk.scanner.ScannerFragmentBase;
 import com.augmate.sdk.scanner.ScannerVisualDebugger;
 

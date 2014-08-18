@@ -1,9 +1,10 @@
-package com.augmate.employeescanner;
+package com.augmate.employeescanner.scanner;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.augmate.employeescanner.R;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.ScannerFragmentBase;
 
