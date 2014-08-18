@@ -1,4 +1,4 @@
-package com.augmate.sample.counter;
+package com.augmate.sample.scanner;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,13 +7,12 @@ import com.augmate.sample.R;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.ScannerFragmentBase;
 
-public class BoxCountingActivity extends FragmentActivity implements ScannerFragmentBase.OnScannerResultListener {
+public class ScannerActivity extends FragmentActivity implements ScannerFragmentBase.OnScannerResultListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.box_scan_activity);
-
         Log.debug("Created activity that uses barcode scanner");
     }
 

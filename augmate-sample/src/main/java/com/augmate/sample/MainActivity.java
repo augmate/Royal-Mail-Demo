@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.augmate.sample.counter.BoxCountingActivity;
+import com.augmate.sample.scanner.ScannerActivity;
 import com.augmate.sdk.logger.Log;
 
 public class MainActivity extends Activity {
@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
             Log.debug("Starting box-counting activity..");
 
-            Intent intent = new Intent(this, BoxCountingActivity.class);
+            Intent intent = new Intent(this, ScannerActivity.class);
             startActivityForResult(intent, REQUEST_BOX_BARCODE);
         }
 

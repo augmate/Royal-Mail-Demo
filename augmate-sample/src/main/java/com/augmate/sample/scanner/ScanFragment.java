@@ -1,10 +1,11 @@
-package com.augmate.sample.counter;
+package com.augmate.sample.scanner;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.augmate.sample.R;
 import com.augmate.sdk.scanner.ScannerFragmentBase;
 import com.augmate.sdk.scanner.ScannerVisualDebugger;
@@ -14,7 +15,7 @@ import com.augmate.sdk.scanner.ScannerVisualDebugger;
  * When overriding methods, make sure to call their base versions
  * Specifically: onPause, onResume, onAttach, onDetach
  */
-public class BoxCountingScanFragment extends ScannerFragmentBase {
+public class ScanFragment extends ScannerFragmentBase {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.box_scan_fragment, container, false);

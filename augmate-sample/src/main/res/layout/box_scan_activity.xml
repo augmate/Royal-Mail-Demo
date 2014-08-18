@@ -10,7 +10,7 @@
     -->
     <fragment
         android:id="@+id/scanner"
-        android:name="com.augmate.counter.BoxCountingScanFragment"
+        android:name="com.augmate.sample.scanner.ScanFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/box_scan_fragment" />
