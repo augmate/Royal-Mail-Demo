@@ -1,0 +1,42 @@
+<!--
+    customize to your desire
+    the only requirement here is the SurfaceView.
+    it can be resized,
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="#ff2435a6">
+
+    <!-- required surface for camera -->
+    <SurfaceView
+        android:id="@+id/camera_preview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:minWidth="640dp"
+        android:minHeight="360dp" />
+
+    <!-- optional debugger overlay to visual scanner's activity -->
+    <com.augmate.sdk.scanner.ScannerVisualDebugger
+        android:id="@+id/scanner_visual_debugger"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:minWidth="640dp"
+        android:minHeight="360dp" />
+
+    <TextView
+        android:text="Customizable Scanner Fragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textSize="20dp"
+        android:shadowColor="#000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="1"
+        android:layout_gravity="bottom|right"/>
+
+</FrameLayout>

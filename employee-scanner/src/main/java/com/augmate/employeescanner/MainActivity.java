@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
             Log.debug("Starting employee scanning activity..");
 
-            Intent intent = new Intent(this, EmployeeScannerActivity.class);
+            Intent intent = new Intent(this, IDScannerActivity.class);
             startActivityForResult(intent, REQUEST_BOX_SCAN);
         }
 
