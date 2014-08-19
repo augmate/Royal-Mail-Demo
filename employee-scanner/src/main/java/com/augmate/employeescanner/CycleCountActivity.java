@@ -4,8 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
@@ -34,7 +35,7 @@ public class CycleCountActivity extends Activity {
 
     private Handler mHandler;
     private ViewFlipper mViewFlipper;
-    int flipCount = 0;
+    private int flipCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,14 +99,10 @@ public class CycleCountActivity extends Activity {
     }
 
     private void scanError(SCANERROR error) {
-        TextView errorText = new TextView(this);
+        View errorLayout = LayoutInflater.from(this).inflate(R.layout.scan_error, null);
+        TextView errorText = (TextView) errorLayout.findViewById(R.id.error_field);
         errorText.setText(error.error_msg);
-        setContentView(errorText);
-        int padding = (int) getResources().getDimension(R.dimen.padding);
-        errorText.setPadding(padding, padding, padding, padding);
-        errorText.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
-        errorText.setTextSize(getResources().getDimension(R.dimen.large_text));
-        errorText.setTextColor(getResources().getColor(R.color.red));
+        setContentView(errorLayout);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
