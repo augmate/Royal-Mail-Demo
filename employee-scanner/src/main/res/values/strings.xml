@@ -25,5 +25,6 @@
 
     <string name="bin_confirmed">Bin Confirmed</string>
     <string name="number_of_items"># of Items?</string>
+    <string name="number_of_items_confirm">%d, is that correct?</string>
 
 </resources>

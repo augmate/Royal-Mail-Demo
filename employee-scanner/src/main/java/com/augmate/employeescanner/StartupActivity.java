@@ -67,6 +67,7 @@ public class StartupActivity extends Activity {
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(Constants.EMPLOYEE_KEY, employeeBin.getEmployee(employeeId));
             startActivity(intent);
+            finish();
         }
     }
 

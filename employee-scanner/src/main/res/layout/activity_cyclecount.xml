@@ -14,21 +14,24 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:text="@string/lets_cycle_count"
         android:textColor="@color/white"
         android:textSize="@dimen/large_text" />
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:text="@string/count_instructions"
         android:textColor="@color/white"
         android:textSize="@dimen/large_text" />
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:text="@string/tap_to_scan_id"
         android:textColor="@color/white"
         android:textSize="@dimen/large_text" />
