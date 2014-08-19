@@ -1,55 +1,24 @@
 package com.augmate.employeescanner;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.augmate.employeescanner.scanner.IDScannerActivity;
 import com.augmate.sdk.logger.Log;
-import com.google.android.glass.touchpad.Gesture;
-import com.google.android.glass.touchpad.GestureDetector;
 
 
-public class StartupActivity extends Activity {
+public class StartupActivity extends BaseActivity {
 
     public static final int REQUEST_BOX_SCAN = 0x01;
-
-    private Handler handler;
-    private IEmployeeBin employeeBin = MockEmployeeBin.getInstance();
-
-    // for debugging
-    private GestureDetector mGestureDetector;
-    private final GestureDetector.BaseListener mBaseListener = new GestureDetector.BaseListener() {
-        @Override
-        public boolean onGesture(Gesture gesture) {
-            if (gesture == Gesture.SWIPE_UP) {
-                scanSuccessful("user_prem");
-                return true;
-            } else {
-                return false;
-            }
-        }
-    };
-
-    @Override
-    public boolean onGenericMotionEvent(MotionEvent event) {
-        return mGestureDetector.onMotionEvent(event);
-    }
-
-    // ==============
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // turn screen on when application is deployed (makes testing easier)
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
-        mGestureDetector = new GestureDetector(this).setBaseListener(mBaseListener);
-        handler = new Handler();
 
         checkEmployee();
 
@@ -60,7 +29,7 @@ public class StartupActivity extends Activity {
 //        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 //        String employeeId = preferences.getString(Constants.EMPLOYEE_KEY, null);
 //        if (employeeId == null) {
-            setContentView(R.layout.activity_startup);
+        setContentView(R.layout.activity_startup);
 //        } else {
 //            launchWelcome(employeeBin.getEmployee(employeeId));
 //        }
@@ -133,5 +102,10 @@ public class StartupActivity extends Activity {
             launchScanActivity();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onSwipeUp() {
+        scanSuccessful("user_prem");
     }
 }

@@ -1,9 +1,7 @@
 package com.augmate.employeescanner;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -19,23 +17,26 @@ import java.util.List;
 /**
  * Created by prem on 8/18/14.
  */
-public class CycleCountActivity extends Activity {
+public class CycleCountActivity extends BaseActivity {
 
     private static final int REQUEST_BOX_SCAN = 0x41;
     private static final int REQUEST_NUMBER_OF_BINS = 0x51;
     private static final int REQUEST_CONFIRM = 0x61;
 
-    private Handler mHandler;
     private ViewFlipper mViewFlipper;
     private int flipCount = 0;
     private Employee employee;
     private int numberOfItems;
 
     @Override
+    protected void onSwipeUp() {
+        scanSuccessful("");
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         employee = getIntent().getParcelableExtra(Constants.EMPLOYEE_KEY);
-        mHandler = new Handler();
         setFlipper();
     }
 
@@ -43,7 +44,7 @@ public class CycleCountActivity extends Activity {
         flipCount = 0;
         setContentView(R.layout.activity_cyclecount);
         mViewFlipper = (ViewFlipper) findViewById(R.id.flipper);
-        mHandler.postDelayed(flipRunnable, (long) (Constants.PROMPT_DURATION_MS * 2));
+        handler.postDelayed(flipRunnable, (long) (Constants.PROMPT_DURATION_MS * 2));
     }
 
     @Override
@@ -65,24 +66,23 @@ public class CycleCountActivity extends Activity {
         public void run() {
             flipCount++;
             if (flipCount == mViewFlipper.getChildCount()) {
-                mHandler.removeCallbacks(this);
+                handler.removeCallbacks(this);
                 return;
             }
             mViewFlipper.showNext();
-            mHandler.postDelayed(this, (long) (Constants.PROMPT_DURATION_MS * 2));
+            handler.postDelayed(this, (long) (Constants.PROMPT_DURATION_MS * 2));
         }
     };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_BOX_SCAN) {
-            scanSuccessful("");
-//            String value = data.getStringExtra(Constants.SCANNED_STRING);
-//            if (value.startsWith("user_")) {
-//                scanSuccessful(value);
-//            } else {
-//                showError(SCANERROR.BIN_ERROR);
-//            }
+            String value = data.getStringExtra(Constants.SCANNED_STRING);
+            if (value.startsWith("user_")) {
+                scanSuccessful(value);
+            } else {
+                showError(ERROR_PROMPT.BIN_ERROR);
+            }
         } else if (requestCode == REQUEST_NUMBER_OF_BINS && resultCode == RESULT_OK) {
             List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             String spokenText = results.get(0);
@@ -115,7 +115,7 @@ public class CycleCountActivity extends Activity {
         employee.setBin(new Bin(binID, -1));
         setContentView(R.layout.confirmed);
         ((TextView) findViewById(R.id.message)).setText(R.string.bin_confirmed);
-        mHandler.postDelayed(new Runnable() {
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 askForNumberOfItems();
@@ -151,14 +151,14 @@ public class CycleCountActivity extends Activity {
         errorText.setText(error.error_msg);
         setContentView(errorLayout);
         if (error == ERROR_PROMPT.TRY_AGAIN) {
-            mHandler.postDelayed(new Runnable() {
+            handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     askForNumberOfItems();
                 }
             }, Constants.PROMPT_DURATION_MS * 3);
         } else {
-            mHandler.postDelayed(new Runnable() {
+            handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     setFlipper();
