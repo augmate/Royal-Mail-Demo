@@ -78,7 +78,7 @@ public class CycleCountActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_BOX_SCAN) {
             String value = data.getStringExtra(Constants.SCANNED_STRING);
-            if (value.startsWith("user_")) {
+            if (value != null && value.startsWith("user_")) {
                 scanSuccessful(value);
             } else {
                 showError(ERROR_PROMPT.BIN_ERROR);
