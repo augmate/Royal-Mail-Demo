@@ -15,5 +15,8 @@
 
     <string name="welcome_employee">Welcome %s1$s!</string>
     <string name="tap_for_options">Tap for options</string>
+    <string name="lets_cycle_count">Let\'s Cycle Count</string>
+    <string name="count_instructions">Count the number of items in a bin</string>
+    <string name="tap_to_scan_id">Tap to Scan ID</string>
 
 </resources>

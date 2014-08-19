@@ -92,7 +92,7 @@ public class MainActivity extends Activity {
     }
 
     private void openLocationHistory() {
-        
+
     }
 
     private void openCycleCount() {

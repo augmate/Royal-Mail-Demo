@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -47,9 +46,6 @@ public class StartupActivity extends Activity {
         Log.debug("Got employee id=%s", id);
 
         // update result view
-        ((TextView) findViewById(R.id.lastEmployee)).setText(id);
-        findViewById(R.id.employeeScanResultContainer).setVisibility(View.VISIBLE);
-
         ((TextView) findViewById(R.id.instructionText)).setText(R.string.scan_success);
         Employee employee = employeeBin.getEmployee(id);
         Intent intent = new Intent(this, MainActivity.class);
@@ -61,9 +57,8 @@ public class StartupActivity extends Activity {
         Log.debug("Got no employee results");
         ((TextView) findViewById(R.id.instructionText)).setText(R.string.scan_error);
         ((TextView) findViewById(R.id.instructionText)).setTextColor(getResources().getColor(R.color.red));
-        findViewById(R.id.employeeScanResultContainer).setVisibility(View.INVISIBLE);
         handler.removeCallbacks(launchScanRunnable);
-        handler.postDelayed(launchScanRunnable, Constants.PROMPT_DURATION_MS);
+        handler.postDelayed(launchScanRunnable, Constants.PROMPT_DURATION_MS * 2);
     }
 
     private Runnable launchScanRunnable = new Runnable() {
@@ -71,7 +66,6 @@ public class StartupActivity extends Activity {
         public void run() {
             ((TextView) findViewById(R.id.instructionText)).setText(R.string.tap_to_scan);
             ((TextView) findViewById(R.id.instructionText)).setTextColor(getResources().getColor(R.color.white));
-            launchScanActivity();
         }
     };
 
