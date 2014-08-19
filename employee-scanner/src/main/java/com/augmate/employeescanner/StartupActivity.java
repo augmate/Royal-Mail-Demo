@@ -2,10 +2,8 @@ package com.augmate.employeescanner;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManager;
@@ -59,13 +57,13 @@ public class StartupActivity extends Activity {
     }
 
     private void checkEmployee() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String employeeId = preferences.getString(Constants.EMPLOYEE_KEY, null);
-        if (employeeId == null) {
+//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//        String employeeId = preferences.getString(Constants.EMPLOYEE_KEY, null);
+//        if (employeeId == null) {
             setContentView(R.layout.activity_startup);
-        } else {
-            launchWelcome(employeeBin.getEmployee(employeeId));
-        }
+//        } else {
+//            launchWelcome(employeeBin.getEmployee(employeeId));
+//        }
     }
 
     private void launchWelcome(Employee employee) {
@@ -90,8 +88,8 @@ public class StartupActivity extends Activity {
     }
 
     private void scanSuccessful(final String id) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        preferences.edit().putString(Constants.EMPLOYEE_KEY, id).apply();
+//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//        preferences.edit().putString(Constants.EMPLOYEE_KEY, id).apply();
         Log.debug("Got employee id=%s", id);
 
         // update result view

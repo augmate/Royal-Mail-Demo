@@ -1,8 +1,6 @@
 package com.augmate.employeescanner;
 
 import android.app.Application;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.DecoderManager;
@@ -28,7 +26,5 @@ public class ScannerApp extends Application {
         super.onTerminate();
         Log.debug("Application ended");
         Log.shutdown();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        preferences.edit().clear().apply();
     }
 }
