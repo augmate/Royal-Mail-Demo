@@ -1,0 +1,1 @@
+- Why is the Scanner provided as a Fragment? It might provide more flexibility if it was a POJO
