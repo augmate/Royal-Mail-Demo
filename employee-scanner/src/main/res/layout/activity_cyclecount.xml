@@ -1,43 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/black"
-    android:layout_height="match_parent">
+    android:layout_gravity="center_vertical"
+    android:padding="10dp"
+    android:id="@+id/flipper"
+    android:animateFirstView="true"
+    android:inAnimation="@anim/slide_in_right"
+    android:outAnimation="@anim/slide_out_left">
 
-    <ViewFlipper
+
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:padding="10dp"
-        android:id="@+id/flipper"
-        android:animateFirstView="true"
-        android:inAnimation="@anim/slide_in_right"
-        android:outAnimation="@anim/slide_out_left">
+        android:layout_height="match_parent"
+        android:text="@string/lets_cycle_count"
+        android:textColor="@color/white"
+        android:textSize="@dimen/large_text" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/count_instructions"
+        android:textColor="@color/white"
+        android:textSize="@dimen/large_text" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/lets_cycle_count"
-            android:textColor="@color/white"
-            android:textSize="@dimen/large_text" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/tap_to_scan_id"
+        android:textColor="@color/white"
+        android:textSize="@dimen/large_text" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/count_instructions"
-            android:textColor="@color/white"
-            android:textSize="@dimen/large_text" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/tap_to_scan_id"
-            android:textColor="@color/white"
-            android:textSize="@dimen/large_text" />
-
-    </ViewFlipper>
-
-</FrameLayout>
+</ViewFlipper>

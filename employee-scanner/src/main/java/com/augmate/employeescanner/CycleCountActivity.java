@@ -18,18 +18,6 @@ import com.augmate.sdk.logger.Log;
  */
 public class CycleCountActivity extends Activity {
 
-    private enum SCANERROR {
-        SCAN_ERROR(R.string.scan_error),
-        BIN_ERROR(R.string.bin_id_error),
-        TIMEOUT_ERROR(R.string.timeout_error);
-
-        int error_msg;
-
-        SCANERROR(int msg) {
-            this.error_msg = msg;
-        }
-    }
-
 
     private static final int REQUEST_BOX_SCAN = 0x41;
 
@@ -80,22 +68,34 @@ public class CycleCountActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_BOX_SCAN && resultCode == RESULT_OK) {
-            String value = data.getStringExtra(Constants.SCANNED_STRING);
-            if (value.startsWith("user_")) {
-                scanSuccessful(value);
-            } else {
-                scanError(SCANERROR.BIN_ERROR);
-            }
-        } else if (resultCode == Constants.TIMEOUT_RESULT) {
-            scanError(SCANERROR.TIMEOUT_ERROR);
-        } else {
-            scanError(SCANERROR.SCAN_ERROR);
-        }
+        scanSuccessful("");
+//        if (requestCode == REQUEST_BOX_SCAN && resultCode == RESULT_OK) {
+//            String value = data.getStringExtra(Constants.SCANNED_STRING);
+//            if (value.startsWith("user_")) {
+//                scanSuccessful(value);
+//            } else {
+//                scanError(SCANERROR.BIN_ERROR);
+//            }
+//        } else if (resultCode == Constants.TIMEOUT_RESULT) {
+//            scanError(SCANERROR.TIMEOUT_ERROR);
+//        } else {
+//            scanError(SCANERROR.SCAN_ERROR);
+//        }
     }
 
-    private void scanSuccessful(final String value) {
+    private void scanSuccessful(final String binID) {
+        setContentView(R.layout.bin_confirmed);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setNumberOfItemsFlipper();
+            }
+        }, Constants.PROMPT_DURATION_MS);
+    }
 
+    private void setNumberOfItemsFlipper() {
+        setContentView(R.layout.number_items_flipper);
+        
     }
 
     private void scanError(SCANERROR error) {

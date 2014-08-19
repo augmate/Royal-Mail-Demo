@@ -23,4 +23,7 @@
     <string name="bin_id_error">Bin ID error\nTry again</string>
     <string name="timeout_error">Timed out error\nTry again</string>
 
+    <string name="bin_confirmed">Bin Confirmed</string>
+    <string name="number_of_items"># of Items?</string>
+
 </resources>
