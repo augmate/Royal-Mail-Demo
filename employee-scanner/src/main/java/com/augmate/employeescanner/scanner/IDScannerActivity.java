@@ -26,7 +26,7 @@ public class IDScannerActivity extends FragmentActivity implements ScannerFragme
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                setResult(Constants.TIMEOUT_RESULT);
+                setResult(Constants.TIMEOUT_RESULT, new Intent());
                 finish();
             }
         }, TIMEOUT_MS);
