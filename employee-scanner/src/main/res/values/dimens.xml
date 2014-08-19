@@ -5,7 +5,7 @@
 
     <dimen name="padding">10dp</dimen>
 
-    <dimen name="small_text">12dp</dimen>
-    <dimen name="medium_text">18dp</dimen>
-    <dimen name="large_text">24dp</dimen>
+    <dimen name="small_text">18dp</dimen>
+    <dimen name="medium_text">24dp</dimen>
+    <dimen name="large_text">30dp</dimen>
 </resources>

@@ -21,7 +21,6 @@ import java.util.List;
  */
 public class CycleCountActivity extends Activity {
 
-
     private static final int REQUEST_BOX_SCAN = 0x41;
     private static final int REQUEST_NUMBER_OF_BINS = 0x51;
     private static final int REQUEST_CONFIRM = 0x61;
@@ -29,10 +28,13 @@ public class CycleCountActivity extends Activity {
     private Handler mHandler;
     private ViewFlipper mViewFlipper;
     private int flipCount = 0;
+    private Employee employee;
+    private int numberOfItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        employee = getIntent().getParcelableExtra(Constants.EMPLOYEE_KEY);
         mHandler = new Handler();
         setFlipper();
     }
@@ -79,7 +81,7 @@ public class CycleCountActivity extends Activity {
 //            if (value.startsWith("user_")) {
 //                scanSuccessful(value);
 //            } else {
-//                scanError(SCANERROR.BIN_ERROR);
+//                showError(SCANERROR.BIN_ERROR);
 //            }
         } else if (requestCode == REQUEST_NUMBER_OF_BINS && resultCode == RESULT_OK) {
             List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
@@ -91,46 +93,47 @@ public class CycleCountActivity extends Activity {
             List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             String confirmation = results.get(0);
             Log.debug("Confirmation: " + confirmation);
-            if ("yes".equalsIgnoreCase(confirmation)) {
-                finish();
-            }
+            handleConfirmation(confirmation);
         } else if (resultCode == Constants.TIMEOUT_RESULT) {
-            scanError(SCANERROR.TIMEOUT_ERROR);
+            showError(ERROR_PROMPT.TIMEOUT_ERROR);
+        } else { // should never go here
+            finish();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void handleConfirmation(String confirmation) {
+        if ("yes".equalsIgnoreCase(confirmation)) {
+            employee.getBin().setNumberOfItems(numberOfItems);
+            ((TextView) findViewById(R.id.message)).setText(R.string.count_confirmed);
         } else {
-            scanError(SCANERROR.SCAN_ERROR);
+            askForNumberOfItems();
         }
     }
 
     private void scanSuccessful(final String binID) {
-        setContentView(R.layout.bin_confirmed);
+        employee.setBin(new Bin(binID, -1));
+        setContentView(R.layout.confirmed);
+        ((TextView) findViewById(R.id.message)).setText(R.string.bin_confirmed);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 askForNumberOfItems();
             }
-        }, Constants.PROMPT_DURATION_MS * 3);
+        }, Constants.PROMPT_DURATION_MS * 2);
     }
 
     private void handleNumberOfItems(final String number) {
         try {
             final int numItems = Integer.parseInt(number);
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    askForConfirmation(numItems);
-                }
-            }, Constants.PROMPT_DURATION_MS * 2);
+            askForConfirmation(numItems);
         } catch (Throwable t) {
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    askForNumberOfItems();
-                }
-            }, Constants.PROMPT_DURATION_MS * 2);
+            showError(ERROR_PROMPT.TRY_AGAIN);
         }
     }
 
     private void askForConfirmation(final int numItems) {
+        this.numberOfItems = numItems;
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.number_of_items_confirm, numItems));
         startActivityForResult(intent, REQUEST_CONFIRM);
@@ -142,16 +145,25 @@ public class CycleCountActivity extends Activity {
         startActivityForResult(intent, REQUEST_NUMBER_OF_BINS);
     }
 
-    private void scanError(final SCANERROR error) {
+    private void showError(final ERROR_PROMPT error) {
         View errorLayout = LayoutInflater.from(this).inflate(R.layout.scan_error, null);
         TextView errorText = (TextView) errorLayout.findViewById(R.id.error_field);
         errorText.setText(error.error_msg);
         setContentView(errorLayout);
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setFlipper();
-            }
-        }, Constants.PROMPT_DURATION_MS * 3);
+        if (error == ERROR_PROMPT.TRY_AGAIN) {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    askForNumberOfItems();
+                }
+            }, Constants.PROMPT_DURATION_MS * 3);
+        } else {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    setFlipper();
+                }
+            }, Constants.PROMPT_DURATION_MS * 3);
+        }
     }
 }

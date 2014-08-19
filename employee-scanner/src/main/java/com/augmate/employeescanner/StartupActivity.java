@@ -64,11 +64,15 @@ public class StartupActivity extends Activity {
         if (employeeId == null) {
             setContentView(R.layout.activity_startup);
         } else {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(Constants.EMPLOYEE_KEY, employeeBin.getEmployee(employeeId));
-            startActivity(intent);
-            finish();
+            launchWelcome(employeeBin.getEmployee(employeeId));
         }
+    }
+
+    private void launchWelcome(Employee employee) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(Constants.EMPLOYEE_KEY, employee);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -93,10 +97,7 @@ public class StartupActivity extends Activity {
         // update result view
         ((TextView) findViewById(R.id.instructionText)).setText(R.string.scan_success);
         Employee employee = employeeBin.getEmployee(id);
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(Constants.EMPLOYEE_KEY, employee);
-        startActivity(intent);
-        finish();
+        launchWelcome(employee);
     }
 
     private void scanError() {

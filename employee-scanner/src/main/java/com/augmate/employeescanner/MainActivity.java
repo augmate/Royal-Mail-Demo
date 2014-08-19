@@ -49,6 +49,11 @@ public class MainActivity extends Activity {
         employee = getIntent().getParcelableExtra(Constants.EMPLOYEE_KEY);
         setContentView(R.layout.activity_main_welcome);
         ((TextView) findViewById(R.id.welcome_text)).setText(getString(R.string.welcome_employee, employee.getName()));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {

@@ -7,20 +7,23 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="0.5"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding"
+        android:scaleType="centerInside"
         android:src="@drawable/ic_action_accept"
         android:layout_gravity="center_vertical" />
 
     <TextView
         android:gravity="right"
         android:layout_gravity="center_vertical"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="0.5"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding"
         android:paddingRight="20dp"
-        android:text="@string/bin_confirmed"
+        android:id="@+id/message"
         android:textSize="@dimen/large_text"
         android:textColor="@color/white" />
 

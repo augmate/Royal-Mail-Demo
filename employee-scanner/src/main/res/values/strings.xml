@@ -22,9 +22,11 @@
     <string name="scan_error">Scan error\nTry again</string>
     <string name="bin_id_error">Bin ID error\nTry again</string>
     <string name="timeout_error">Timed out error\nTry again</string>
+    <string name="try_again">Let\'s try again</string>
 
     <string name="bin_confirmed">Bin Confirmed</string>
+    <string name="count_confirmed">Count Confirmed</string>
     <string name="number_of_items"># of Items?</string>
-    <string name="number_of_items_confirm">%d, is that correct?</string>
+    <string name="number_of_items_confirm">%d, is that correct? "Yes" or "No"</string>
 
 </resources>

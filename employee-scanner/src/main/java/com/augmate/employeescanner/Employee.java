@@ -12,6 +12,7 @@ public final class Employee implements Parcelable {
 
     private String id;
     private String name;
+    private Bin bin;
 
     public Employee(String name, String id) {
         this.name = name;
@@ -23,6 +24,7 @@ public final class Employee implements Parcelable {
         in.readStringArray(data);
         this.id = data[0];
         this.name = data[1];
+        this.bin = in.readParcelable(null);
     }
 
     public String getId() {
@@ -41,6 +43,14 @@ public final class Employee implements Parcelable {
         this.name = name;
     }
 
+    public Bin getBin() {
+        return bin;
+    }
+
+    public void setBin(Bin bin) {
+        this.bin = bin;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -51,12 +61,16 @@ public final class Employee implements Parcelable {
         dest.writeStringArray(new String[]{
                 this.id, this.name
         });
+        if(bin != null) {
+            dest.writeParcelable(bin, 0);
+        }
     }
 
     public static class EmployeeCreator implements Parcelable.Creator<Employee> {
         public Employee createFromParcel(Parcel source) {
             return new Employee(source);
         }
+
         public Employee[] newArray(int size) {
             return new Employee[size];
         }
