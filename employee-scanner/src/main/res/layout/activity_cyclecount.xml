@@ -12,7 +12,6 @@
         android:layout_gravity="center_vertical"
         android:padding="10dp"
         android:id="@+id/flipper"
-        android:autoStart="true"
         android:animateFirstView="true"
         android:inAnimation="@anim/slide_in_right"
         android:outAnimation="@anim/slide_out_left">
@@ -30,7 +29,7 @@
             android:layout_height="match_parent"
             android:text="@string/count_instructions"
             android:textColor="@color/white"
-            android:textSize="@dimen/medium_text" />
+            android:textSize="@dimen/large_text" />
 
         <TextView
             android:layout_width="match_parent"

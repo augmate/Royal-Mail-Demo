@@ -6,9 +6,9 @@ import android.os.Parcelable;
 /**
  * Created by premnirmal on 8/18/14.
  */
-public class Employee implements Parcelable {
+public final class Employee implements Parcelable {
 
-    protected static final EmployeeCreator CREATOR = new EmployeeCreator();
+    public static final EmployeeCreator CREATOR = new EmployeeCreator();
 
     private String id;
     private String name;

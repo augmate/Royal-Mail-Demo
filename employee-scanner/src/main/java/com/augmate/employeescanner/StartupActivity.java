@@ -2,14 +2,19 @@ package com.augmate.employeescanner;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.augmate.employeescanner.scanner.IDScannerActivity;
 import com.augmate.sdk.logger.Log;
+import com.google.android.glass.touchpad.Gesture;
+import com.google.android.glass.touchpad.GestureDetector;
 
 
 public class StartupActivity extends Activity {
@@ -19,19 +24,56 @@ public class StartupActivity extends Activity {
     private Handler handler;
     private IEmployeeBin employeeBin = MockEmployeeBin.getInstance();
 
+    // for debugging
+    private GestureDetector mGestureDetector;
+    private final GestureDetector.BaseListener mBaseListener = new GestureDetector.BaseListener() {
+        @Override
+        public boolean onGesture(Gesture gesture) {
+            if (gesture == Gesture.SWIPE_UP) {
+                scanSuccessful("user_prem");
+                return true;
+            } else {
+                return false;
+            }
+        }
+    };
+
+    @Override
+    public boolean onGenericMotionEvent(MotionEvent event) {
+        return mGestureDetector.onMotionEvent(event);
+    }
+
+    // ==============
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // turn screen on when application is deployed (makes testing easier)
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_startup);
+        mGestureDetector = new GestureDetector(this).setBaseListener(mBaseListener);
         handler = new Handler();
+
+        checkEmployee();
+
+        setContentView(R.layout.activity_startup);
+    }
+
+    private void checkEmployee() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String employeeId = preferences.getString(Constants.EMPLOYEE_KEY, null);
+        if (employeeId == null) {
+            setContentView(R.layout.activity_startup);
+        } else {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra(Constants.EMPLOYEE_KEY, employeeBin.getEmployee(employeeId));
+            startActivity(intent);
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_BOX_SCAN && resultCode == RESULT_OK) {
-            String value = data.getStringExtra("employeeString");
+            String value = data.getStringExtra(Constants.SCANNED_STRING);
             if (value.startsWith("user_")) {
                 scanSuccessful(value);
             } else {
@@ -43,6 +85,8 @@ public class StartupActivity extends Activity {
     }
 
     private void scanSuccessful(final String id) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        preferences.edit().putString(Constants.EMPLOYEE_KEY, id).apply();
         Log.debug("Got employee id=%s", id);
 
         // update result view
@@ -51,11 +95,12 @@ public class StartupActivity extends Activity {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(Constants.EMPLOYEE_KEY, employee);
         startActivity(intent);
+        finish();
     }
 
     private void scanError() {
         Log.debug("Got no employee results");
-        ((TextView) findViewById(R.id.instructionText)).setText(R.string.scan_error);
+        ((TextView) findViewById(R.id.instructionText)).setText(R.string.scan_error_employee);
         ((TextView) findViewById(R.id.instructionText)).setTextColor(getResources().getColor(R.color.red));
         handler.removeCallbacks(launchScanRunnable);
         handler.postDelayed(launchScanRunnable, Constants.PROMPT_DURATION_MS * 2);
