@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.augmate.sample.R;
 import com.augmate.sample.common.FlowUtils;
+import com.augmate.sample.common.SoundHelper;
 import com.augmate.sample.voice.VoiceActivity;
 
 /**
@@ -22,7 +23,7 @@ public class RecordCountActivity extends VoiceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_recordcount);
         enterTextState();
     }
 
@@ -55,7 +56,7 @@ public class RecordCountActivity extends VoiceActivity {
         ImageView bigImage = (ImageView) findViewById(R.id.big_image);
         bigImage.setImageResource(android.R.drawable.ic_menu_camera);
         TextView textView = (TextView) findViewById(R.id.big_image_text);
-        textView.setText(R.string.lets_try_again);
+        textView.setText(R.string.count_confirmed);
         findViewById(R.id.big_image_state).setVisibility(View.VISIBLE);
         findViewById(R.id.big_text_state).setVisibility(View.GONE);
     }
@@ -73,6 +74,7 @@ public class RecordCountActivity extends VoiceActivity {
 
     public void stopRecording(boolean isError) {
         if (isError) {
+            SoundHelper.error(this);
             errorState();
             recordWithDelay();
         }
@@ -80,11 +82,13 @@ public class RecordCountActivity extends VoiceActivity {
 
     public void onResult(String resultString) {
         if (currentState == RecordState.LISTENING) {
+            SoundHelper.success(this);
             confirmTextState(resultString);
             currentState = RecordState.CONFIRM;
             startRecording();
         } else if (currentState == RecordState.CONFIRM) {
             if (resultString.equalsIgnoreCase("YES")) {
+                SoundHelper.success(this);
                 confirmState();
                 finishWithDelay();
             } else {

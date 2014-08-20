@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.augmate.sample.common.FlowUtils;
+import com.augmate.sample.common.SoundHelper;
 import com.augmate.sample.common.UserUtils;
 import com.augmate.sample.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
@@ -31,10 +32,12 @@ public class LoginActivity extends BaseActivity {
         if (wasSuccessful) {
             Log.debug("Got barcode value=%s", barcodeString);
             if (wasExited) {
+                SoundHelper.dismiss(this);
                 findViewById(R.id.scan_response).setVisibility(View.GONE);
                 findViewById(R.id.help).setVisibility(View.VISIBLE);
                 allowOneTap = true;
             } else if (barcodeString.startsWith("user_")) {
+                SoundHelper.success(this);
                 String employeeName = barcodeString.replace("user_","");
                 responseImage.setImageResource(android.R.drawable.ic_menu_add);
                 responseText.setText(getString(R.string.welcome,employeeName));
@@ -42,12 +45,14 @@ public class LoginActivity extends BaseActivity {
                 goToApplications();
             } else {
                 //invalid code
+                SoundHelper.error(this);
                 responseImage.setImageResource(android.R.drawable.ic_menu_camera);
                 responseText.setText(R.string.invalid_scan);
                 rescan();
             }
         } else {
             //generic error
+            SoundHelper.error(this);
             responseImage.setImageResource(android.R.drawable.ic_menu_camera);
             responseText.setText(R.string.scan_error);
             rescan();
@@ -57,6 +62,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER && allowOneTap) {
+           SoundHelper.tap(this);
            allowOneTap = false;
            startScanner();
         }

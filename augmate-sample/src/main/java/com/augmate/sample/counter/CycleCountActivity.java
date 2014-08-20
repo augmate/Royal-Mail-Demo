@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.augmate.sample.R;
+import com.augmate.sample.common.SoundHelper;
 import com.augmate.sample.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
 
@@ -30,14 +31,17 @@ public class CycleCountActivity extends BaseActivity {
         if (wasSuccessful) {
             Log.debug("Got barcode value=%s", barcodeString);
             if (wasExited) {
+                SoundHelper.dismiss(this);
                 resetView();
             } else {
+                SoundHelper.success(this);
                 responseImage.setImageResource(android.R.drawable.ic_menu_add);
                 responseText.setText(getString(R.string.bin_confirmed));
                 recordCount(barcodeString);
             }
         } else {
             //generic error
+            SoundHelper.error(this);
             responseImage.setImageResource(android.R.drawable.ic_menu_camera);
             responseText.setText(R.string.scan_error);
             rescan();
@@ -60,6 +64,7 @@ public class CycleCountActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER && allowOneTap) {
+            SoundHelper.tap(this);
             allowOneTap = false;
             startScanner();
         }
