@@ -1,0 +1,1 @@
+* Consider making ScannerFragmentBase a native Fragment (as opposed to support.v4 Fragment). Glass isn’t supporting older versions, and including the support libraries adds unneeded bloat to the file.
