@@ -1,4 +1,4 @@
-package com.augmate.sample;
+package com.augmate.sample.counter;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,19 +7,18 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.augmate.sample.common.FlowUtils;
+import com.augmate.sample.R;
 import com.augmate.sample.common.SoundHelper;
-import com.augmate.sample.common.UserUtils;
 import com.augmate.sample.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
 
-public class LoginActivity extends BaseActivity {
+public class CycleCountActivity extends BaseActivity {
     boolean allowOneTap = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_cyclecount);
     }
 
     @Override
@@ -33,22 +32,12 @@ public class LoginActivity extends BaseActivity {
             Log.debug("Got barcode value=%s", barcodeString);
             if (wasExited) {
                 SoundHelper.dismiss(this);
-                findViewById(R.id.scan_response).setVisibility(View.GONE);
-                findViewById(R.id.help).setVisibility(View.VISIBLE);
-                allowOneTap = true;
-            } else if (barcodeString.startsWith("user_")) {
-                SoundHelper.success(this);
-                String employeeName = barcodeString.replace("user_","");
-                responseImage.setImageResource(android.R.drawable.ic_menu_add);
-                responseText.setText(getString(R.string.welcome,employeeName));
-                UserUtils.setUser(employeeName);
-                goToApplications();
+                resetView();
             } else {
-                //invalid code
-                SoundHelper.error(this);
-                responseImage.setImageResource(android.R.drawable.ic_menu_camera);
-                responseText.setText(R.string.invalid_scan);
-                rescan();
+                SoundHelper.success(this);
+                responseImage.setImageResource(android.R.drawable.ic_menu_add);
+                responseText.setText(getString(R.string.bin_confirmed));
+                recordCount(barcodeString);
             }
         } else {
             //generic error
@@ -59,24 +48,26 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
+    private void resetView() {
+        findViewById(R.id.scan_response).setVisibility(View.GONE);
+        findViewById(R.id.help).setVisibility(View.VISIBLE);
+        allowOneTap = true;
+    }
+
+    private void recordCount(String barcode) {
+        Intent intent = new Intent(CycleCountActivity.this, RecordCountActivity.class);
+        intent.putExtra("BarcodeString", barcode);
+        startActivity(intent);
+        resetView();
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER && allowOneTap) {
-           SoundHelper.tap(this);
-           allowOneTap = false;
-           startScanner();
+            SoundHelper.tap(this);
+            allowOneTap = false;
+            startScanner();
         }
         return super.onKeyDown(keyCode, event);
-    }
-
-    private void goToApplications() {
-        getHandler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(LoginActivity.this, ApplicationsActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        }, FlowUtils.TRANSITION_TIMEOUT);
     }
 }

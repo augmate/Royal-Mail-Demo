@@ -3,6 +3,7 @@
     package="com.augmate.sample">
 
     <uses-permission android:name="com.google.android.glass.permission.DEVELOPMENT"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -33,6 +34,21 @@
 
         <activity
             android:name=".scanner.ScannerActivity"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen"
+            />
+
+        <activity
+            android:name=".ApplicationsActivity"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen"
+            />
+
+        <activity
+            android:name=".counter.CycleCountActivity"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen"
+            />
+
+        <activity
+            android:name=".counter.RecordCountActivity"
             android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen"
             />
 
