@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Warehouse Prototype</string>
+    <string name="title_activity_augmate_live_card_service">Warehouse Prototype</string>
+    <string name="action_stop">Stop</string>
+    
+    <string name="augmate_voice_trigger">let\'s cycle count</string>
+
+    <string name="prompt_scan_id">Tap to scan ID</string>
+    <string name="prompt_count">Count the # of items in a bin</string>
+    <string name="prompt_number_of_items"># of items?</string>
+
+    <string name="message_welcome">Welcome, $1%s</string>
+    <string name="message_try_again">Try again</string>
+    <string name="message_lets_try_again">Let\'s try again</string>
+    <string name="message_bin_confirmed">Bin confirmed</string>
+    <string name="message_count_confirmed">Count confirmed</string>
+
+    <string name="error_scan">Scan Error</string>
+    <string name="error_timed_out">Timed Out</string>
+    <string name="error_bin">Bin ID Error</string>
+
+</resources>
