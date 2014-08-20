@@ -6,4 +6,9 @@
     <string name="welcome">Welcome %s</string>
     <string name="invalid_scan">Scan Error\nTry Again</string>
     <string name="scan_error">Scan Error\nTry Again</string>
+    <string name="bin_confirmed">Bin\n Confirmed</string>
+    <string name="yes_no">\"YES\"\n\"NO\"</string>
+    <string name="confirme">%s?</string>
+    <string name="count_confirmed">Count Confirmed</string>
+    <string name="lets_try_again">Let\'s try\nagain</string>
 </resources>

@@ -1,0 +1,46 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MatchParent.AppBackground"
+    android:orientation="vertical"
+    tools:context="${packageName}.${activityClass}">
+
+    <LinearLayout
+        style="@style/MatchParent.EqualFill"
+        android:id="@+id/big_image_state">
+
+        <ImageView
+            style="@style/MatchParent.EqualFill"
+            android:scaleType="center"
+            android:src="@android:drawable/ic_menu_call"
+            android:id="@+id/big_image" />
+
+        <TextView
+            style="@style/MatchParent.DefaultTextView"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingRight="@dimen/pad_edge"
+            android:id="@+id/big_image_text" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/MatchParent.EqualFill"
+        android:id="@+id/big_text_state">
+
+        <TextView
+            style="@style/MatchParent.BigTextView"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingRight="@dimen/pad_edge"
+            android:id="@+id/big_text" />
+
+        <TextView
+            style="@style/MatchParent.DefaultTextView"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/yes_no"
+            android:paddingRight="@dimen/pad_edge"
+            android:id="@+id/big_text_text" />
+    </LinearLayout>
+
+</LinearLayout>

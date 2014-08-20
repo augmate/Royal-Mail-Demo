@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.augmate.sample.common.FlowUtils;
+import com.augmate.sample.common.activities.BaseActivity;
 
 public class SplashActivity extends BaseActivity {
 
