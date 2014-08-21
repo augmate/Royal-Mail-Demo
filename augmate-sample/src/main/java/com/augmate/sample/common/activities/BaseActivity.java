@@ -55,7 +55,9 @@ public class BaseActivity extends Activity {
             boolean timeout = data.getBooleanExtra(ScannerActivity.TIMEOUT,false);
             processBarcodeScanning(value, exited, resultCode == Activity.RESULT_OK, timeout);
         } else if (requestCode == REQUEST_PROMPT) {
-            handlePromptReturn();
+            if (resultCode == RESULT_CANCELED) {
+                handlePromptReturn();
+            }
         }
         super.onActivityResult(requestCode,resultCode, data);
     }

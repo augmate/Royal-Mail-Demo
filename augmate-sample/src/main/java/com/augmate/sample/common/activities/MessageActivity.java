@@ -50,6 +50,7 @@ public class MessageActivity extends BaseActivity {
             getHandler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    setResult(RESULT_CANCELED);
                     finish();
                 }
             }, FlowUtils.TRANSITION_TIMEOUT);
@@ -76,6 +77,7 @@ public class MessageActivity extends BaseActivity {
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
+                    setResult(RESULT_OK);
                     finish();
                 }
             }, FlowUtils.TRANSITION_TIMEOUT);
