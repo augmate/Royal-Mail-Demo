@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.augmate.sample.R;
 import com.augmate.sample.common.FlowUtils;
 import com.augmate.sample.common.SoundHelper;
+import com.augmate.sample.common.activities.MessageActivity;
 import com.augmate.sample.voice.VoiceActivity;
 
 /**
@@ -25,7 +26,7 @@ public class RecordCountActivity extends VoiceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recordcount);
-        bin = (BinModel) getIntent().getSerializableExtra(BinModel.TAG);
+        bin = (BinModel) getIntent().getSerializableExtra(MessageActivity.DATA);
         enterTextState();
     }
 

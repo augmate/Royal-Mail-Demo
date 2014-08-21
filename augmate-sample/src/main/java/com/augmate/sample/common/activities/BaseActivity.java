@@ -8,8 +8,11 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ViewFlipper;
 
+import com.augmate.sample.common.ErrorPrompt;
 import com.augmate.sample.scanner.ScannerActivity;
 import com.augmate.sdk.logger.Log;
+
+import java.io.Serializable;
 
 import static com.augmate.sample.common.FlowUtils.TRANSITION_TIMEOUT;
 
@@ -72,5 +75,22 @@ public class BaseActivity extends Activity {
             @Override
             public void onAnimationRepeat(Animation animation) {}
         };
+    }
+
+    public void showError(ErrorPrompt prompt) {
+        Intent intent = new Intent(this, MessageActivity.class);
+        intent.putExtra(MessageActivity.ERROR, true);
+        intent.putExtra(MessageActivity.MESSAGE, prompt.getString());
+        startActivityForResult(intent, 999);
+    }
+
+    public void showConfirmation(String confirmationText,Class clazz, Serializable data) {
+        Intent intent = new Intent(this, MessageActivity.class);
+        intent.putExtra(MessageActivity.MESSAGE, confirmationText);
+        if (clazz != null) {
+            intent.putExtra(MessageActivity.CLASS, clazz.toString());
+        }
+        intent.putExtra(MessageActivity.DATA, data);
+        startActivityForResult(intent, 999);
     }
 }

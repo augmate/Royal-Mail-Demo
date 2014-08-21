@@ -33,26 +33,5 @@
             android:layout_centerVertical="true"
             android:text="@string/tap_to_scan_badge"
             android:textSize="34sp" />
-
-        <LinearLayout
-            android:id="@+id/scan_response"
-            style="@style/MatchParent.EqualFill"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/response_image"
-                style="@style/MatchParent.EqualFill"
-                android:scaleType="center"
-                android:src="@android:drawable/ic_menu_call" />
-
-            <TextView
-                android:id="@+id/response_text"
-                style="@style/MatchParent.DefaultTextView"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingRight="@dimen/pad_edge"
-                android:paddingLeft="@dimen/pad_edge" />
-        </LinearLayout>
-
     </RelativeLayout>
 </ViewFlipper>

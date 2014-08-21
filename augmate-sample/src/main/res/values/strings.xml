@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Augmate Sample</string>
+    <string name="app_name">Augmate Samples</string>
 
     <string name="action_location_history">Location History</string>
     <string name="action_cycle_count">Cycle count</string>
@@ -9,8 +9,12 @@
     <string name="tap_to_scan_badge">Tap to scan your badge</string>
     <string name="tap_to_scanid">Tap to scan ID</string>
     <string name="welcome">Welcome %s</string>
-    <string name="invalid_scan">Scan Error\nTry Again</string>
-    <string name="scan_error">Scan Error\nTry Again</string>
+
+    <string name="error_scan">Scan Error</string>
+    <string name="error_timed_out">Timed Out</string>
+    <string name="error_bin">Bin ID Error</string>
+    <string name="message_try_again">Try Again</string>
+
     <string name="bin_confirmed">Bin\n Confirmed</string>
     <string name="yes_no">\"YES\"\n\"NO\"</string>
     <string name="confirme">%s?</string>
