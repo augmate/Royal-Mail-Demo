@@ -3,6 +3,7 @@ package com.augmate.warehouse.prototype;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.widget.ViewFlipper;
 
 import com.google.android.glass.media.Sounds;
 import com.google.android.glass.touchpad.Gesture;
@@ -11,15 +12,29 @@ import com.google.android.glass.touchpad.GestureDetector;
 /**
  * @author James Davis (Fuzz)
  */
-public class LoginActivity extends BaseActivity implements GestureDetector.BaseListener {
-    private static int LOGIN_SCANNER_REQUEST = 10;
+public class BinScanActivity extends BaseActivity implements GestureDetector.BaseListener {
+    ViewFlipper flipper;
+    private static int BIN_SCANNER_REQUEST = 11;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.prompt);
+        setContentView(R.layout.activity_bin_scan);
         getGestureDetector().setBaseListener(this);
-    }
 
+        flipper = ((ViewFlipper) findViewById(R.id.flipper));
+        flipper.setInAnimation(this, android.R.anim.slide_in_left);
+        flipper.setOutAnimation(this, android.R.anim.slide_out_right);
+
+        getHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (flipper != null){
+                    flipper.showNext();
+                }
+            }
+        }, 2000);
+    }
 
     @Override
     public boolean onGesture(Gesture gesture) {
@@ -27,7 +42,7 @@ public class LoginActivity extends BaseActivity implements GestureDetector.BaseL
 
         if (gesture == Gesture.TAP){
             Intent scannerIntent = new Intent(this, ScannerActivity.class);
-            startActivityForResult(scannerIntent, LOGIN_SCANNER_REQUEST);
+            startActivityForResult(scannerIntent, BIN_SCANNER_REQUEST);
             playSoundEffect(Sounds.TAP);
             handled = true;
         } else if (gesture == Gesture.SWIPE_DOWN){
@@ -44,27 +59,21 @@ public class LoginActivity extends BaseActivity implements GestureDetector.BaseL
         return getGestureDetector().onMotionEvent(event);
     }
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Intent intent = new Intent(this, MessageActivity.class);
 
-        if (requestCode == LOGIN_SCANNER_REQUEST){
+        if (requestCode == BIN_SCANNER_REQUEST){
             if (resultCode == RESULT_OK){
-                String user = data.getStringExtra(ScannerActivity.BARCODE_STRING);
-                if (!user.contains("user_")){
+                String binId = data.getStringExtra(ScannerActivity.BARCODE_STRING);
+                if (!binId.contains("bin_")){
                     intent.putExtra(MessageActivity.ERROR, true);
-                    intent.putExtra(MessageActivity.MESSAGE, getString(R.string.error_scan));
+                    intent.putExtra(MessageActivity.MESSAGE, getString(R.string.error_bin));
                     startActivityForResult(intent, 999);
                 } else {
-                    Data.setUser(user);
-                    user = user.replace("user_", "");
-                    if (user.length() > 1) {
-                        user = user.substring(0, 1).toUpperCase() + user.substring(1);
-                    }
-                    intent.putExtra(MessageActivity.CLASS, "com.augmate.warehouse.prototype.BinScanActivity");
-                    intent.putExtra(MessageActivity.MESSAGE, getString(R.string.message_welcome, user));
+                    intent.putExtra(MessageActivity.CLASS, "com.augmate.warehouse.prototype.BinCountActivity");
+                    intent.putExtra(MessageActivity.MESSAGE, getString(R.string.message_bin_confirmed));
+                    intent.putExtra(MessageActivity.DATA, binId);
                     startActivity(intent);
                     finish();
                 }

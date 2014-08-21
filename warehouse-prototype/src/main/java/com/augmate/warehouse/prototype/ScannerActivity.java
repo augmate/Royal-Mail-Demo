@@ -20,6 +20,8 @@ public class ScannerActivity extends FragmentActivity implements ScannerFragment
     public static final int RESULT_TIMED_OUT = 10;
     public static final int RESULT_ERROR = 11;
 
+    boolean success = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,15 +30,18 @@ public class ScannerActivity extends FragmentActivity implements ScannerFragment
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                onError(true);
+                if (!success) {
+                    onError(true);
+                }
             }
-        }, 6000);
+        }, 10000);
     }
 
     @Override
     public void onBarcodeScanSuccess(String result) {
+        success = true;
         Intent resultIntent = new Intent();
-        resultIntent.putExtra(BARCODE_STRING, resultIntent);
+        resultIntent.putExtra(BARCODE_STRING, result);
         setResult(RESULT_OK, resultIntent);
         playSoundEffect(Sounds.SUCCESS);
         finish();
@@ -44,6 +49,7 @@ public class ScannerActivity extends FragmentActivity implements ScannerFragment
 
     @Override
     public void onBackPressed() {
+        success = true;
         Intent resultIntent = new Intent();
         setResult(RESULT_CANCELED, resultIntent);
         playSoundEffect(Sounds.DISMISSED);
