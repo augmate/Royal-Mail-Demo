@@ -8,13 +8,14 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ViewFlipper;
 
-import static com.augmate.sample.common.FlowUtils.*;
 import com.augmate.sample.scanner.ScannerActivity;
 import com.augmate.sdk.logger.Log;
 
+import static com.augmate.sample.common.FlowUtils.TRANSITION_TIMEOUT;
+
 public class BaseActivity extends Activity {
     public static final int REQUEST_BARCODE_SCAN = 0x01;
-    Handler mHandler = new Handler();
+    protected Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

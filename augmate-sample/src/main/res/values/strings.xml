@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Augmate Sample</string>
+
+    <string name="action_location_history">Location History</string>
+    <string name="action_cycle_count">Cycle count</string>
+
     <string name="lets_login">Let\'s Login</string>
     <string name="tap_to_scan_badge">Tap to scan your badge</string>
     <string name="tap_to_scanid">Tap to scan ID</string>
