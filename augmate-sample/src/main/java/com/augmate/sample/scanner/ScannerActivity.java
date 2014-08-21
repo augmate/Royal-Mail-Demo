@@ -9,6 +9,9 @@ import com.augmate.sdk.scanner.ScannerFragmentBase;
 
 public class ScannerActivity extends FragmentActivity implements ScannerFragmentBase.OnScannerResultListener {
 
+    public static final String BARCODE = "barcodeString";
+    public static final String EXITED = "EXITED";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,7 +23,7 @@ public class ScannerActivity extends FragmentActivity implements ScannerFragment
     public void onBarcodeScanSuccess(String result) {
         Log.debug("Got scanning result: [%s]", result);
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("barcodeString", result);
+        resultIntent.putExtra(BARCODE, result);
         setResult(RESULT_OK, resultIntent);
         finish();
     }
@@ -28,7 +31,7 @@ public class ScannerActivity extends FragmentActivity implements ScannerFragment
     @Override
     public void onBackPressed() {
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("exited", true);
+        resultIntent.putExtra(EXITED, true);
         setResult(RESULT_OK, resultIntent);
         finish();
     }

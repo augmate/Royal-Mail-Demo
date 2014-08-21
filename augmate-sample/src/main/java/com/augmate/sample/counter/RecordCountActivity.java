@@ -19,11 +19,13 @@ public class RecordCountActivity extends VoiceActivity {
         LISTENING, CONFIRM
     };
     private RecordState currentState = RecordState.LISTENING;
+    BinModel bin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recordcount);
+        bin = (BinModel) getIntent().getSerializableExtra(BinModel.TAG);
         enterTextState();
     }
 
@@ -37,6 +39,7 @@ public class RecordCountActivity extends VoiceActivity {
     }
 
     private void confirmTextState(String text) {
+        bin.setCount(text);
         TextView bigText = (TextView) findViewById(R.id.big_text);
         bigText.setText(getString(R.string.confirme,text));
         findViewById(R.id.big_image_state).setVisibility(View.GONE);
@@ -88,6 +91,7 @@ public class RecordCountActivity extends VoiceActivity {
             startRecording();
         } else if (currentState == RecordState.CONFIRM) {
             if (resultString.equalsIgnoreCase("YES")) {
+                BinManager.getSharedInstance().saveBin(bin);
                 SoundHelper.success(this);
                 confirmState();
                 finishWithDelay();

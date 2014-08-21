@@ -43,8 +43,8 @@ public class BaseActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_BARCODE_SCAN) {
-            String value = data.getStringExtra("barcodeString");
-            boolean exited = data.getBooleanExtra("exited",false);
+            String value = data.getStringExtra(ScannerActivity.BARCODE);
+            boolean exited = data.getBooleanExtra(ScannerActivity.EXITED,false);
             processBarcodeScanning(value, exited, resultCode == Activity.RESULT_OK);
         }
         super.onActivityResult(requestCode,resultCode, data);

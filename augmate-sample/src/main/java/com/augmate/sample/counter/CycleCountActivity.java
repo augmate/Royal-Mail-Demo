@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.augmate.sample.R;
 import com.augmate.sample.common.SoundHelper;
+import com.augmate.sample.common.UserUtils;
 import com.augmate.sample.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
 
@@ -56,7 +57,10 @@ public class CycleCountActivity extends BaseActivity {
 
     private void recordCount(String barcode) {
         Intent intent = new Intent(CycleCountActivity.this, RecordCountActivity.class);
-        intent.putExtra("BarcodeString", barcode);
+        BinModel model = new BinModel();
+        model.setBinBarcode(barcode);
+        model.setUser(UserUtils.getUser());
+        intent.putExtra(BinModel.TAG, barcode);
         startActivity(intent);
         resetView();
     }
