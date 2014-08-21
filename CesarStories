@@ -3,9 +3,10 @@ Configuration Class change parameters of camera
 Use a default layout but allow override via a xml property, gives flexibility and provides a safe default
 move boilerplate and allow to connect to voice service from anywhere
 Logger should be started from a more generic call. Augmate.start();
-ScannerActivity should be in sdk, for quick scans
+ScannerActivity should be in sdk, for quick scans. (The three of us made generic scanners)
 setupScannerActivity in ScannerFragmentBase should have a convenience method without the debugger
 also debugger should probably be build into scanner and more of an option you turn on debugMode()
+OnScannerResultListener only has onBarcodeScanSuccess is there a scenario where this fails?
 
 
 
