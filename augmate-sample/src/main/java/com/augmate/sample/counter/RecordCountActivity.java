@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.augmate.sample.R;
-import com.augmate.sample.common.FlowUtils;
+import com.augmate.sample.common.ErrorPrompt;
 import com.augmate.sample.common.SoundHelper;
 import com.augmate.sample.common.activities.MessageActivity;
 import com.augmate.sample.voice.VoiceActivity;
@@ -47,24 +47,6 @@ public class RecordCountActivity extends VoiceActivity {
         findViewById(R.id.big_text_state).setVisibility(View.VISIBLE);
     }
 
-    private void errorState() {
-        ImageView bigImage = (ImageView) findViewById(R.id.big_image);
-        bigImage.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
-        TextView textView = (TextView) findViewById(R.id.big_image_text);
-        textView.setText(R.string.lets_try_again);
-        findViewById(R.id.big_image_state).setVisibility(View.VISIBLE);
-        findViewById(R.id.big_text_state).setVisibility(View.GONE);
-    }
-
-    private void confirmState() {
-        ImageView bigImage = (ImageView) findViewById(R.id.big_image);
-        bigImage.setImageResource(android.R.drawable.ic_menu_camera);
-        TextView textView = (TextView) findViewById(R.id.big_image_text);
-        textView.setText(R.string.count_confirmed);
-        findViewById(R.id.big_image_state).setVisibility(View.VISIBLE);
-        findViewById(R.id.big_text_state).setVisibility(View.GONE);
-    }
-
     private void startRecordingAnimation() {
         //TODO create animation
     }
@@ -76,11 +58,15 @@ public class RecordCountActivity extends VoiceActivity {
         }
     }
 
+    @Override
+    public void handlePromptReturn() {
+        startRecording();
+    }
+
     public void stopRecording(boolean isError) {
         if (isError) {
             SoundHelper.error(this);
-            errorState();
-            recordWithDelay();
+            showError(ErrorPrompt.TRY_AGAIN);
         }
     }
 
@@ -94,34 +80,14 @@ public class RecordCountActivity extends VoiceActivity {
             if (resultString.equalsIgnoreCase("YES")) {
                 BinManager.getSharedInstance().saveBin(bin);
                 SoundHelper.success(this);
-                confirmState();
-                finishWithDelay();
+                confirmTextState(getString(R.string.bin_confirmed));
+                finish();
             } else {
                 enterTextState();
                 currentState = RecordState.LISTENING;
                 startRecording();
             }
         }
-    }
-
-    private void recordWithDelay() {
-        getHandler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                enterTextState();
-                currentState = RecordState.LISTENING;
-                startRecording();
-            }
-        }, FlowUtils.TRANSITION_TIMEOUT);
-    }
-
-    private void finishWithDelay() {
-        getHandler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                finish();
-            }
-        }, FlowUtils.TRANSITION_TIMEOUT);
     }
 
 }

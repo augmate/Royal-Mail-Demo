@@ -10,7 +10,7 @@ public enum ErrorPrompt {
     SCAN_ERROR(R.string.error_scan),
     BIN_ERROR(R.string.error_bin),
     TIMEOUT_ERROR(R.string.error_timed_out),
-    TRY_AGAIN(R.string.message_try_again);
+    TRY_AGAIN(R.string.lets_try_again);
 
     int error_msg;
 
