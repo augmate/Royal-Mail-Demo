@@ -60,7 +60,7 @@ public class CycleCountActivity extends BaseActivity {
         BinModel model = new BinModel();
         model.setBinBarcode(barcode);
         model.setUser(UserUtils.getUser());
-        intent.putExtra(BinModel.TAG, barcode);
+        intent.putExtra(BinModel.TAG, model);
         startActivity(intent);
         resetView();
     }
