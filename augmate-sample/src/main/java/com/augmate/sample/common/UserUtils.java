@@ -7,7 +7,6 @@ public class UserUtils {
 
     private static String sUser;
 
-
     public static String getUser() {
         return sUser;
     }

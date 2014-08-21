@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.widget.ViewFlipper;
 
-import com.augmate.sample.common.FlowUtils;
+import static com.augmate.sample.common.FlowUtils.*;
 import com.augmate.sample.scanner.ScannerActivity;
 import com.augmate.sdk.logger.Log;
 
@@ -31,7 +33,7 @@ public class BaseActivity extends Activity {
             public void run() {
                 startScanner();
             }
-        }, FlowUtils.TRANSITION_TIMEOUT);
+        }, TRANSITION_TIMEOUT);
     }
 
     public void startScanner() {
@@ -52,5 +54,22 @@ public class BaseActivity extends Activity {
 
     public void processBarcodeScanning(String barcodeString, boolean wasExited, boolean wasSuccessful) {
         throw new RuntimeException("This method should be implemented if you need to scan");
+    }
+
+    protected Animation.AnimationListener getAnimationListener(final ViewFlipper flipper){
+        return new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (flipper != null) {
+                    if (flipper.getDisplayedChild() == flipper.getChildCount() - 1) {
+                        flipper.stopFlipping();
+                    }
+                }
+            }
+            @Override
+            public void onAnimationStart(Animation animation) {}
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+        };
     }
 }

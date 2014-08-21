@@ -1,49 +1,75 @@
-<LinearLayout
+<ViewFlipper
+    android:id="@+id/flipper"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="@style/MatchParent.AppBackground"
-    android:orientation="vertical"
-    tools:context="${packageName}.${activityClass}">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/help"
-        style="@style/MatchParent.EqualFill">
-
-        <TextView
-            style="@style/WrapContent.DefaultTextView"
-            android:text="@string/lets_login"
-            android:layout_margin="@dimen/pad_edge"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:id="@+id/lets_login"/>
+    <!-- LET'S CYCLE COUNT -->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/card_margin">
 
         <TextView
-            style="@style/WrapContent.DefaultTextView"
-            android:text="@string/tap_to_scanid"
-            android:layout_margin="@dimen/pad_edge"
-            android:layout_alignParentRight="true"
+            android:id="@+id/lets_cycle_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:id="@+id/tap_to_scan" />
-
+            android:text="@string/lets_cycle_count"
+            android:textSize="34sp"/>
     </RelativeLayout>
 
-    <LinearLayout
-        style="@style/MatchParent.EqualFill"
-        android:visibility="invisible"
-        android:id="@+id/scan_response">
-
-        <ImageView
-            style="@style/MatchParent.EqualFill"
-            android:scaleType="center"
-            android:src="@android:drawable/ic_menu_call"
-            android:id="@+id/response_image" />
+    <!-- COUNT ITEMS PROMPT-->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/card_margin">
 
         <TextView
-            style="@style/MatchParent.DefaultTextView"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:paddingRight="@dimen/pad_edge"
-            android:id="@+id/response_text" />
-    </LinearLayout>
+            android:id="@+id/count_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="@string/count_item_prompt"
+            android:textSize="34sp"/>
+    </RelativeLayout>
 
-</LinearLayout>
+    <!-- TAP TO SCAN ID PAGE -->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="@dimen/card_margin">
+
+        <TextView
+            android:id="@+id/tap_to_scan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="@string/tap_to_scanid"
+            android:textSize="34sp"/>
+
+        <LinearLayout
+            android:id="@+id/scan_response"
+            style="@style/MatchParent.EqualFill"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/response_image"
+                style="@style/MatchParent.EqualFill"
+                android:scaleType="center"
+                android:src="@android:drawable/ic_menu_call"/>
+
+            <TextView
+                android:id="@+id/response_text"
+                style="@style/MatchParent.DefaultTextView"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingLeft="@dimen/pad_edge"
+                android:paddingRight="@dimen/pad_edge"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+</ViewFlipper>

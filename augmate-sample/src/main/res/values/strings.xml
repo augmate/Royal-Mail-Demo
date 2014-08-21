@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Augmate Sample</string>
     <string name="lets_login">Let\'s Login</string>
+    <string name="tap_to_scan_badge">Tap to scan your badge</string>
     <string name="tap_to_scanid">Tap to scan ID</string>
     <string name="welcome">Welcome %s</string>
     <string name="invalid_scan">Scan Error\nTry Again</string>
@@ -11,4 +12,6 @@
     <string name="confirme">%s?</string>
     <string name="count_confirmed">Count Confirmed</string>
     <string name="lets_try_again">Let\'s try\nagain</string>
+    <string name="lets_cycle_count">Let\'s cycle count</string>
+    <string name="count_item_prompt">Count the # of items in bin</string>
 </resources>

@@ -3,7 +3,7 @@ package com.augmate.sample;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.augmate.sample.common.FlowUtils;
+import static com.augmate.sample.common.FlowUtils.*;
 import com.augmate.sample.common.activities.BaseActivity;
 
 public class SplashActivity extends BaseActivity {
@@ -17,7 +17,7 @@ public class SplashActivity extends BaseActivity {
             public void run() {
                 goToLogin();
             }
-        }, FlowUtils.TRANSITION_TIMEOUT);
+        }, TRANSITION_TIMEOUT);
     }
 
     private void goToLogin() {
