@@ -2,16 +2,15 @@ package com.augmate.sample.scanner;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.FragmentActivity;
 
 import com.augmate.sample.R;
+import com.augmate.sample.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.ScannerFragmentBase;
 
 import static com.augmate.sample.common.FlowUtils.SCANNER_TIMEOUT;
 
-public class ScannerActivity extends FragmentActivity implements ScannerFragmentBase.OnScannerResultListener {
+public class ScannerActivity extends BaseActivity implements ScannerFragmentBase.OnScannerResultListener {
 
     public static final String BARCODE = "barcodeString";
     public static final String EXITED = "EXITED";
@@ -25,20 +24,23 @@ public class ScannerActivity extends FragmentActivity implements ScannerFragment
         setContentView(R.layout.activity_box_scan);
         Log.debug("Created activity that uses barcode scanner");
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!busy) {
-                    busy = true;
-                    timeOut();
-                }
-            }
-        }, SCANNER_TIMEOUT);
+        getHandler().postDelayed(timeoutRunnable,SCANNER_TIMEOUT);
     }
+
+    Runnable timeoutRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!busy) {
+                busy = true;
+                timeOut();
+            }
+        }
+    };
 
     @Override
     public void onBarcodeScanSuccess(String result) {
         if (!busy) {
+            getHandler().removeCallbacks(timeoutRunnable);
             busy = true;
             Log.debug("Got scanning result: [%s]", result);
             Intent resultIntent = new Intent();
@@ -50,6 +52,7 @@ public class ScannerActivity extends FragmentActivity implements ScannerFragment
 
     @Override
     public void onBackPressed() {
+        getHandler().removeCallbacks(timeoutRunnable);
         Intent resultIntent = new Intent();
         resultIntent.putExtra(EXITED, true);
         setResult(RESULT_OK, resultIntent);
@@ -57,6 +60,7 @@ public class ScannerActivity extends FragmentActivity implements ScannerFragment
     }
 
     private void timeOut() {
+        getHandler().removeCallbacks(timeoutRunnable);
         Intent resultIntent = new Intent();
         resultIntent.putExtra(TIMEOUT, true);
         setResult(RESULT_CANCELED, resultIntent);
@@ -65,6 +69,7 @@ public class ScannerActivity extends FragmentActivity implements ScannerFragment
 
     @Override
     public void finish() {
+        getHandler().removeCallbacks(timeoutRunnable);
         super.finish();
     }
 }
