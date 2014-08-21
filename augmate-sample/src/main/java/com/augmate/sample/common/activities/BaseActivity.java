@@ -18,6 +18,7 @@ import static com.augmate.sample.common.FlowUtils.TRANSITION_TIMEOUT;
 
 public class BaseActivity extends Activity {
     public static final int REQUEST_BARCODE_SCAN = 0x01;
+    public static final int REQUEST_PROMPT = 0x02;
     protected Handler mHandler = new Handler();
 
     @Override
@@ -51,12 +52,20 @@ public class BaseActivity extends Activity {
         if (requestCode == REQUEST_BARCODE_SCAN) {
             String value = data.getStringExtra(ScannerActivity.BARCODE);
             boolean exited = data.getBooleanExtra(ScannerActivity.EXITED,false);
-            processBarcodeScanning(value, exited, resultCode == Activity.RESULT_OK);
+            boolean timeout = data.getBooleanExtra(ScannerActivity.TIMEOUT,false);
+            processBarcodeScanning(value, exited, resultCode == Activity.RESULT_OK, timeout);
+        } else if (requestCode == REQUEST_PROMPT) {
+            handlePromptReturn();
         }
         super.onActivityResult(requestCode,resultCode, data);
     }
 
-    public void processBarcodeScanning(String barcodeString, boolean wasExited, boolean wasSuccessful) {
+    public void processBarcodeScanning(String barcodeString, boolean wasExited,
+                                       boolean wasSuccessful, boolean wasTimedOut) {
+        throw new RuntimeException("This method should be implemented if you need to scan");
+    }
+
+    public void handlePromptReturn() {
         throw new RuntimeException("This method should be implemented if you need to scan");
     }
 
@@ -81,16 +90,16 @@ public class BaseActivity extends Activity {
         Intent intent = new Intent(this, MessageActivity.class);
         intent.putExtra(MessageActivity.ERROR, true);
         intent.putExtra(MessageActivity.MESSAGE, prompt.getString());
-        startActivityForResult(intent, 999);
+        startActivityForResult(intent, REQUEST_PROMPT);
     }
 
     public void showConfirmation(String confirmationText,Class clazz, Serializable data) {
         Intent intent = new Intent(this, MessageActivity.class);
         intent.putExtra(MessageActivity.MESSAGE, confirmationText);
         if (clazz != null) {
-            intent.putExtra(MessageActivity.CLASS, clazz.toString());
+            intent.putExtra(MessageActivity.CLASS, clazz.getName());
         }
         intent.putExtra(MessageActivity.DATA, data);
-        startActivityForResult(intent, 999);
+        startActivityForResult(intent, REQUEST_PROMPT);
     }
 }

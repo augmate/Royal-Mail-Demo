@@ -44,7 +44,13 @@ public class LoginActivity extends BaseActivity {
     }
 
     @Override
-    public void processBarcodeScanning(String barcodeString, boolean wasExited, boolean wasSuccessful) {
+    public void handlePromptReturn() {
+        rescan();
+    }
+
+    @Override
+    public void processBarcodeScanning(String barcodeString, boolean wasExited,
+                                       boolean wasSuccessful, boolean wasTimedOut) {
         if (wasSuccessful) {
             Log.debug("Got barcode value=%s", barcodeString);
             if (wasExited) {
@@ -53,7 +59,7 @@ public class LoginActivity extends BaseActivity {
                 SoundHelper.success(this);
                 String employeeName = barcodeString.replace("user_","");
                 UserUtils.setUser(employeeName);
-                showConfirmation(getString(R.string.welcome,employeeName), ApplicationsActivity.class, null);
+                showConfirmation(getString(R.string.welcome, employeeName), ApplicationsActivity.class, null);
                 finish();
             } else {
                 //invalid code
@@ -63,7 +69,11 @@ public class LoginActivity extends BaseActivity {
         } else {
             //generic error
             SoundHelper.error(this);
-            showError(ErrorPrompt.SCAN_ERROR);
+            if (wasTimedOut) {
+                showError(ErrorPrompt.TIMEOUT_ERROR);
+            } else {
+                showError(ErrorPrompt.SCAN_ERROR);
+            }
         }
     }
 

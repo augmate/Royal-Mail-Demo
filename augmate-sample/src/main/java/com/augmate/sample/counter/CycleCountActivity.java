@@ -30,7 +30,13 @@ public class CycleCountActivity extends BaseActivity {
     }
 
     @Override
-    public void processBarcodeScanning(String barcodeString, boolean wasExited, boolean wasSuccessful) {
+    public void handlePromptReturn() {
+        rescan();
+    }
+
+    @Override
+    public void processBarcodeScanning(String barcodeString, boolean wasExited,
+                                       boolean wasSuccessful, boolean wasTimedOut) {
         if (wasSuccessful) {
             Log.debug("Got barcode value=%s", barcodeString);
             if (wasExited) {
@@ -45,7 +51,11 @@ public class CycleCountActivity extends BaseActivity {
         } else {
             //generic error
             SoundHelper.error(this);
-            showError(ErrorPrompt.SCAN_ERROR);
+            if (wasTimedOut) {
+                showError(ErrorPrompt.TIMEOUT_ERROR);
+            } else {
+                showError(ErrorPrompt.SCAN_ERROR);
+            }
         }
     }
 

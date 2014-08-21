@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.augmate.sample.R;
+import com.augmate.sample.common.FlowUtils;
 
 import java.io.Serializable;
 
@@ -51,7 +52,7 @@ public class MessageActivity extends BaseActivity {
                 public void run() {
                     finish();
                 }
-            }, 1500);
+            }, FlowUtils.TRANSITION_TIMEOUT);
         } else if (mNextClass != null && !mNextClass.isEmpty()){
             if (message1 != null){
                 message1.setText(message);
@@ -77,7 +78,7 @@ public class MessageActivity extends BaseActivity {
                     }
                     finish();
                 }
-            }, 1500);
+            }, FlowUtils.TRANSITION_TIMEOUT);
         }
     }
 }
