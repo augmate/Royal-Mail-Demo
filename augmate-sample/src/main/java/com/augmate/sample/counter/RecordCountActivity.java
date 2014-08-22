@@ -80,7 +80,7 @@ public class RecordCountActivity extends VoiceActivity {
             if (resultString.equalsIgnoreCase("YES")) {
                 BinManager.getSharedInstance().saveBin(bin);
                 SoundHelper.success(this);
-                confirmTextState(getString(R.string.bin_confirmed));
+                showConfirmation(getString(R.string.bin_confirmed),null,null);
                 finish();
             } else {
                 enterTextState();

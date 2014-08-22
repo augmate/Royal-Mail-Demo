@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.augmate.sample.common.SoundHelper;
+import com.augmate.sample.common.UserUtils;
 import com.augmate.sample.common.activities.BaseActivity;
 import com.augmate.sample.counter.CycleCountActivity;
 import com.google.android.glass.view.WindowUtils;
@@ -17,7 +19,9 @@ public class ApplicationsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(WindowUtils.FEATURE_VOICE_COMMANDS);
-        setContentView(R.layout.activity_splash);
+        setContentView(R.layout.activity_applications);
+        TextView textView = (TextView) findViewById(R.id.welcomeText);
+        textView.setText(getString(R.string.welcome, UserUtils.getUser()));
     }
 
     @Override

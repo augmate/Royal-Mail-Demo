@@ -13,13 +13,16 @@
     <string name="error_scan">Scan Error</string>
     <string name="error_timed_out">Timed Out</string>
     <string name="error_bin">Bin ID Error</string>
+    <string name="error_listening">Sound Error</string>
     <string name="message_try_again">Try Again</string>
 
     <string name="bin_confirmed">Bin\n Confirmed</string>
     <string name="yes_no">\"YES\"\n\"NO\"</string>
     <string name="confirme">%s?</string>
     <string name="count_confirmed">Count Confirmed</string>
+
     <string name="lets_try_again">Let\'s try\nagain</string>
     <string name="lets_cycle_count">Let\'s cycle count</string>
     <string name="count_item_prompt">Count the # of items in bin</string>
+    <string name="tap_for_options">Tap for Options</string>
 </resources>
