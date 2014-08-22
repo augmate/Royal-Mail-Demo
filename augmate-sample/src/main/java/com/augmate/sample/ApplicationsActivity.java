@@ -88,7 +88,6 @@ public class ApplicationsActivity extends BaseActivity {
     private void goToCycleCounter() {
         Intent intent = new Intent(this, CycleCountActivity.class);
         startActivity(intent);
-        finish();
     }
 
 }
