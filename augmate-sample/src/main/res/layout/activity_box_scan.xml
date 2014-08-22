@@ -14,16 +14,4 @@
         android:layout_height="match_parent"
         tools:layout="@layout/box_scan_fragment" />
 
-    <TextView
-        android:text="Customizable Scanner Activity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:textSize="20dp"
-        android:shadowColor="#000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="1"
-        android:layout_gravity="top|center_horizontal"/>
-
 </FrameLayout>

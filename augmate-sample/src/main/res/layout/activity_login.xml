@@ -1,36 +1,22 @@
 <ViewFlipper
-    android:id="@+id/flipper"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/flipper"
     style="@style/MatchParent.AppBackground">
 
     <!-- LET'S LOGIN PAGE -->
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/card_margin">
-
+    <RelativeLayout
+        style="@style/MatchParent.LeftMargin">
         <TextView
             android:id="@+id/lets_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:text="@string/lets_login"
-            android:textSize="34sp" />
+            style="@style/WrapContent.DefaultTextView.LeftAligned"
+            android:text="@string/lets_login"/>
     </RelativeLayout>
 
     <!-- TAP TO SCAN ID PAGE -->
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="@dimen/card_margin">
+    <RelativeLayout style="@style/MatchParent.RightMargin">
         <TextView
             android:id="@+id/tap_to_scan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:text="@string/tap_to_scan_badge"
-            android:textSize="34sp" />
+            style="@style/WrapContent.DefaultTextView.RightAligned"
+            android:text="@string/tap_to_scan_badge"/>
     </RelativeLayout>
 </ViewFlipper>

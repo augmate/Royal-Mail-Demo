@@ -5,8 +5,7 @@
     tools:context="${packageName}.${activityClass}">
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        style="@style/MatchParent"
         android:src="@drawable/company_logo"
         android:scaleType="center"/>
 

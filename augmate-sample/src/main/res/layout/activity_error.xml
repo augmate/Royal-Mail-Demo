@@ -5,32 +5,28 @@
     style="@style/MatchParent.AppBackground"
     android:layout_marginEnd="@dimen/card_margin">
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/WrapContent"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:orientation="vertical"
         android:gravity="end"
         android:id="@+id/linearLayout">
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/WrapContent"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/error_scan"
             android:id="@+id/messageLine1"
             />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/WrapContent"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/message_try_again"
             android:id="@+id/messageLine2"/>
     </LinearLayout>
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/WrapContent"
         android:id="@+id/imageView"
         android:layout_centerVertical="true"
         android:layout_toStartOf="@+id/linearLayout"
