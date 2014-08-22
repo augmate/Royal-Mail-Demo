@@ -3,7 +3,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/MatchParent.AppBackground"
-    android:layout_marginEnd="@dimen/card_margin">
+    android:paddingEnd="@dimen/card_margin">
     <LinearLayout
         style="@style/WrapContent"
         android:layout_centerVertical="true"
