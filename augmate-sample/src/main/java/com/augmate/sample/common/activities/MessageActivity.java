@@ -54,7 +54,7 @@ public class MessageActivity extends BaseActivity {
                     finish();
                 }
             }, FlowUtils.TRANSITION_TIMEOUT);
-        } else if (mNextClass != null && !mNextClass.isEmpty()){
+        } else {
             if (message1 != null){
                 message1.setText(message);
             }
