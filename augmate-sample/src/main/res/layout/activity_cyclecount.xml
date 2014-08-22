@@ -26,6 +26,6 @@
         <TextView
             android:id="@+id/tap_to_scan"
             style="@style/WrapContent.DefaultTextView.RightAligned"
-            android:text="@string/tap_to_scanid" />
+            android:text="@string/tap_scan_bin" />
     </RelativeLayout>
 </ViewFlipper>
