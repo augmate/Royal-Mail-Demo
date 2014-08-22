@@ -1,27 +1,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@android:color/black"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    style="@style/MatchParent.AppBackground"
     android:keepScreenOn="true"
-    android:orientation="vertical"
     tools:context="${packageName}.${activityClass}">
 
     <TextView
         android:id="@+id/welcomeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/WrapContent.DefaultTextView"
         android:layout_centerInParent="true"
-        android:textSize="@dimen/default_text_size"
         />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/WrapContent.SmallTextView"
         android:text="@string/tap_for_options"
         android:layout_below="@+id/welcomeText"
         android:layout_centerHorizontal="true"
-        android:textSize="@dimen/small_text_size"
         />
 
 </RelativeLayout>

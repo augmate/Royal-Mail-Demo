@@ -45,4 +45,9 @@
         <item name="android:textSize">@dimen/default_text_size</item>
     </style>
 
+    <style name="WrapContent.SmallTextView">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">@dimen/small_text_size</item>
+    </style>
+
 </resources>
