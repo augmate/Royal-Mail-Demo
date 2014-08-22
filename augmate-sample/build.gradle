@@ -54,4 +54,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':augmate-sdk:scanner')
     compile project(':augmate-sdk:logger')
+    compile 'uk.co.chrisjenx:calligraphy:1.1.+'
 }

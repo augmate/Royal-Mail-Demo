@@ -1,18 +1,22 @@
 package com.augmate.sample.common.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ViewFlipper;
 
+import com.augmate.sample.R;
 import com.augmate.sample.common.ErrorPrompt;
 import com.augmate.sample.scanner.ScannerActivity;
 import com.augmate.sdk.logger.Log;
 
 import java.io.Serializable;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static com.augmate.sample.common.FlowUtils.TRANSITION_TIMEOUT;
 
@@ -23,9 +27,13 @@ public class BaseActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // turn screen on when application is deployed (makes testing easier)
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
+        CalligraphyConfig.initDefault("fonts/GothamNarrow-Book.otf", R.attr.fontPath);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(new CalligraphyContextWrapper(newBase));
     }
 
     public Handler getHandler() {

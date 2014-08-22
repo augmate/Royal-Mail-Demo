@@ -1,11 +1,38 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MatchParent.AppBackground"
+    android:keepScreenOn="true"
     tools:context="${packageName}.${activityClass}">
 
-    <ImageView
-        style="@style/MatchParent"
-        android:src="@drawable/company_logo"
-        android:scaleType="center"/>
+    <RelativeLayout
+        android:id="@+id/background"
+        android:alpha="0"
+        android:background="@color/augmate_blue"
+        style="@style/MatchParent.AppBackground">
+    </RelativeLayout>
 
-</FrameLayout>
+    <RelativeLayout
+        android:id="@+id/logo_background"
+        android:alpha="0"
+        style="@style/MatchParent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_centerInParent="true"
+            style="@style/WrapContent">
+            <ImageView
+                android:id="@+id/augmate_logo"
+                style="@style/WrapContent"
+                android:src="@drawable/logo_white"
+                android:scaleType="center"/>
+            <TextView
+                android:id="@+id/augmate_text"
+                style="@style/WrapContent.SecondaryTextView"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:text="@string/augmate"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

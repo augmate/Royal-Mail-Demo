@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="augmate_blue">#2DACB4</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="white">#FFFFFF</color>
+    <color name="grey">#808080</color>
+    <color name="black">#000000</color>
+
+
+    <drawable name="augmate_blue">#2DACB4</drawable>
+    <drawable name="yellow">#FFFF00</drawable>
+    <drawable name="white">#FFFFFF</drawable>
+    <drawable name="grey">#808080</drawable>
+    <drawable name="black">#000000</drawable>
+</resources>

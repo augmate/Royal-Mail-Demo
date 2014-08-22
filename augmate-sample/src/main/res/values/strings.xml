@@ -26,4 +26,5 @@
     <string name="count_item_prompt">Count the # of items in bin</string>
     <string name="tap_for_options">Tap for Options</string>
     <string name="tap_scan_bin">Tap to Scan Bin</string>
+    <string name="augmate">AUGMATE</string>
 </resources>

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.view.WindowManager;
 
 import com.augmate.sample.R;
 import com.augmate.sdk.logger.Log;
@@ -26,6 +27,8 @@ public class ScannerActivity extends FragmentActivity implements ScannerFragment
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_box_scan);
         Log.debug("Created activity that uses barcode scanner");
