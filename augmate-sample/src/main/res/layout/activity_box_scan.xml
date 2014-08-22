@@ -1,6 +1,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:keepScreenOn="true"
     style="@style/MatchParent.AppBackground">
 
     <!--

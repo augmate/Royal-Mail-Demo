@@ -1,7 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MatchParent.AppBackground"
-    android:keepScreenOn="true"
     tools:context="${packageName}.${activityClass}">
 
     <ImageView
