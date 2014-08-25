@@ -5,6 +5,7 @@
     <uses-permission android:name="com.google.android.glass.permission.DEVELOPMENT"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
 
     <application
         android:allowBackup="true"
@@ -62,6 +63,11 @@
             android:name=".common.activities.MessageActivity"
             android:immersive="true"
             android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen"
+            />
+        <activity
+            android:name=".BrightnessActivity"
+            android:immersive="true"
+            android:theme="@style/BrightnessActivity"
             />
 
     </application>

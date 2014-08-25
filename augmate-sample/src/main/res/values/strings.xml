@@ -3,6 +3,7 @@
     <string name="app_name">Augmate Samples</string>
 
     <string name="action_location_history">Location History</string>
+    <string name="action_adjust_brightness">Adjust Brightness</string>
     <string name="action_cycle_count">Cycle count</string>
 
     <string name="lets_login">Let\'s Login</string>

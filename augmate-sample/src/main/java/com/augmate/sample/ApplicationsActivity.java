@@ -38,7 +38,7 @@ public class ApplicationsActivity extends BaseActivity {
         if (featureId == WindowUtils.FEATURE_VOICE_COMMANDS) {
             return onOptionsItemSelected(item);
         }
-        return super.onMenuItemSelected(featureId,item);
+        return super.onMenuItemSelected(featureId, item);
     }
 
     @Override
@@ -66,9 +66,22 @@ public class ApplicationsActivity extends BaseActivity {
                     }
                 });
                 return true;
+            case R.id.adjust_brightness:
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        adjustBrightness();
+                    }
+                });
+                return true;
             default:
                 return false;
         }
+    }
+
+    private void adjustBrightness() {
+        Intent intent = new Intent(this, BrightnessActivity.class);
+        startActivity(intent);
     }
 
     private void openLocationHistory() {

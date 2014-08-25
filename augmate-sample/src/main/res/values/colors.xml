@@ -8,6 +8,7 @@
 
 
     <drawable name="augmate_blue">#2DACB4</drawable>
+    <drawable name="transparent">#00000000</drawable>
     <drawable name="yellow">#FFFF00</drawable>
     <drawable name="white">#FFFFFF</drawable>
     <drawable name="grey">#808080</drawable>
