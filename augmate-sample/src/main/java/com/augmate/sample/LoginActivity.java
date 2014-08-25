@@ -2,25 +2,30 @@ package com.augmate.sample;
 
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.animation.Animation;
 import android.widget.ViewFlipper;
 
 import com.augmate.sample.common.ErrorPrompt;
+import com.augmate.sample.common.FlowUtils;
 import com.augmate.sample.common.SoundHelper;
+import com.augmate.sample.common.TouchResponseListener;
 import com.augmate.sample.common.UserUtils;
 import com.augmate.sample.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
+import com.google.android.glass.touchpad.GestureDetector;
 
 import static com.augmate.sample.common.FlowUtils.TRANSITION_TIMEOUT;
 
 public class LoginActivity extends BaseActivity {
     ViewFlipper flipper;
+    private GestureDetector mGestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        mGestureDetector = new GestureDetector(this).setBaseListener(new TouchResponseListener(findViewById(R.id.touch)));
         flipper = ((ViewFlipper) findViewById(R.id.flipper));
         flipper.setInAnimation(this, android.R.anim.slide_in_left);
         flipper.setOutAnimation(this, android.R.anim.slide_out_right);
@@ -41,6 +46,11 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onAnimationRepeat(Animation animation) {}
         });
+    }
+
+    @Override
+    public boolean onGenericMotionEvent(MotionEvent event) {
+        return mGestureDetector.onMotionEvent(event);
     }
 
     @Override
@@ -81,7 +91,12 @@ public class LoginActivity extends BaseActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
            SoundHelper.tap(this);
-           startScanner();
+           mHandler.postDelayed(new Runnable() {
+               @Override
+               public void run() {
+                   startScanner();
+               }
+           }, FlowUtils.SCALE_TIME);
         }
         return super.onKeyDown(keyCode, event);
     }

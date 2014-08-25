@@ -6,4 +6,6 @@ package com.augmate.sample.common;
 public class FlowUtils {
     public static final int TRANSITION_TIMEOUT = 1000;
     public static final int SCANNER_TIMEOUT = 10000;
+
+    public static final long SCALE_TIME = 800L;
 }
