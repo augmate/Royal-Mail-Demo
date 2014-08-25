@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ViewFlipper;
 
@@ -29,6 +30,15 @@ public class BaseActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         CalligraphyConfig.initDefault("fonts/GothamNarrow-Book.otf", R.attr.fontPath);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        float brightness = getSharedPreferences(getApplication().getPackageName(),MODE_PRIVATE).getFloat("BRIGHTNESS",0.5f);
+        WindowManager.LayoutParams params = getWindow().getAttributes();
+        params.screenBrightness =brightness;
+        getWindow().setAttributes(params);
     }
 
     @Override

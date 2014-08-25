@@ -39,7 +39,8 @@ public class BrightnessActivity extends Activity {
         setContentView(R.layout.slider);
         SeekBar seekBar = (SeekBar) findViewById(R.id.seekbar);
         seekBar.setMax(100);
-        brightness = 80;
+        float set_brightness = getSharedPreferences(getApplication().getPackageName(),MODE_PRIVATE).getFloat("BRIGHTNESS",0.5f);
+        brightness = (int) (set_brightness * 100f);
         setBrightness();
     }
 
@@ -49,12 +50,13 @@ public class BrightnessActivity extends Activity {
         WindowManager.LayoutParams lp = w.getAttributes();
         lp.screenBrightness = (float) brightness / 100f;
         if (lp.screenBrightness < .01f) {
-            lp.screenBrightness = .01f;
             brightness = 1;
         } else if (lp.screenBrightness > 1f) {
-            lp.screenBrightness = 1f;
             brightness = 100;
         }
+        lp.screenBrightness = brightness / 100f;
+        getSharedPreferences(getApplication().getPackageName(), MODE_PRIVATE).edit()
+                .putFloat("BRIGHTNESS", lp.screenBrightness).apply();
         w.setAttributes(lp);
         seekBar.setProgress(brightness);
     }
