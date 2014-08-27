@@ -25,17 +25,17 @@ public class TouchResponseListener implements GestureDetector.BaseListener {
         float endX = 0f, endY = 0f;
         switch (gesture) {
             case TAP:
-                endX = endY = 3f;
+                endX = endY = 2f;
                 pivot = touchView.getHeight() / 2;
                 break;
             case SWIPE_LEFT:
             case SWIPE_DOWN:
-                endX = endY = 7f;
+                endX = endY = 3f;
                 pivot = 0f;
                 break;
             case SWIPE_RIGHT:
             case SWIPE_UP:
-                endX = endY = 7f;
+                endX = endY = 3f;
                 pivot = touchView.getHeight();
                 break;
         }

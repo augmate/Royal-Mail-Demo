@@ -15,4 +15,12 @@ public class UserUtils {
         sUser = inUser;
     }
 
+    public static boolean isAUser(String inUser) {
+        return inUser.startsWith("User_") || inUser.startsWith("user_");
+    }
+
+    public static String getUserFromBarcode(String inUser) {
+        return inUser.replace("User_","").replace("user_","");
+    }
+
 }

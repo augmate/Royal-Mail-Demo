@@ -1,36 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/MatchParent.AppBackground"
-    android:paddingEnd="@dimen/card_margin">
-    <LinearLayout
-        style="@style/WrapContent"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
-        android:orientation="vertical"
-        android:gravity="end"
-        android:id="@+id/linearLayout">
-        <TextView
+    android:paddingLeft="@dimen/glass_card_margin"
+    android:paddingRight="@dimen/glass_card_margin">
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_weight=".56"
+        android:layout_height="match_parent">
+        <ImageView
             style="@style/WrapContent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/error_scan"
-            android:id="@+id/messageLine1"
-            />
+            android:id="@+id/imageView"
+            android:layout_gravity="center"
+            android:src="@drawable/error"/>
+    </FrameLayout>
 
-        <TextView
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_weight=".44"
+        android:layout_height="match_parent">
+        <LinearLayout
             style="@style/WrapContent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/message_try_again"
-            android:id="@+id/messageLine2"/>
-    </LinearLayout>
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            android:id="@+id/linearLayout">
+            <TextView
+                style="@style/WrapContent.SecondaryTextView"
+                android:text="@string/error_scan"
+                android:id="@+id/messageLine1"
+                />
 
-    <ImageView
-        style="@style/WrapContent"
-        android:id="@+id/imageView"
-        android:layout_centerVertical="true"
-        android:layout_toStartOf="@+id/linearLayout"
-        android:layout_marginEnd="@dimen/big_text_size"
-        android:src="@drawable/error"/>
-
-</RelativeLayout>
+            <TextView
+                style="@style/WrapContent.SecondaryTextView"
+                android:text="@string/message_try_again"
+                android:id="@+id/messageLine2"/>
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

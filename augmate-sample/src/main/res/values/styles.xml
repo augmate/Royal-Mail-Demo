@@ -46,10 +46,40 @@
         <item name="android:textSize">@dimen/default_text_size</item>
         <item name="fontPath">fonts/GothamNarrow-Book.otf</item>
     </style>
+
+    <style name="MatchParent.PrimaryTextView">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">@dimen/default_text_size</item>
+        <item name="fontPath">fonts/GothamNarrow-Book.otf</item>
+    </style>
+
+    <style name="WrapContent.PrimaryTextView.LeftAligned">
+        <item name="android:layout_alignParentStart">true</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="WrapContent.PrimaryTextView.RightAligned">
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
     <style name="WrapContent.SecondaryTextView">
         <item name="android:textColor">#ffffff</item>
         <item name="android:textSize">@dimen/default_text_size</item>
         <item name="fontPath">fonts/GothamNarrow-Thin.otf</item>
+    </style>
+    <style name="MatchParent.SecondaryTextView">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">@dimen/default_text_size</item>
+        <item name="fontPath">fonts/GothamNarrow-Thin.otf</item>
+    </style>
+    <style name="WrapContent.SecondaryTextView.LeftAligned">
+        <item name="android:layout_alignParentStart">true</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="WrapContent.SecondaryTextView.RightAligned">
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_centerVertical">true</item>
     </style>
     <style name="WrapContent.MultiTextView">
         <item name="android:textColor">#ffffff</item>
@@ -57,35 +87,10 @@
         <item name="fontPath">fonts/GothamNarrow-Thin.otf</item>
     </style>
 
-    <style name="MatchParent.DefaultTextView">
-        <item name="android:textColor">#ffffff</item>
-        <item name="android:textSize">@dimen/default_text_size</item>
-        <item name="fontPath">fonts/GothamNarrow-Book.otf</item>
-    </style>
-
-    <style name="MatchParent.BigTextView">
-        <item name="android:textColor">#ffffff</item>
-        <item name="android:textSize">@dimen/big_text_size</item>
-    </style>
-
-    <style name="WrapContent.DefaultTextView">
-        <item name="android:textColor">#ffffff</item>
-        <item name="android:textSize">@dimen/default_text_size</item>
-    </style>
-
-    <style name="WrapContent.DefaultTextView.LeftAligned">
-        <item name="android:layout_alignParentStart">true</item>
-        <item name="android:layout_centerVertical">true</item>
-    </style>
-
-    <style name="WrapContent.DefaultTextView.RightAligned">
-        <item name="android:layout_alignParentEnd">true</item>
-        <item name="android:layout_centerVertical">true</item>
-    </style>
-
-    <style name="WrapContent.SmallTextView">
+    <style name="MatchParent.MultiTextView">
         <item name="android:textColor">#ffffff</item>
         <item name="android:textSize">@dimen/small_text_size</item>
+        <item name="fontPath">fonts/GothamNarrow-Thin.otf</item>
     </style>
 
 </resources>

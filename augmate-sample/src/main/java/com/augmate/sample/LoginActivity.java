@@ -1,9 +1,9 @@
 package com.augmate.sample;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.animation.Animation;
 import android.widget.ViewFlipper;
 
 import com.augmate.sample.common.ErrorPrompt;
@@ -27,25 +27,22 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
         mGestureDetector = new GestureDetector(this).setBaseListener(new TouchResponseListener(findViewById(R.id.touch)));
         flipper = ((ViewFlipper) findViewById(R.id.flipper));
-        flipper.setInAnimation(this, android.R.anim.slide_in_left);
-        flipper.setOutAnimation(this, android.R.anim.slide_out_right);
+
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.settings_prefs),MODE_PRIVATE);
+        boolean animationsOn = prefs.getBoolean(getString(R.string.pref_animation_toggle),true);
+
+        if (animationsOn) {
+            flipper.setInAnimation(this, android.R.anim.slide_in_left);
+            flipper.setOutAnimation(this, android.R.anim.slide_out_right);
+            flipper.getInAnimation().setAnimationListener(getAnimationListener(flipper));
+        } else {
+            flipper.setInAnimation(this, R.anim.no_slide_anim);
+            flipper.setOutAnimation(this, R.anim.no_slide_anim);
+            flipper.getInAnimation().setAnimationListener(getAnimationListener(flipper));
+        }
 
         flipper.setFlipInterval(TRANSITION_TIMEOUT);
-
         flipper.setAutoStart(true);
-
-        flipper.getInAnimation().setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                if (flipper.getDisplayedChild() == flipper.getChildCount() - 1){
-                    flipper.stopFlipping();
-                }
-            }
-            @Override
-            public void onAnimationStart(Animation animation) {}
-            @Override
-            public void onAnimationRepeat(Animation animation) {}
-        });
     }
 
     @Override
@@ -65,9 +62,9 @@ public class LoginActivity extends BaseActivity {
             Log.debug("Got barcode value=%s", barcodeString);
             if (wasExited) {
                 SoundHelper.dismiss(this);
-            } else if (barcodeString.startsWith("user_")) {
+            } else if (UserUtils.isAUser(barcodeString)) {
                 SoundHelper.success(this);
-                String employeeName = barcodeString.replace("user_","");
+                String employeeName = UserUtils.getUserFromBarcode(barcodeString);
                 UserUtils.setUser(employeeName);
                 showConfirmation(getString(R.string.welcome, employeeName), ApplicationsActivity.class, null);
                 finish();

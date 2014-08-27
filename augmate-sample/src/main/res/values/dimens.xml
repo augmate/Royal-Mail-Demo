@@ -8,4 +8,8 @@
 
     <!-- Default screen margins, per the Glass design guidelines. -->
     <dimen name="card_margin">40px</dimen>
+
+    <dimen name="glass_card_margin">20dp</dimen>
+    <dimen name="glass_image_area">240dp</dimen>
+    <dimen name="glass_text_area">148dp</dimen>
 </resources>

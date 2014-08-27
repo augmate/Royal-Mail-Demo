@@ -62,7 +62,7 @@ public class MessageActivity extends BaseActivity {
                 message2.setVisibility(View.GONE);
             }
             if (imageView != null){
-                imageView.setImageResource(R.drawable.success);
+                imageView.setImageResource(R.drawable.verify_check);
             }
             getHandler().postDelayed(new Runnable() {
                 @Override

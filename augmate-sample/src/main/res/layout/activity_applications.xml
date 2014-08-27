@@ -5,12 +5,12 @@
 
     <TextView
         android:id="@+id/welcomeText"
-        style="@style/WrapContent.DefaultTextView"
+        style="@style/WrapContent.PrimaryTextView"
         android:layout_centerInParent="true"
         />
 
     <TextView
-        style="@style/WrapContent.SmallTextView"
+        style="@style/WrapContent.SecondaryTextView"
         android:text="@string/tap_for_options"
         android:layout_below="@+id/welcomeText"
         android:layout_centerHorizontal="true"

@@ -1,31 +1,44 @@
-<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/flipper"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/MatchParent.AppBackground">
+
+<ViewFlipper
+    android:padding="@dimen/glass_card_margin"
+    android:id="@+id/flipper"
+    style="@style/MatchParent">
 
     <!-- LET'S CYCLE COUNT -->
     <RelativeLayout
-        style="@style/MatchParent.LeftMargin">
+        style="@style/MatchParent">
         <TextView
             android:id="@+id/lets_cycle_count"
-            style="@style/WrapContent.DefaultTextView.RightAligned"
+            style="@style/WrapContent.SecondaryTextView.RightAligned"
             android:text="@string/lets_cycle_count" />
     </RelativeLayout>
 
     <!-- COUNT ITEMS PROMPT-->
     <RelativeLayout
-        style="@style/MatchParent.LeftMargin">
+        style="@style/MatchParent">
         <TextView
             android:id="@+id/count_description"
-            style="@style/WrapContent.DefaultTextView.RightAligned"
+            style="@style/WrapContent.SecondaryTextView.RightAligned"
             android:text="@string/count_item_prompt" />
     </RelativeLayout>
 
     <!-- TAP TO SCAN ID PAGE -->
     <RelativeLayout
-        style="@style/MatchParent.RightMargin">
+        style="@style/MatchParent">
         <TextView
             android:id="@+id/tap_to_scan"
-            style="@style/WrapContent.DefaultTextView.RightAligned"
+            style="@style/WrapContent.SecondaryTextView.RightAligned"
             android:text="@string/tap_scan_bin" />
     </RelativeLayout>
 </ViewFlipper>
+    <View
+        android:layout_width="8dp"
+        android:layout_height="12dp"
+        android:background="@color/white"
+        android:id="@+id/touch"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"/>
+</RelativeLayout>

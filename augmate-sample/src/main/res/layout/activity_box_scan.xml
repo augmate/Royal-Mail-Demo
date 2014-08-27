@@ -15,4 +15,8 @@
         android:layout_height="match_parent"
         tools:layout="@layout/box_scan_fragment" />
 
+    <FrameLayout
+        android:id="@+id/contentView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </FrameLayout>

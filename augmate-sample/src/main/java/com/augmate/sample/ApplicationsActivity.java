@@ -1,6 +1,7 @@
 package com.augmate.sample;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -74,6 +75,13 @@ public class ApplicationsActivity extends BaseActivity {
                     }
                 });
                 return true;
+            case R.id.toggle_animations:
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        toggleAnimation();
+                    }
+                });
             default:
                 return false;
         }
@@ -82,6 +90,14 @@ public class ApplicationsActivity extends BaseActivity {
     private void adjustBrightness() {
         Intent intent = new Intent(this, BrightnessActivity.class);
         startActivity(intent);
+    }
+
+    private void toggleAnimation() {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.settings_prefs),MODE_PRIVATE);
+        boolean oldValue = prefs.getBoolean(getString(R.string.pref_animation_toggle),true);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(getString(R.string.pref_animation_toggle),!oldValue);
+        editor.commit();
     }
 
     private void openLocationHistory() {

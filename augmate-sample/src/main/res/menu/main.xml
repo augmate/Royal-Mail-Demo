@@ -12,8 +12,13 @@
         android:orderInCategory="101"
         android:showAsAction="never"/>
     <item
+        android:id="@+id/toggle_animations"
+        android:title="@string/action_toggle_animations"
+        android:orderInCategory="102"
+        android:showAsAction="never"/>
+    <item
         android:id="@+id/location_history"
         android:title="@string/action_location_history"
-        android:orderInCategory="101"
+        android:orderInCategory="103"
         android:showAsAction="never"/>
 </menu>

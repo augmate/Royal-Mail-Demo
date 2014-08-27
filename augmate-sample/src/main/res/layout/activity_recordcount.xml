@@ -16,7 +16,7 @@
             android:id="@+id/big_image" />
 
         <TextView
-            style="@style/MatchParent.DefaultTextView"
+            style="@style/MatchParent.SecondaryTextView"
             android:layout_weight="1"
             android:gravity="center"
             android:paddingRight="@dimen/pad_edge"
@@ -28,14 +28,14 @@
         android:id="@+id/big_text_state">
 
         <TextView
-            style="@style/MatchParent.BigTextView"
+            style="@style/MatchParent.PrimaryTextView"
             android:layout_weight="1"
             android:gravity="center"
             android:paddingRight="@dimen/pad_edge"
             android:id="@+id/big_text" />
 
         <TextView
-            style="@style/MatchParent.DefaultTextView"
+            style="@style/MatchParent.SecondaryTextView"
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/yes_no"

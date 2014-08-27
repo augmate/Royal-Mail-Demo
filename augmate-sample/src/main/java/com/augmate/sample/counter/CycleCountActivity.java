@@ -1,32 +1,51 @@
 package com.augmate.sample.counter;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.widget.ViewFlipper;
 
 import com.augmate.sample.R;
 import com.augmate.sample.common.ErrorPrompt;
+import com.augmate.sample.common.FlowUtils;
 import com.augmate.sample.common.SoundHelper;
+import com.augmate.sample.common.TouchResponseListener;
 import com.augmate.sample.common.UserUtils;
 import com.augmate.sample.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
+import com.google.android.glass.touchpad.GestureDetector;
 
 public class CycleCountActivity extends BaseActivity {
     ViewFlipper flipper;
+    private GestureDetector mGestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cyclecount);
 
+        mGestureDetector = new GestureDetector(this).setBaseListener(new TouchResponseListener(findViewById(R.id.touch)));
         flipper = ((ViewFlipper) findViewById(R.id.flipper));
-        flipper.setInAnimation(this, android.R.anim.slide_in_left);
-        flipper.setOutAnimation(this, android.R.anim.slide_out_right);
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.settings_prefs),MODE_PRIVATE);
+        boolean animationsOn = prefs.getBoolean(getString(R.string.pref_animation_toggle),true);
 
-        flipper.setFlipInterval(2000);
+        flipper.setFlipInterval(FlowUtils.TRANSITION_TIMEOUT_LONG);
+        if (animationsOn) {
+            flipper.setInAnimation(this, android.R.anim.slide_in_left);
+            flipper.setOutAnimation(this, android.R.anim.slide_out_right);
+            flipper.getInAnimation().setAnimationListener(getAnimationListener(flipper));
+        } else {
+            flipper.setInAnimation(this, R.anim.no_slide_anim);
+            flipper.setOutAnimation(this, R.anim.no_slide_anim);
+            flipper.getInAnimation().setAnimationListener(getAnimationListener(flipper));
+        }
         flipper.setAutoStart(true);
-        flipper.getInAnimation().setAnimationListener(getAnimationListener(flipper));
+    }
 
+    @Override
+    public boolean onGenericMotionEvent(MotionEvent event) {
+        return mGestureDetector.onMotionEvent(event);
     }
 
     @Override
