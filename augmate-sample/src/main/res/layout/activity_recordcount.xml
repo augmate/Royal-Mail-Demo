@@ -12,7 +12,7 @@
         <ImageView
             style="@style/MatchParent.EqualFill"
             android:scaleType="center"
-            android:src="@android:drawable/ic_menu_call"
+            android:src="@drawable/mic"
             android:id="@+id/big_image" />
 
         <TextView

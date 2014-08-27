@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.view.WindowManager;
+
 import com.augmate.sample.common.activities.BaseActivity;
 import java.util.ArrayList;
 
@@ -17,6 +19,7 @@ public class VoiceActivity extends BaseActivity implements RecognitionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         startRecording();
     }
@@ -52,12 +55,12 @@ public class VoiceActivity extends BaseActivity implements RecognitionListener {
 
     @Override
     public void onEndOfSpeech() {
-        stopRecording(false);
+        stopRecording(false,0);
     }
 
     @Override
     public void onError(int error) {
-        stopRecording(true);
+        stopRecording(true,error);
     }
 
     @Override
@@ -65,9 +68,9 @@ public class VoiceActivity extends BaseActivity implements RecognitionListener {
         ArrayList<String> stringArrayList = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         if (stringArrayList != null && stringArrayList.size() > 0) {
             onResult(stringArrayList.get(0));
-            stopRecording(false);
+            stopRecording(false,0);
         } else {
-            stopRecording(true);
+            stopRecording(true,SpeechRecognizer.ERROR_NO_MATCH);
         }
     }
 
@@ -85,7 +88,7 @@ public class VoiceActivity extends BaseActivity implements RecognitionListener {
 
     }
 
-    public void stopRecording(boolean isError) {
+    public void stopRecording(boolean isError, int errorCode) {
 
     }
 

@@ -1,6 +1,7 @@
 package com.augmate.sample.counter;
 
 import android.os.Bundle;
+import android.speech.SpeechRecognizer;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ public class RecordCountActivity extends VoiceActivity {
     };
     private RecordState currentState = RecordState.LISTENING;
     BinModel bin;
+    boolean wasNetworkIssue = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,7 @@ public class RecordCountActivity extends VoiceActivity {
 
     private void enterTextState() {
         ImageView bigImage = (ImageView) findViewById(R.id.big_image);
-        bigImage.setImageResource(android.R.drawable.ic_btn_speak_now);
+        bigImage.setImageResource(R.drawable.mic);
         TextView textView = (TextView) findViewById(R.id.big_image_text);
         textView.setText("\"#\"?");
         findViewById(R.id.big_image_state).setVisibility(View.VISIBLE);
@@ -60,13 +62,42 @@ public class RecordCountActivity extends VoiceActivity {
 
     @Override
     public void handlePromptReturn() {
-        startRecording();
+        if (wasNetworkIssue) {
+            finish();
+        } else {
+            startRecording();
+        }
     }
 
-    public void stopRecording(boolean isError) {
+    public void stopRecording(boolean isError, int errorCode) {
         if (isError) {
             SoundHelper.error(this);
-            showError(ErrorPrompt.TRY_AGAIN);
+            switch (errorCode) {
+                case SpeechRecognizer.ERROR_AUDIO:
+                    wasNetworkIssue = false;
+                    showError(ErrorPrompt.SOUND_ERROR);
+                    break;
+                case SpeechRecognizer.ERROR_NETWORK:
+                    wasNetworkIssue = true;
+                    showError(ErrorPrompt.NETWORK_ERROR);
+                    break;
+                case SpeechRecognizer.ERROR_CLIENT:
+                    wasNetworkIssue = false;
+                    showError(ErrorPrompt.SOUND_ERROR);
+                    break;
+                case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
+                    wasNetworkIssue = true;
+                    showError(ErrorPrompt.NETWORK_ERROR);
+                    break;
+                case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
+                    wasNetworkIssue = false;
+                    showError(ErrorPrompt.TIMEOUT_ERROR);
+                    break;
+                default:
+                    wasNetworkIssue = false;
+                    showError(ErrorPrompt.SOUND_ERROR);
+                    break;
+            }
         }
     }
 
