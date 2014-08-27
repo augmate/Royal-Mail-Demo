@@ -2,22 +2,29 @@ package com.augmate.sample.scanner;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
 import android.view.WindowManager;
 
 import com.augmate.sample.R;
-import com.augmate.sample.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.ScannerFragmentBase;
 
 import static com.augmate.sample.common.FlowUtils.SCANNER_TIMEOUT;
 
-public class ScannerActivity extends BaseActivity implements ScannerFragmentBase.OnScannerResultListener {
+public class ScannerActivity extends FragmentActivity implements ScannerFragmentBase.OnScannerResultListener {
 
     public static final String BARCODE = "barcodeString";
     public static final String EXITED = "EXITED";
     public static final String TIMEOUT = "TIMEOUT";
 
     public boolean busy = false;
+
+    Handler mHandler = new Handler();
+
+    public Handler getHandler() {
+        return mHandler;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
