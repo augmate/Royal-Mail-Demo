@@ -11,6 +11,10 @@ android {
     compileSdkVersion 'Google Inc.:Glass Development Kit Preview:19'
     buildToolsVersion '20.0.0'
 
+    lintOptions {
+        abortOnError false
+    }
+
     defaultConfig {
         applicationId "com.augmate.warehouse.prototype"
         minSdkVersion 19
