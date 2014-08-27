@@ -1,13 +1,14 @@
 package com.augmate.sdk.scanner;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.decoder.DecodingJob;
 
