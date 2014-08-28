@@ -10,6 +10,7 @@ import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
+import static com.augmate.sample.common.FlowUtils.*;
 
 import com.augmate.sample.common.activities.BaseActivity;
 
@@ -32,13 +33,13 @@ public class SplashActivity extends BaseActivity {
         View background = findViewById(R.id.background);
         View logoBackground = findViewById(R.id.logo_background);
         final ViewPropertyAnimator animator = logoBackground.animate()
-                .setDuration(4500)
-                .setStartDelay(1000)
+                .setDuration(SPLASH_ANIMATION_1_DURATION)
+                .setStartDelay(SPLASH_ANIMATION_1_START_DELAY)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .alpha(1.0f);
         background.animate()
-                .setDuration(4500)
-                .setStartDelay(1000)
+                .setDuration(SPLASH_ANIMATION_1_DURATION)
+                .setStartDelay(SPLASH_ANIMATION_1_START_DELAY)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .alpha(1.0f)
                 .withStartAction(new Runnable() {
@@ -59,7 +60,7 @@ public class SplashActivity extends BaseActivity {
         final ImageView logoView = (ImageView) findViewById(R.id.augmate_logo);
         final TextView logoText = (TextView) findViewById(R.id.augmate_text);
         final ValueAnimator animLogo = ValueAnimator.ofInt(Color.WHITE, getResources().getColor(R.color.augmate_blue));
-        animLogo.setDuration(2250).setStartDelay(0);
+        animLogo.setDuration(SPLASH_ANIMATION_2_DURATION).setStartDelay(0);
         animLogo.setInterpolator(new AccelerateDecelerateInterpolator());
         animLogo.setEvaluator(new ArgbEvaluator());
         animLogo.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -72,8 +73,8 @@ public class SplashActivity extends BaseActivity {
 
         View background = findViewById(R.id.background);
         background.animate()
-                .setStartDelay(250)
-                .setDuration(2250)
+                .setStartDelay(SPLASH_ANIMATION_2_START_DELAY)
+                .setDuration(SPLASH_ANIMATION_2_DURATION)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .alpha(0.0f)
                 .withStartAction(new Runnable() {
