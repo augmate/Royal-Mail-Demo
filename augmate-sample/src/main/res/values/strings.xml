@@ -21,6 +21,7 @@
     <string name="error_listening">Sound Error</string>
     <string name="message_try_again">Try Again</string>
     <string name="error_network">Network Error</string>
+    <string name="error_number">Say Number</string>
 
     <string name="bin_confirmed">Bin\n Confirmed</string>
     <string name="yes_no">\"YES\"\n\"NO\"</string>

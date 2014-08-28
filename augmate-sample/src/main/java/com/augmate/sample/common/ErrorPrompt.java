@@ -11,7 +11,8 @@ public enum ErrorPrompt {
     BIN_ERROR(R.string.error_bin),
     TIMEOUT_ERROR(R.string.error_timed_out),
     SOUND_ERROR(R.string.error_listening),
-    NETWORK_ERROR(R.string.error_network);
+    NETWORK_ERROR(R.string.error_network),
+    NUMBER_ERROR(R.string.error_number);
 
     int error_msg;
 

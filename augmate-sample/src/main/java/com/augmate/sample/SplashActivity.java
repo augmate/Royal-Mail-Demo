@@ -33,10 +33,12 @@ public class SplashActivity extends BaseActivity {
         View logoBackground = findViewById(R.id.logo_background);
         final ViewPropertyAnimator animator = logoBackground.animate()
                 .setDuration(4500)
+                .setStartDelay(1000)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .alpha(1.0f);
         background.animate()
                 .setDuration(4500)
+                .setStartDelay(1000)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .alpha(1.0f)
                 .withStartAction(new Runnable() {

@@ -27,12 +27,24 @@
         style="@style/MatchParent.EqualFill"
         android:id="@+id/big_text_state">
 
-        <TextView
-            style="@style/MatchParent.PrimaryTextView"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:paddingRight="@dimen/pad_edge"
-            android:id="@+id/big_text" />
+        <FrameLayout
+            style="@style/MatchParent"
+            android:layout_weight="1">
+
+            <ImageView
+                style="@style/MatchParent.EqualFill"
+                android:scaleType="center"
+                android:src="@drawable/processing2"
+                android:visibility="gone"
+                android:id="@+id/processing" />
+
+            <TextView
+                style="@style/MatchParent.PrimaryTextView"
+                android:gravity="center"
+                android:paddingRight="@dimen/pad_edge"
+                android:id="@+id/big_text" />
+
+        </FrameLayout>
 
         <TextView
             style="@style/MatchParent.SecondaryTextView"

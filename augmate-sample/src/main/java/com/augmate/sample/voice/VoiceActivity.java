@@ -15,6 +15,7 @@ import java.util.ArrayList;
  */
 public class VoiceActivity extends BaseActivity implements RecognitionListener {
 
+    boolean callIsRecordingOnce = true;
     SpeechRecognizer speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
 
     @Override
@@ -25,6 +26,7 @@ public class VoiceActivity extends BaseActivity implements RecognitionListener {
     }
 
     public void startRecording() {
+        callIsRecordingOnce = true;
         speechRecognizer.setRecognitionListener(this);
         Intent recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
                 .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
@@ -35,22 +37,22 @@ public class VoiceActivity extends BaseActivity implements RecognitionListener {
 
     @Override
     public void onReadyForSpeech(Bundle params) {
-        isRecording();
+        _isRecording();
     }
 
     @Override
     public void onBeginningOfSpeech() {
-        isRecording();
+        _isRecording();
     }
 
     @Override
     public void onRmsChanged(float rmsdB) {
-        isRecording();
+        _isRecording();
     }
 
     @Override
     public void onBufferReceived(byte[] buffer) {
-        isRecording();
+        _isRecording();
     }
 
     @Override
@@ -67,8 +69,8 @@ public class VoiceActivity extends BaseActivity implements RecognitionListener {
     public void onResults(Bundle results) {
         ArrayList<String> stringArrayList = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         if (stringArrayList != null && stringArrayList.size() > 0) {
-            onResult(stringArrayList.get(0));
             stopRecording(false,0);
+            onResult(stringArrayList.get(0));
         } else {
             stopRecording(true,SpeechRecognizer.ERROR_NO_MATCH);
         }
@@ -84,8 +86,14 @@ public class VoiceActivity extends BaseActivity implements RecognitionListener {
 
     }
 
-    public void isRecording() {
+    private void _isRecording() {
+        if (callIsRecordingOnce) {
+            callIsRecordingOnce = false;
+            isRecording();
+        }
+    }
 
+    public void isRecording() {
     }
 
     public void stopRecording(boolean isError, int errorCode) {

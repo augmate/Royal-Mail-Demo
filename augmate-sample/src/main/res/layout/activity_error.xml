@@ -14,7 +14,7 @@
             style="@style/WrapContent"
             android:id="@+id/imageView"
             android:layout_gravity="center"
-            android:src="@drawable/error"/>
+            android:src="@drawable/errorx"/>
     </FrameLayout>
 
     <RelativeLayout
