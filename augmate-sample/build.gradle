@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.1'
+        classpath 'com.android.tools.build:gradle:0.12.2'
     }
 }
 apply plugin: 'com.android.application'
@@ -29,6 +29,7 @@ android {
         targetSdkVersion 19
         versionCode 1
         versionName '1.0'
+        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -43,8 +44,11 @@ android {
 
     packagingOptions {
         exclude 'LICENSE.txt'
+        exclude 'LICENSEj'
         exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
     }
     productFlavors {
     }
@@ -55,4 +59,5 @@ dependencies {
     compile project(':augmate-sdk:scanner')
     compile project(':augmate-sdk:logger')
     compile 'uk.co.chrisjenx:calligraphy:1.1.+'
+    androidTestCompile files('libs/espresso-1.1-bundled.jar')
 }
