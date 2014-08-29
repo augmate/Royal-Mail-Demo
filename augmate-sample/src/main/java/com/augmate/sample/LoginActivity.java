@@ -25,11 +25,15 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        mGestureDetector = new GestureDetector(this).setBaseListener(new TouchResponseListener(findViewById(R.id.touch)));
+        TouchResponseListener responseListener = new TouchResponseListener(findViewById(R.id.touch));
+        mGestureDetector = new GestureDetector(this)
+                .setBaseListener(responseListener)
+                .setScrollListener(responseListener)
+                .setFingerListener(responseListener);
         flipper = ((ViewFlipper) findViewById(R.id.flipper));
 
-        SharedPreferences prefs = getSharedPreferences(getString(R.string.settings_prefs),MODE_PRIVATE);
-        boolean animationsOn = prefs.getBoolean(getString(R.string.pref_animation_toggle),true);
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.settings_prefs), MODE_PRIVATE);
+        boolean animationsOn = prefs.getBoolean(getString(R.string.pref_animation_toggle), true);
 
         if (animationsOn) {
             flipper.setInAnimation(this, android.R.anim.slide_in_left);
@@ -87,13 +91,13 @@ public class LoginActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-           SoundHelper.tap(this);
-           mHandler.postDelayed(new Runnable() {
-               @Override
-               public void run() {
-                   startScanner();
-               }
-           }, FlowUtils.SCALE_TIME);
+            SoundHelper.tap(this);
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startScanner();
+                }
+            }, FlowUtils.SCALE_TIME);
         }
         return super.onKeyDown(keyCode, event);
     }
