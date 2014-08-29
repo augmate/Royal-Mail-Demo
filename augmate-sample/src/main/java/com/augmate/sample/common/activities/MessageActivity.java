@@ -80,7 +80,7 @@ public class MessageActivity extends BaseActivity {
                     setResult(RESULT_OK);
                     finish();
                 }
-            }, FlowUtils.TRANSITION_TIMEOUT);
+            }, FlowUtils.SUCCESS_MESSAGE_DURATION);
         }
     }
 }

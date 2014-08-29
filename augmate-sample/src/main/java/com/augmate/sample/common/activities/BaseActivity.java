@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ViewFlipper;
 
 import com.augmate.sample.common.ErrorPrompt;
+import com.augmate.sample.common.FlowUtils;
 import com.augmate.sample.scanner.ScannerActivity;
 import com.augmate.sdk.logger.Log;
 
@@ -23,6 +25,7 @@ public class BaseActivity extends Activity {
     public static final int REQUEST_BARCODE_SCAN = 0x01;
     public static final int REQUEST_PROMPT = 0x02;
     protected Handler mHandler = new Handler();
+    PowerManager.WakeLock wakeLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,20 @@ public class BaseActivity extends Activity {
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.screenBrightness =brightness;
         getWindow().setAttributes(params);
+
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK , "");
+        wakeLock.acquire(FlowUtils.SCREEN_ON_TIME);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            wakeLock.release();
+        }catch (Throwable ignored) {
+
+        }
     }
 
     @Override
