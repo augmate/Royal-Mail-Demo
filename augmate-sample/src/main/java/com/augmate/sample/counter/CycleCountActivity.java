@@ -25,7 +25,11 @@ public class CycleCountActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cyclecount);
 
-        mGestureDetector = new GestureDetector(this).setBaseListener(new TouchResponseListener(findViewById(R.id.touch)));
+        TouchResponseListener responseListener = new TouchResponseListener(findViewById(R.id.touch));
+        mGestureDetector = new GestureDetector(this)
+                .setBaseListener(responseListener)
+                .setScrollListener(responseListener)
+                .setFingerListener(responseListener);
         flipper = ((ViewFlipper) findViewById(R.id.flipper));
         SharedPreferences prefs = getSharedPreferences(getString(R.string.settings_prefs),MODE_PRIVATE);
         boolean animationsOn = prefs.getBoolean(getString(R.string.pref_animation_toggle),true);

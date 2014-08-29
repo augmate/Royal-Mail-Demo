@@ -21,7 +21,7 @@ public class TouchResponseListener implements
     private static final int BACKWARDS = -1;
 
     private final View touchView;
-    
+
     private float endX = 1f, endY = 1f;
     private int swipeDirection = 0; // -1 = backwards, +1 = forwards
 
