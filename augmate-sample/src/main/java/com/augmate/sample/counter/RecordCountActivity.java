@@ -41,7 +41,7 @@ public class RecordCountActivity extends VoiceActivity {
         bigImage.setImageResource(R.drawable.mic);
         bigImage.setRotation(0);
         TextView textView = (TextView) findViewById(R.id.big_image_text);
-        textView.setText("\"#\"?");
+        textView.setText(R.string.report_count);
         findViewById(R.id.big_image_state).setVisibility(View.VISIBLE);
         findViewById(R.id.big_text_state).setVisibility(View.GONE);
     }
@@ -61,7 +61,7 @@ public class RecordCountActivity extends VoiceActivity {
         ImageView bigImage = (ImageView) findViewById(R.id.big_image);
         bigImage.setImageResource(R.drawable.processing2);
         TextView textView = (TextView) findViewById(R.id.big_image_text);
-        textView.setText("\"#\"?");
+        textView.setText(R.string.report_count);
         findViewById(R.id.big_image_state).setVisibility(View.VISIBLE);
         findViewById(R.id.big_text_state).setVisibility(View.GONE);
         animate(bigImage);

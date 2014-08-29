@@ -15,7 +15,7 @@ import com.augmate.sample.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
 import com.google.android.glass.touchpad.GestureDetector;
 
-import static com.augmate.sample.common.FlowUtils.TRANSITION_TIMEOUT;
+import static com.augmate.sample.common.FlowUtils.VIEWFLIPPER_TRANSITION_TIMEOUT;
 
 public class LoginActivity extends BaseActivity {
     ViewFlipper flipper;
@@ -45,7 +45,7 @@ public class LoginActivity extends BaseActivity {
             flipper.getInAnimation().setAnimationListener(getAnimationListener(flipper));
         }
 
-        flipper.setFlipInterval(TRANSITION_TIMEOUT);
+        flipper.setFlipInterval(VIEWFLIPPER_TRANSITION_TIMEOUT);
         flipper.setAutoStart(true);
     }
 

@@ -34,7 +34,7 @@ public class CycleCountActivity extends BaseActivity {
         SharedPreferences prefs = getSharedPreferences(getString(R.string.settings_prefs),MODE_PRIVATE);
         boolean animationsOn = prefs.getBoolean(getString(R.string.pref_animation_toggle),true);
 
-        flipper.setFlipInterval(FlowUtils.TRANSITION_TIMEOUT_LONG);
+        flipper.setFlipInterval(FlowUtils.VIEWFLIPPER_TRANSITION_TIMEOUT_LONG);
         if (animationsOn) {
             flipper.setInAnimation(this, android.R.anim.slide_in_left);
             flipper.setOutAnimation(this, android.R.anim.slide_out_right);
