@@ -17,10 +17,13 @@ public class TouchResponseListener implements
 
     private final static float scaleUp = 1.65f;
     private final static float scaleDown = 0.6f;
+    private static final int FORWARDS = 1;
+    private static final int BACKWARDS = -1;
 
     private final View touchView;
     private boolean isTouching = false;
     private float endX = 1f, endY = 1f;
+    private int swipeDirection = 0; // -1 = backwards, +1 = forwards
 
     public TouchResponseListener(View touchView) {
         this.touchView = touchView;
@@ -28,25 +31,25 @@ public class TouchResponseListener implements
 
     private void gestureOperation(Gesture gesture) {
         float pivot = 0f;
-        endX = 1f;
-        endY = 1f;
+        float newEndX = 1f,newEndY = 1f;
         switch (gesture) {
             case TAP:
-                endX = endY = scaleUp;
+                newEndX = newEndY = scaleUp;
                 pivot = touchView.getHeight() / 2;
                 break;
             case SWIPE_LEFT:
-                endX = endY = scaleUp;
+                newEndX = newEndY = scaleUp;
                 pivot = touchView.getHeight() / 2;
                 break;
             case SWIPE_RIGHT:
-                endX = endY = scaleDown;
+                newEndX = newEndY = scaleDown;
                 pivot = touchView.getHeight() / 2;
                 break;
         }
-        final Animation animation = new ScaleAnimation(1f, endX,
-                1f, endY,
+        final Animation animation = new ScaleAnimation(endX, newEndX,
+                endY, newEndY,
                 touchView.getWidth(), pivot);
+        endX = newEndX; endY = newEndY;
         animation.setFillAfter(true);
         animation.setDuration(FlowUtils.SCALE_TIME / 2);
         touchView.startAnimation(animation);
@@ -60,24 +63,34 @@ public class TouchResponseListener implements
         return false;
     }
 
+    private boolean canSwipeBackwards() {
+        return swipeDirection == 0 || swipeDirection == FORWARDS;
+    }
+
+    private boolean canSwipeForwards() {
+        return swipeDirection == 0 || swipeDirection == BACKWARDS;
+    }
+
     @Override
     public boolean onScroll(float displacement, float delta, float velocity) {
-        if (!isTouching) {
+        if (displacement < 0 && canSwipeBackwards()) {
             isTouching = true;
-            if (displacement < 0) {
-                gestureOperation(Gesture.SWIPE_LEFT);
-            } else if (displacement > 0) {
-                gestureOperation(Gesture.SWIPE_RIGHT);
-            }
+            swipeDirection = BACKWARDS;
+            gestureOperation(Gesture.SWIPE_LEFT);
             return true;
-        } else {
-            return false;
+        } else if (displacement > 0 && canSwipeForwards()) {
+            isTouching = true;
+            swipeDirection = FORWARDS;
+            gestureOperation(Gesture.SWIPE_RIGHT);
+            return true;
         }
+        return false;
     }
 
     @Override
     public void onFingerCountChanged(int previousCount, int currentCount) {
         if (currentCount == 0) {
+            swipeDirection = 0;
             isTouching = false;
             final Animation animation = new ScaleAnimation(endX, 1f,
                     endY, 1f,
