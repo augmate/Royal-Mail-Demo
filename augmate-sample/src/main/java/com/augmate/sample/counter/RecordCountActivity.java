@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.speech.SpeechRecognizer;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,6 +37,7 @@ public class RecordCountActivity extends VoiceActivity {
         setContentView(R.layout.activity_recordcount);
         bin = (BinModel) getIntent().getSerializableExtra(MessageActivity.DATA);
         enterTextState();
+        setRecordingAnimation(true);
     }
 
     private void enterTextState() {
@@ -49,7 +53,7 @@ public class RecordCountActivity extends VoiceActivity {
     private void confirmTextState(String text) {
         bin.setCount(text);
         TextView bigText = (TextView) findViewById(R.id.big_text);
-        bigText.setText(getString(R.string.confirme,text));
+        bigText.setText(getString(R.string.confirme, text));
         ImageView processing = (ImageView) findViewById(R.id.processing);
         bigText.setVisibility(View.VISIBLE);
         processing.setVisibility(View.GONE);
@@ -188,4 +192,20 @@ public class RecordCountActivity extends VoiceActivity {
         }
     }
 
+    public void setRecordingAnimation(boolean recording){
+        View microphone = findViewById(R.id.big_image);
+        if (microphone != null) {
+            if (recording) {
+                AlphaAnimation animation = new AlphaAnimation(1f, 0f);
+                animation.setDuration(750);
+                animation.setRepeatCount(Animation.INFINITE);
+                animation.setRepeatMode(Animation.REVERSE);
+                animation.setInterpolator(new AccelerateDecelerateInterpolator());
+
+                microphone.startAnimation(animation);
+            } else {
+                microphone.clearAnimation();
+            }
+        }
+    }
 }
