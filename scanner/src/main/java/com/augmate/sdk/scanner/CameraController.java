@@ -76,6 +76,8 @@ class CameraController {
         camera.addCallbackBuffer(frameCaptureBuffers[lastCaptureBufferIdx]); // start with the first buffer
         camera.setPreviewCallbackWithBuffer(callback);
 
+        Log.debug("Assigned camera callback frame buffers");
+
         try {
             camera.startPreview();
         } catch (Exception err) {
@@ -118,13 +120,13 @@ class CameraController {
 
         Log.debug("Hardware build: " + Build.PRODUCT + " / " + Build.DEVICE + " / " + Build.MODEL + " / " + Build.BRAND);
 
-        Log.debug("Current camera params: " + params.flatten());
+        //Log.debug("Current camera params: " + params.flatten());
 
         String deviceManufacturerName = params.get("exif-make");
         if (deviceManufacturerName == null)
             deviceManufacturerName = "Unknown";
 
-        Log.debug("  deviceManufacturerName = [" + deviceManufacturerName + "]");
+        //Log.debug("  deviceManufacturerName = [" + deviceManufacturerName + "]");
 
         switch (deviceManufacturerName) {
             case "Vuzix":

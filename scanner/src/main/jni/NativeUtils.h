@@ -31,6 +31,22 @@ JNIEXPORT void JNICALL Java_com_augmate_sdk_scanner_NativeUtils_binarizeToIntBuf
 JNIEXPORT void JNICALL Java_com_augmate_sdk_scanner_NativeUtils_zxingNativeDecode
   (JNIEnv *, jclass, jbyteArray, jint, jint);
 
+/*
+ * Class:     com_augmate_sdk_scanner_NativeUtils
+ * Method:    globalHistogramBinarizeToIntBuffer
+ * Signature: ([B[III)V
+ */
+JNIEXPORT void JNICALL Java_com_augmate_sdk_scanner_NativeUtils_globalHistogramBinarizeToIntBuffer
+  (JNIEnv *, jclass, jbyteArray, jintArray, jint, jint);
+
+/*
+ * Class:     com_augmate_sdk_scanner_NativeUtils
+ * Method:    estimateBlackPoint
+ * Signature: ([II)I
+ */
+JNIEXPORT jint JNICALL Java_com_augmate_sdk_scanner_NativeUtils_estimateBlackPoint
+  (JNIEnv *, jclass, jintArray, jint);
+
 #ifdef __cplusplus
 }
 #endif
