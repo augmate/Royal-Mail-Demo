@@ -1,1 +1,1 @@
-include ':augmate-sample', ':augmate-sdk:scanner', ':augmate-sdk:voice', ':augmate-sdk:logger', ':employee-scanner', ':warehouse-prototype'
+include ':augmate-sample', ':augmate-sdk:scanner', ':augmate-sdk:voice', ':augmate-sdk:logger', ':augmate-sdk:data', ':employee-scanner', ':warehouse-prototype'
