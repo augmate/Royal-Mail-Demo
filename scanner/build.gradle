@@ -25,6 +25,9 @@ android {
         versionName '1.0'
 
         ndk {
+            //String scannerDir = file('.').absolutePath
+            //ldLibs "log -lzxing_android_x86_release -L" + scannerDir + "/libs/lib/x86/"
+            //cFlags "-fexceptions -I" + scannerDir + "/includes/"
             moduleName "native-scanner"
             stl "gnustl_shared"
             abiFilters "x86", "armeabi-v7a"
