@@ -61,7 +61,7 @@ public class CycleCountActivity extends BaseActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean("LoadAnimation",false);
+        outState.putBoolean("LoadAnimation", false);
     }
 
     @Override
@@ -69,9 +69,13 @@ public class CycleCountActivity extends BaseActivity {
         return mGestureDetector.onMotionEvent(event);
     }
 
+    private boolean handlePromptReturn = true;
     @Override
     public void handlePromptReturn() {
-        rescan();
+        if (handlePromptReturn) {
+            rescan();
+        }
+        handlePromptReturn = true;
     }
 
     @Override
@@ -102,14 +106,19 @@ public class CycleCountActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        boolean handled = false;
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-            if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
+            if (networkInfo != null && networkInfo.isConnected()) {
                 SoundHelper.tap(this);
                 startScanner();
+                handled = true;
             } else {
+                SoundHelper.error(this);
                 showError(ErrorPrompt.NETWORK_ERROR);
+                handled = super.onKeyDown(keyCode, event);
+                handlePromptReturn = false;
             }
         }
-        return super.onKeyDown(keyCode, event);
+        return handled;
     }
 }
