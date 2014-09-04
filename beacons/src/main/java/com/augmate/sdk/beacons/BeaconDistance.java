@@ -7,6 +7,9 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.text.TextUtils;
 import com.augmate.sdk.logger.Log;
+import com.augmate.sdk.logger.What;
+import com.rits.cloning.Cloner;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import java.util.*;
 
@@ -15,7 +18,7 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
     private Context context;
 
     @SuppressLint("UseSparseArrays")
-    private Map<Integer, BeaconInfo> beaconInfos = Collections.synchronizedMap(new HashMap<Integer, BeaconInfo>());
+    private Map<String, BeaconInfo> beaconInfos = new HashMap<String, BeaconInfo>();
 
     public void configureFromContext(Context ctx) {
         context = ctx;
@@ -34,16 +37,78 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
         bluetoothAdapter.stopLeScan(this);
     }
 
-    public Map<Integer, BeaconInfo> getLatestBeaconDistances() {
-        return beaconInfos;
+    /* may be called from UI-thread or a periodic timer's thread */
+    public List<BeaconInfo> getLatestBeaconDistances() {
+
+        // deep-clone the beacons list and its history fifo queue
+        Collection<BeaconInfo> beacons = new Cloner().deepClone(beaconInfos.values());
+        if(beacons == null) {
+            Log.error("Sanity Failure: deep-cloned beacons collection IS NULL");
+            return new ArrayList<>(); // return an empty list on error
+        }
+
+        if(beacons.size() == 0)
+            return new ArrayList<>();
+
+        long now = What.timey();
+
+        Log.debug("-------------------------------------------------");
+
+        // process a local-thread copy of the latest beacon list
+        for(BeaconInfo beacon : beacons) {
+
+            // expire long unseen beacons
+            for(Iterator<HistorySample> samples = beacon.history.iterator(); samples.hasNext(); ) {
+                HistorySample sample = samples.next();
+                if(now - sample.timestamp > 10000) {
+                    samples.remove();
+                }
+            }
+
+            if(beacon.history.size() == 0)
+                continue;
+
+            // calc some stats on the remaining recent beacon history samples
+            DescriptiveStatistics stats = new DescriptiveStatistics();
+
+            for(HistorySample s : beacon.history) {
+                stats.addValue(s.distance);
+            }
+
+            beacon.distanceGeometricMean = stats.getGeometricMean();
+            beacon.distanceMean = stats.getMean();
+            beacon.distanceKurtosis = stats.getKurtosis();
+            beacon.distanceSTD = stats.getStandardDeviation();
+            beacon.distanceVariance = stats.getVariance();
+            beacon.distanceSkewness = stats.getSkewness();
+            beacon.distancePercentile = stats.getPercentile(80);
+
+            Log.debug("beacon '%s %s' has %d recent samples", beacon.beaconName, beacon.uniqueId, beacon.history.size());
+            Log.debug("  recent samples: %s", TextUtils.join(",", beacon.history));
+            Log.debug("  mean: %.2f / geo-mean: %.2f / variance: %.2f / skewness: %.2f / percentile: %.2f", beacon.distanceMean, beacon.distanceGeometricMean, beacon.distanceVariance, beacon.distanceSkewness, beacon.distancePercentile);
+        }
+
+        // expire long-unseen beacons
+        for(Iterator<BeaconInfo> beaconsIter = beacons.iterator(); beaconsIter.hasNext(); ) {
+            BeaconInfo beacon = beaconsIter.next();
+            if(beacon.history.size() == 0) {
+                beaconsIter.remove();
+            }
+        }
+
+        List<BeaconInfo> sortedBeaconList = new ArrayList<>(beacons);
+
+        Collections.sort(sortedBeaconList, new Comparator<BeaconInfo>() {
+            @Override
+            public int compare(BeaconInfo b1, BeaconInfo b2) {
+                return (int)(b1.distance - b2.distance);
+            }
+        });
+
+        return sortedBeaconList;
     }
 
-    /**
-     * callback from BluetoothAdapter comes from its own thread
-     * @param device
-     * @param rssi
-     * @param scanRecord
-     */
+    /* callback from BluetoothAdapter comes from its own thread */
     @Override
     public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
 
@@ -51,14 +116,22 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
                                  // relevant payload processing is in estimotes-sdk-preview.jar Utils::beaconFromLeScan()
 
         final double distance = computeAccuracy(rssi, measuredPower);
-        Log.debug("Pinged device: " + device.getName() + " @ " + device.getAddress() + " rssi=" + rssi + " dist=" + String.format("%.2f", distance));
+        //Log.debug("Pinged device: " + device.getName() + " @ " + device.getAddress() + " rssi=" + rssi + " dist=" + String.format("%.2f", distance));
 
         // TODO: extract unique minor/major numbers from estimotes
 
-        BeaconInfo beaconInfo = new BeaconInfo();
-        beaconInfo.uniqueId = device.getAddress().hashCode();
+        String uniqueBeaconId = device.getAddress();
+        uniqueBeaconId = uniqueBeaconId.substring(uniqueBeaconId.length()-2, uniqueBeaconId.length());
+
+        // grab existing beacon entry or create a new one
+        BeaconInfo beaconInfo = beaconInfos.get(uniqueBeaconId);
+        if(beaconInfo == null)
+            beaconInfo = new BeaconInfo();
+
+        beaconInfo.uniqueId = uniqueBeaconId;
         beaconInfo.distance = distance;
-        beaconInfo.beaconName = device.getName();
+        beaconInfo.beaconName = device.getName() != null ? device.getName() : "<unnamed>";
+        beaconInfo.lastSeen = What.timey();
 
         if(!beaconInfos.containsKey(beaconInfo.uniqueId)) {
             Log.debug("* Found new device: " + device.getName() + " @ " + device.getAddress());
@@ -70,7 +143,19 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
             }
         }
 
-        beaconInfos.put(beaconInfo.uniqueId, beaconInfo);
+        onBeaconDiscovered(beaconInfo);
+    }
+
+    /* will be called from BluetoothAdapter's own thread */
+    private void onBeaconDiscovered(BeaconInfo beacon) {
+        beaconInfos.put(beacon.uniqueId, beacon);
+
+        HistorySample sample = new HistorySample();
+        sample.distance = beacon.distance;
+        sample.timestamp = What.timey();
+
+        // adds to a fixed size FIFO queue
+        beacon.history.add(sample);
     }
 
     /* ripped out of Estimotes' SDK */
