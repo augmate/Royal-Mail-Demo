@@ -9,10 +9,9 @@ import android.widget.TextView;
 import com.augmate.sdk.beacons.BeaconDistance;
 import com.augmate.sdk.beacons.BeaconInfo;
 import com.augmate.sdk.logger.Log;
+import com.augmate.sdk.logger.What;
 
-import java.util.Collection;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class MainActivity extends Activity {
     BeaconDistance beaconDistance = new BeaconDistance();
@@ -54,14 +53,32 @@ public class MainActivity extends Activity {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                Collection<BeaconInfo> beaconDistances = beaconDistance.getLatestBeaconDistances();
+                long start = What.timey();
+                List<BeaconInfo> beaconDistances = beaconDistance.getLatestBeaconDistances();
+                long span = What.timey() - start;
+                Log.debug("getLatestBeaconDistances took %d msec", span);
 
                 String displayMsg = String.format("%d beacons are within the area\n", beaconDistances.size());
 
-                //Log.debug("We know about %d beacons within the area", beaconDistances.size());
+                Log.debug("We know about %d beacons within the area", beaconDistances.size());
+
                 for (BeaconInfo beacon : beaconDistances) {
-                    //Log.debug("  beacon %s %d is %.2f units away", beacon.beaconName, beacon.uniqueId, beacon.distance);
-                    displayMsg += String.format("[%s] dist=%.2f skew=%.2f percentile=%.2f\n", beacon.uniqueId, beacon.distanceMean, beacon.distanceSkewness, beacon.distancePercentile);
+                    Log.debug("beacon %d = mean: %.2f / 80th percentile: %.2f", beacon.minor, beacon.distanceMean, beacon.distancePercentile);
+
+                    displayMsg += String.format("beacon #%d dist=%.2f 80th percentile=%.2f\n", beacon.minor, beacon.distanceMean, beacon.distancePercentile);
+                }
+
+                if(beaconDistances.size() > 0) {
+                    Collections.sort(beaconDistances, new Comparator<BeaconInfo>() {
+                        @Override
+                        public int compare(BeaconInfo b1, BeaconInfo b2) {
+                            return (int) (b1.distanceMean - b2.distanceMean);
+                        }
+                    });
+
+                    BeaconInfo nearestBeacon = beaconDistances.get(0);
+
+                    Log.debug("Nearest beacon: #%d at %.2f units away", nearestBeacon.minor, nearestBeacon.distanceMean);
                 }
 
                 Message msg = displayMsgUpdater.obtainMessage();
