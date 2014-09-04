@@ -12,6 +12,7 @@ import com.augmate.sample.common.SoundHelper;
 import com.augmate.sample.common.UserUtils;
 import com.augmate.sample.common.activities.BaseActivity;
 import com.augmate.sample.counter.CycleCountActivity;
+import com.augmate.sample.truckloading.TruckLoadingActivity;
 import com.google.android.glass.view.WindowUtils;
 
 public class ApplicationsActivity extends BaseActivity {
@@ -28,7 +29,7 @@ public class ApplicationsActivity extends BaseActivity {
     @Override
     public boolean onCreatePanelMenu(int featureId, Menu menu) {
         if (featureId == WindowUtils.FEATURE_VOICE_COMMANDS) {
-            getMenuInflater().inflate(R.menu.main, menu);
+            getMenuInflater().inflate(R.menu.apps, menu);
             return true;
         }
         return super.onCreatePanelMenu(featureId, menu);
@@ -44,18 +45,18 @@ public class ApplicationsActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.apps, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.location_history:
+            case R.id.truck_loading:
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        openLocationHistory();
+                        goToTruckLoading();
                     }
                 });
                 return true;
@@ -100,10 +101,6 @@ public class ApplicationsActivity extends BaseActivity {
         editor.commit();
     }
 
-    private void openLocationHistory() {
-        openOptionsMenu();
-    }
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
@@ -113,9 +110,13 @@ public class ApplicationsActivity extends BaseActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-
     private void goToCycleCounter() {
         Intent intent = new Intent(this, CycleCountActivity.class);
+        startActivity(intent);
+    }
+
+    private void goToTruckLoading() {
+        Intent intent = new Intent(this, TruckLoadingActivity.class);
         startActivity(intent);
     }
 

@@ -133,7 +133,9 @@ public class BaseActivity extends Activity {
         if (clazz != null) {
             intent.putExtra(MessageActivity.CLASS, clazz.getName());
         }
-        intent.putExtra(MessageActivity.DATA, data);
+        if (data != null) {
+            intent.putExtra(MessageActivity.DATA, data);
+        }
         startActivityForResult(intent, REQUEST_PROMPT);
     }
 }

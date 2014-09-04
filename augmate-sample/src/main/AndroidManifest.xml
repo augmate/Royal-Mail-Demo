@@ -60,6 +60,12 @@
             />
 
         <activity
+            android:name=".truckloading.TruckLoadingActivity"
+            android:immersive="true"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen"
+            />
+
+        <activity
             android:name=".common.activities.MessageActivity"
             android:immersive="true"
             android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen"

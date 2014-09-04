@@ -1,0 +1,35 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MatchParent.AppBackground">
+
+<ViewFlipper
+    android:padding="@dimen/glass_card_margin"
+    android:id="@+id/flipper"
+    style="@style/MatchParent">
+
+    <!-- LET'S CYCLE COUNT -->
+    <RelativeLayout
+        style="@style/MatchParent">
+        <TextView
+            android:id="@+id/lets_cycle_count"
+            style="@style/WrapContent.SecondaryTextView.RightAligned"
+            android:text="@string/lets_load_trucks" />
+    </RelativeLayout>
+
+    <!-- TAP TO SCAN ID PAGE -->
+    <RelativeLayout
+        style="@style/MatchParent">
+        <TextView
+            android:id="@+id/tap_to_scan"
+            style="@style/WrapContent.SecondaryTextView.RightAligned"
+            android:text="@string/tap_to_scan_package" />
+    </RelativeLayout>
+</ViewFlipper>
+    <View
+        android:layout_width="8dp"
+        android:layout_height="12dp"
+        android:background="@color/white"
+        android:id="@+id/touch"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"/>
+</RelativeLayout>
