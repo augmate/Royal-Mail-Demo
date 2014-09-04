@@ -83,6 +83,10 @@ public class AdRecord {
         return Arrays.copyOfRange(raw, 2, raw.length);
     }
 
+    public byte[] getData() {
+        return mData;
+    }
+
     /* Model Object Definition */
 
     private int mLength;
