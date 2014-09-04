@@ -1,6 +1,9 @@
 package com.augmate.sample.counter;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -20,10 +23,14 @@ public class CycleCountActivity extends BaseActivity {
     ViewFlipper flipper;
     private GestureDetector mGestureDetector;
 
+    ConnectivityManager cm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cyclecount);
+
+        cm = ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE));
 
         TouchResponseListener responseListener = new TouchResponseListener(findViewById(R.id.touch));
         mGestureDetector = new GestureDetector(this)
@@ -84,9 +91,14 @@ public class CycleCountActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-            SoundHelper.tap(this);
-            startScanner();
+            if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
+                SoundHelper.tap(this);
+                startScanner();
+            } else {
+                showError(ErrorPrompt.NETWORK_ERROR);
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
