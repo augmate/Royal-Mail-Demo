@@ -2,7 +2,7 @@
 
 # Fix the CircleCI path
 export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH"
-export PATH="$NDK_HOME/bin:$PATH"
+export PATH="$ANDROID_NDK_HOME/bin:$PATH"
 
 DEPS="$ANDROID_HOME/installed_dependencies"
 
