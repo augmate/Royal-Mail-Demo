@@ -56,28 +56,25 @@ public class MainActivity extends Activity {
                 long start = What.timey();
                 List<BeaconInfo> beaconDistances = beaconDistance.getLatestBeaconDistances();
                 long span = What.timey() - start;
-                Log.debug("getLatestBeaconDistances took %d msec", span);
+                //Log.debug("getLatestBeaconDistances took %d msec", span);
 
                 String displayMsg = String.format("%d beacons are within the area\n", beaconDistances.size());
-
-                Log.debug("We know about %d beacons within the area", beaconDistances.size());
+                //Log.debug("We know about %d beacons within the area", beaconDistances.size());
 
                 for (BeaconInfo beacon : beaconDistances) {
-                    Log.debug("beacon %d = mean: %.2f / 80th percentile: %.2f", beacon.minor, beacon.distanceMean, beacon.distancePercentile);
-
-                    displayMsg += String.format("beacon #%d dist=%.2f 80th percentile=%.2f\n", beacon.minor, beacon.distanceMean, beacon.distancePercentile);
+                    //Log.debug("beacon %d = mean: %.2f / 80th percentile: %.2f", beacon.minor, beacon.distanceMean, beacon.distancePercentile);
+                    displayMsg += String.format("#%d dist=%.2f weighted=%.2f\n", beacon.minor, beacon.distance, beacon.weightedAvgDistance);
                 }
 
                 if(beaconDistances.size() > 0) {
                     Collections.sort(beaconDistances, new Comparator<BeaconInfo>() {
                         @Override
                         public int compare(BeaconInfo b1, BeaconInfo b2) {
-                            return (int) (b1.distanceMean * 50 - b2.distanceMean * 50);
+                            return (int) (b1.weightedAvgDistance * 500 - b2.weightedAvgDistance * 500);
                         }
                     });
 
                     BeaconInfo nearestBeacon = beaconDistances.get(0);
-
                     Log.debug("Nearest beacon: #%d at %.2f units away", nearestBeacon.minor, nearestBeacon.distanceMean);
                 }
 
