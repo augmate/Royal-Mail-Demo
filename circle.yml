@@ -13,5 +13,5 @@ dependencies:
       - ~/.android
       - ~/android
   override:
-      - ./gradlew dependencies
       - ./install-dependencies.sh
+      - ./gradlew dependencies
