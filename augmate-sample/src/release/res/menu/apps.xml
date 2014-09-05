@@ -11,4 +11,16 @@
         android:title="@string/action_truck_loading"
         android:orderInCategory="100"
         android:showAsAction="never"/>
+    <item
+        android:id="@+id/adjust_brightness"
+        android:title="@string/action_adjust_brightness"
+        android:orderInCategory="101"
+        android:showAsAction="never"
+        android:visible="false"/>
+    <item
+        android:id="@+id/toggle_animations"
+        android:title="@string/action_toggle_animations"
+        android:orderInCategory="101"
+        android:showAsAction="never"
+        android:visible="false"/>
 </menu>
