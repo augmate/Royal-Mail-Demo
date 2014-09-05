@@ -8,17 +8,17 @@ import android.content.Context;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.logger.Timer;
 import com.augmate.sdk.logger.What;
-import com.rits.cloning.Cloner;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
     private BluetoothAdapter bluetoothAdapter;
     private Context context;
 
     @SuppressLint("UseSparseArrays")
-    private Map<String, BeaconInfo> beaconInfos = new HashMap<String, BeaconInfo>();
+    private Map<String, BeaconInfo> beaconInfos = new ConcurrentHashMap<>();
 
     public void configureFromContext(Context ctx) {
         context = ctx;
@@ -45,12 +45,11 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
 
         Timer cloneTimer = new Timer("beacons array deep-copy");
 
-        // deep-clone the beacons list and its history fifo queue
-        // FIXME: this is ridiculously slow
-        Collection<BeaconInfo> beacons = new Cloner().deepClone(beaconInfos.values());
-        if(beacons == null) {
-            Log.error("Sanity Failure: deep-cloned beacons collection IS NULL");
-            return new ArrayList<>(); // return an empty list on error
+        // deep-copy the beacons list and its history fifo queue
+        // not pretty, but 30x faster than rits.cloning.cloner
+        List<BeaconInfo> beacons = new ArrayList<>();
+        for(BeaconInfo readOnlyBeacon : beaconInfos.values()) {
+            beacons.add(readOnlyBeacon.duplicate());
         }
 
         cloneTimer.stop();
@@ -68,21 +67,23 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
         for(BeaconInfo beacon : beacons) {
 
             // expire long unseen beacons
-            for(Iterator<HistorySample> samples = beacon.history.iterator(); samples.hasNext(); ) {
-                HistorySample sample = samples.next();
-                if(now - sample.timestamp > 10000) {
-                    samples.remove();
+            beacon.numValidSamples = 0;
+            for(int i = 0; i < beacon.NumHistorySamples; i ++) {
+                if(beacon.history[i] != null) {
+                    if(now - beacon.history[i].timestamp > 10000) {
+                        beacon.history[i] = null;
+                    } else {
+                        beacon.numValidSamples ++;
+                    }
                 }
             }
-
-            if(beacon.history.size() == 0)
-                continue;
 
             // calc some stats on the remaining recent beacon history samples
             DescriptiveStatistics stats = new DescriptiveStatistics();
 
             for(HistorySample s : beacon.history) {
-                stats.addValue(s.distance);
+                if(s != null)
+                    stats.addValue(s.distance);
             }
 
             //beacon.distanceGeometricMean = stats.getGeometricMean();
@@ -105,7 +106,7 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
         // expire long-unseen beacons
         for(Iterator<BeaconInfo> beaconsIter = beacons.iterator(); beaconsIter.hasNext(); ) {
             BeaconInfo beacon = beaconsIter.next();
-            if(beacon.history.size() == 0) {
+            if(beacon.numValidSamples ==0) {
                 beaconsIter.remove();
             }
         }
@@ -186,7 +187,7 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
         sample.timestamp = What.timey();
 
         // adds to a fixed size FIFO queue
-        beacon.history.add(sample);
+        beacon.addHistorySample(sample);
     }
 
     /* ripped out of Estimotes' SDK */
