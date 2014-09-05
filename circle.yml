@@ -19,7 +19,6 @@ dependencies:
       - ./gradlew dependencies
 
 test:
-  pre: 
-      - ./gradlew :augmate-sample:build
   override:
+      - ./gradlew :augmate-sample:build
       - ./gradlew test
