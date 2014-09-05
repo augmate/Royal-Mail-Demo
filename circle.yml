@@ -15,3 +15,7 @@ dependencies:
   override:
       - ./install_dependencies.sh
       - ./gradlew dependencies
+
+test:
+  override:
+      - ./gradlew test
