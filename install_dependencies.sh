@@ -17,8 +17,9 @@ if [ ! -e $DEPS ]; then
   echo y | android update sdk -a  --no-ui --filter addon-google_gdk-google-19
   
   # Install NDK
+  cd ~
   wget https://dl.google.com/android/ndk/android-ndk32-r10-linux-x86_64.tar.bz2 > /dev/null;
-  tar -jxf --directory ~ android-ndk32-r10-linux-x86_64.tar.bz2
+  tar -jxf android-ndk32-r10-linux-x86_64.tar.bz2
 
   touch $DEPS
 fi
