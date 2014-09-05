@@ -8,7 +8,6 @@ import android.content.Context;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.logger.Timer;
 import com.augmate.sdk.logger.What;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,7 +58,7 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
 
         long now = What.timey();
 
-        //Log.debug("-------------------------------------------------");
+//        Log.debug("-------------------------------------------------");
 
         Timer beaconStats = new Timer("beacon stat crush");
 
@@ -78,25 +77,22 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
                 }
             }
 
-            // calc some stats on the remaining recent beacon history samples
-            DescriptiveStatistics stats = new DescriptiveStatistics();
-
-            for(HistorySample s : beacon.history) {
-                if(s != null)
-                    stats.addValue(s.distance);
+            // weighted average beacon samples
+            int index = 0;
+            double sum = 0;
+            double energy = 0;
+            for(int i = beacon.lastHistoryIdx; i != (beacon.lastHistoryIdx-1 + beacon.NumHistorySamples) % beacon.NumHistorySamples; i = (i+1) % beacon.NumHistorySamples) {
+                if(beacon.history[i] == null)
+                    continue;
+                double weight = Math.pow(2, ((double) (index++)) / 9.0);
+                double weightedSample = beacon.history[i].distance * weight;
+                sum += weightedSample;
+                energy += weight;
             }
+            beacon.weightedAvgDistance = sum / energy;
 
-            //beacon.distanceGeometricMean = stats.getGeometricMean();
-            beacon.distanceMean = stats.getMean();
-            beacon.distanceKurtosis = stats.getKurtosis();
-            beacon.distanceSTD = stats.getStandardDeviation();
-            beacon.distanceVariance = stats.getVariance();
-            beacon.distanceSkewness = stats.getSkewness();
-            beacon.distancePercentile = stats.getPercentile(80);
-
-//            Log.debug("beacon '%s %s' has %d recent samples", beacon.beaconName, beacon.uniqueBleDeviceId, beacon.history.size());
+//            Log.debug("beacon '%s %d' has weighted average distance: %.2f", beacon.beaconName, beacon.minor, beacon.weightedAvgDistance);
 //            Log.debug("  recent samples: %s", TextUtils.join(",", beacon.history));
-//            Log.debug("  mean: %.2f / geo-mean: %.2f / variance: %.2f / skewness: %.2f / percentile: %.2f", beacon.distanceMean, beacon.distanceGeometricMean, beacon.distanceVariance, beacon.distanceSkewness, beacon.distancePercentile);
         }
 
         beaconStats.stop();

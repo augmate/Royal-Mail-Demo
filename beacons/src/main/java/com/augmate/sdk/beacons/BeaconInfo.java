@@ -8,6 +8,7 @@ public class BeaconInfo {
     public long lastSeen = 0;
     public int major = 0;
     public int minor = 0;
+    public double weightedAvgDistance = 0;
 
     public enum BeaconType { Unknown, Estimote, SensorTag };
     public BeaconType beaconType = BeaconType.Unknown;
