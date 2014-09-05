@@ -1,3 +1,7 @@
+machine:
+  environment:
+      ANDROID_HOME: /home/ubuntu/android
+
 # Submodule
 checkout:
   post:
@@ -5,15 +9,9 @@ checkout:
       - git submodule update --init # use submodules
 
 dependencies:
+  cache_directories:
+      - ~/.android
+      - ~/android
   override:
       - ./gradlew dependencies
-
-machine:
-  environment:
-      ANDROID_HOME: /home/ubuntu/android
-  dependencies:
-      cache_directories:
-          - ~/.android
-          - ~/android
-      override:
-          - ./install-dependencies.sh
+      - ./install-dependencies.sh
