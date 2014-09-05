@@ -1,3 +1,7 @@
+general:
+  artifacts:
+    - "augmate-sample/build/outputs/apk"
+
 machine:
   environment:
       ANDROID_HOME: /usr/local/android-sdk-linux
