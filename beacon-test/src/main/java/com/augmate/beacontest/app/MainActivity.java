@@ -72,7 +72,7 @@ public class MainActivity extends Activity {
                     Collections.sort(beaconDistances, new Comparator<BeaconInfo>() {
                         @Override
                         public int compare(BeaconInfo b1, BeaconInfo b2) {
-                            return (int) (b1.distanceMean - b2.distanceMean);
+                            return (int) (b1.distanceMean * 50 - b2.distanceMean * 50);
                         }
                     });
 
@@ -87,6 +87,6 @@ public class MainActivity extends Activity {
                 msg.setData(bundle);
                 msg.sendToTarget();
             }
-        }, 0, 2000);
+        }, 0, 500);
     }
 }
