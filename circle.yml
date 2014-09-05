@@ -1,7 +1,7 @@
 machine:
   environment:
       ANDROID_HOME: /usr/local/android-sdk-linux
-      ANDROID_NDK_HOME: ~/android-ndk-r10
+      ANDROID_NDK_HOME: /home/ubuntu/android-ndk-r10
 
 # Submodule
 checkout:
@@ -11,9 +11,9 @@ checkout:
 
 dependencies:
   cache_directories:
-      - ~/.android
+      - /home/ubuntu/.android
       - /usr/local/android-sdk-linux
-      - ~/android-ndk-r10
+      - /home/ubuntu/android-ndk-r10
   override:
       - ./install_dependencies.sh
       - ./gradlew dependencies
