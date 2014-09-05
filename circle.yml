@@ -11,7 +11,7 @@ checkout:
 dependencies:
   cache_directories:
       - ~/.android
-      - ~/android
+      - /usr/local/android-sdk-linux
   override:
       - ./install_dependencies.sh
       - ./gradlew dependencies
