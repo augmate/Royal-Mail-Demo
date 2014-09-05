@@ -18,7 +18,7 @@ if [ ! -e $DEPS ]; then
   
   # Install NDK
   wget https://dl.google.com/android/ndk/android-ndk32-r10-linux-x86_64.tar.bz2 > /dev/null;
-  tar -jxf --directory /usr/local android-ndk32-r10-linux-x86_64.tar.bz2
+  tar -jxf --directory ~ android-ndk32-r10-linux-x86_64.tar.bz2
 
   touch $DEPS
 fi
