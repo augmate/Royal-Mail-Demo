@@ -60,5 +60,6 @@ dependencies {
     compile project(':augmate-sdk:logger')
     compile project(':augmate-sdk:data')
     compile 'uk.co.chrisjenx:calligraphy:1.1.+'
+    compile 'com.squareup.retrofit:retrofit:1.6.1'
     androidTestCompile files('libs/espresso-1.1-bundled.jar')
 }
