@@ -174,11 +174,11 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
     }
 
     private void onJobCompleted(DecodingJob job) {
-        Log.debug("Job stats: skipped frames=%d, binarization=%d msec, total=%d msec", framesSkipped, job.binarizationDuration(), job.totalDuration());
+        //Log.debug("Job stats: skipped frames=%d, binarization=%d msec, total=%d msec", framesSkipped, job.binarizationDuration(), job.totalDuration());
 
         if (job.result != null && job.result.confidence > 0) {
             Point[] pts = job.result.corners;
-            Log.info("  Result={%s} with confidence=%.2f", job.result.value, job.result.confidence);
+            //Log.info("  Result={%s} with confidence=%.2f", job.result.value, job.result.confidence);
 
             if (dbgVisualizer != null) {
                 dbgVisualizer.setPoints(pts);

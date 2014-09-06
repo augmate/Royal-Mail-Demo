@@ -42,7 +42,7 @@ class CameraController {
             }
         }
 
-        Timer cameraTimer = Log.startTimer("Opening camera took %d msec");
+        Timer cameraTimer = Log.startTimer("Opening camera");
 
         // try to open the first available camera
         try {
