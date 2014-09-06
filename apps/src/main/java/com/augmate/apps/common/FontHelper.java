@@ -1,9 +1,9 @@
-package com.augmate.sample.common;
+package com.augmate.apps.common;
 
 import android.content.Context;
 import android.widget.TextView;
 
-import com.augmate.sample.AugmateApplication;
+import com.augmate.apps.AugmateApplication;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyUtils;
 

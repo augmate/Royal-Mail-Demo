@@ -1,4 +1,4 @@
-package com.augmate.sample.counter;
+package com.augmate.apps.counter;
 
 import java.io.Serializable;
 

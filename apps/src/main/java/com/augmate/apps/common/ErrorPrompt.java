@@ -1,7 +1,7 @@
-package com.augmate.sample.common;
+package com.augmate.apps.common;
 
-import com.augmate.sample.AugmateApplication;
-import com.augmate.sample.R;
+import com.augmate.apps.AugmateApplication;
+import com.augmate.apps.R;
 
 /**
 * Created by prem on 8/19/14.

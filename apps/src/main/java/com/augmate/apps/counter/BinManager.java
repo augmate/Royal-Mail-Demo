@@ -1,8 +1,8 @@
-package com.augmate.sample.counter;
+package com.augmate.apps.counter;
 
 import android.content.Context;
 import android.util.Log;
-import com.augmate.sample.AugmateApplication;
+import com.augmate.apps.AugmateApplication;
 import com.augmate.sdk.data.AugmateData;
 import com.google.gson.Gson;
 

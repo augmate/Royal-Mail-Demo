@@ -1,4 +1,4 @@
-package com.augmate.sample;
+package com.augmate.apps;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,7 +9,7 @@ import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.augmate.sample.common.SoundHelper;
+import com.augmate.apps.common.SoundHelper;
 import com.google.android.glass.touchpad.GestureDetector;
 
 /**

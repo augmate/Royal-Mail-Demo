@@ -1,4 +1,4 @@
-package com.augmate.sample.counter;
+package com.augmate.apps.counter;
 
 import android.os.Bundle;
 import android.speech.SpeechRecognizer;
@@ -11,11 +11,11 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.augmate.sample.R;
-import com.augmate.sample.common.ErrorPrompt;
-import com.augmate.sample.common.SoundHelper;
-import com.augmate.sample.common.activities.MessageActivity;
-import com.augmate.sample.voice.VoiceActivity;
+import com.augmate.apps.R;
+import com.augmate.apps.common.ErrorPrompt;
+import com.augmate.apps.common.SoundHelper;
+import com.augmate.apps.common.activities.MessageActivity;
+import com.augmate.apps.voice.VoiceActivity;
 
 /**
  * Created by cesaraguilar on 8/19/14.

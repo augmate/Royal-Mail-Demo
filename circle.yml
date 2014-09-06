@@ -1,6 +1,6 @@
 general:
   artifacts:
-    - "augmate-sample/build/outputs/apk"
+    - "apps/build/outputs/apk"
 
 machine:
   environment:
@@ -24,5 +24,5 @@ dependencies:
 
 test:
   override:
-      - ./gradlew :augmate-sample:build
+      - ./gradlew :apps:build
       - ./gradlew test

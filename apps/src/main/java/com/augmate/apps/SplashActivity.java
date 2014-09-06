@@ -1,4 +1,4 @@
-package com.augmate.sample;
+package com.augmate.apps;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
@@ -10,9 +10,9 @@ import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
-import static com.augmate.sample.common.FlowUtils.*;
+import static com.augmate.apps.common.FlowUtils.*;
 
-import com.augmate.sample.common.activities.BaseActivity;
+import com.augmate.apps.common.activities.BaseActivity;
 
 public class SplashActivity extends BaseActivity {
 

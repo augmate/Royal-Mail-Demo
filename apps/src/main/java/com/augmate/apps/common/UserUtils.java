@@ -1,9 +1,9 @@
-package com.augmate.sample.common;
+package com.augmate.apps.common;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.augmate.sample.AugmateApplication;
+import com.augmate.apps.AugmateApplication;
 
 /**
  * Created by cesaraguilar on 8/18/14.

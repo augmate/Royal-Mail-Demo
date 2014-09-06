@@ -1,47 +1,40 @@
-package com.augmate.sample.counter;
+package com.augmate.apps;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.ViewFlipper;
 
-import com.augmate.sample.R;
-import com.augmate.sample.common.ErrorPrompt;
-import com.augmate.sample.common.FlowUtils;
-import com.augmate.sample.common.SoundHelper;
-import com.augmate.sample.common.TouchResponseListener;
-import com.augmate.sample.common.UserUtils;
-import com.augmate.sample.common.activities.BaseActivity;
+import com.augmate.apps.common.ErrorPrompt;
+import com.augmate.apps.common.FlowUtils;
+import com.augmate.apps.common.SoundHelper;
+import com.augmate.apps.common.TouchResponseListener;
+import com.augmate.apps.common.UserUtils;
+import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
 import com.google.android.glass.touchpad.GestureDetector;
 
-public class CycleCountActivity extends BaseActivity {
+import static com.augmate.apps.common.FlowUtils.VIEWFLIPPER_TRANSITION_TIMEOUT;
+
+public class LoginActivity extends BaseActivity {
     ViewFlipper flipper;
     private GestureDetector mGestureDetector;
-
-    ConnectivityManager cm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cyclecount);
-
-        cm = ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE));
-
+        setContentView(R.layout.activity_login);
         TouchResponseListener responseListener = new TouchResponseListener(findViewById(R.id.touch));
         mGestureDetector = new GestureDetector(this)
                 .setBaseListener(responseListener)
                 .setScrollListener(responseListener)
                 .setFingerListener(responseListener);
         flipper = ((ViewFlipper) findViewById(R.id.flipper));
-        SharedPreferences prefs = getSharedPreferences(getString(R.string.settings_prefs),MODE_PRIVATE);
-        boolean animationsOn = prefs.getBoolean(getString(R.string.pref_animation_toggle),true);
 
-        flipper.setFlipInterval(FlowUtils.VIEWFLIPPER_TRANSITION_TIMEOUT_LONG);
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.settings_prefs), MODE_PRIVATE);
+        boolean animationsOn = prefs.getBoolean(getString(R.string.pref_animation_toggle), true);
+
         if (animationsOn) {
             flipper.setInAnimation(this, android.R.anim.slide_in_left);
             flipper.setOutAnimation(this, android.R.anim.slide_out_right);
@@ -51,17 +44,9 @@ public class CycleCountActivity extends BaseActivity {
             flipper.setOutAnimation(this, R.anim.no_slide_anim);
             flipper.getInAnimation().setAnimationListener(getAnimationListener(flipper));
         }
-        if (savedInstanceState == null || savedInstanceState.getBoolean("LoadAnimation",true)) {
-            flipper.setAutoStart(true);
-        } else {
-            flipper.setDisplayedChild(2);
-        }
-    }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean("LoadAnimation", false);
+        flipper.setFlipInterval(VIEWFLIPPER_TRANSITION_TIMEOUT);
+        flipper.setAutoStart(true);
     }
 
     @Override
@@ -69,13 +54,9 @@ public class CycleCountActivity extends BaseActivity {
         return mGestureDetector.onMotionEvent(event);
     }
 
-    private boolean handlePromptReturn = true;
     @Override
     public void handlePromptReturn() {
-        if (handlePromptReturn) {
-            rescan();
-        }
-        handlePromptReturn = true;
+        rescan();
     }
 
     @Override
@@ -85,12 +66,16 @@ public class CycleCountActivity extends BaseActivity {
             Log.debug("Got barcode value=%s", barcodeString);
             if (wasExited) {
                 SoundHelper.dismiss(this);
-            } else {
+            } else if (UserUtils.isAUser(barcodeString)) {
                 SoundHelper.success(this);
-                BinModel model = new BinModel();
-                model.setBinBarcode(barcodeString);
-                model.setUser(UserUtils.getUser());
-                showConfirmation(getString(R.string.bin_confirmed), RecordCountActivity.class, model);
+                String employeeName = UserUtils.getUserFromBarcode(barcodeString);
+                UserUtils.setUser(employeeName);
+                showConfirmation(getString(R.string.welcome, employeeName), ApplicationsActivity.class, null);
+                finish();
+            } else {
+                //invalid code
+                SoundHelper.error(this);
+                showError(ErrorPrompt.SCAN_ERROR);
             }
         } else {
             //generic error
@@ -105,20 +90,15 @@ public class CycleCountActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        boolean handled = false;
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-            if (networkInfo != null && networkInfo.isConnected()) {
-                SoundHelper.tap(this);
-                startScanner();
-                handled = true;
-            } else {
-                SoundHelper.error(this);
-                showError(ErrorPrompt.NETWORK_ERROR);
-                handled = super.onKeyDown(keyCode, event);
-                handlePromptReturn = false;
-            }
+            SoundHelper.tap(this);
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startScanner();
+                }
+            }, FlowUtils.SCALE_TIME);
         }
-        return handled;
+        return super.onKeyDown(keyCode, event);
     }
 }

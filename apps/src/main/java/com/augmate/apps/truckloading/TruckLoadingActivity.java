@@ -1,4 +1,4 @@
-package com.augmate.sample.truckloading;
+package com.augmate.apps.truckloading;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -6,12 +6,12 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.ViewFlipper;
 
-import com.augmate.sample.R;
-import com.augmate.sample.common.ErrorPrompt;
-import com.augmate.sample.common.FlowUtils;
-import com.augmate.sample.common.SoundHelper;
-import com.augmate.sample.common.TouchResponseListener;
-import com.augmate.sample.common.activities.BaseActivity;
+import com.augmate.apps.R;
+import com.augmate.apps.common.ErrorPrompt;
+import com.augmate.apps.common.FlowUtils;
+import com.augmate.apps.common.SoundHelper;
+import com.augmate.apps.common.TouchResponseListener;
+import com.augmate.apps.common.activities.BaseActivity;
 import com.google.android.glass.touchpad.GestureDetector;
 
 /**

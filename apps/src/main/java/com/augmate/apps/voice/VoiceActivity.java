@@ -1,4 +1,4 @@
-package com.augmate.sample.voice;
+package com.augmate.apps.voice;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.view.WindowManager;
 
-import com.augmate.sample.common.activities.BaseActivity;
+import com.augmate.apps.common.activities.BaseActivity;
 import java.util.ArrayList;
 
 /**

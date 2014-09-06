@@ -1,4 +1,4 @@
-package com.augmate.sample.common.activities;
+package com.augmate.apps.common.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,16 +10,16 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ViewFlipper;
 
-import com.augmate.sample.common.ErrorPrompt;
-import com.augmate.sample.common.FlowUtils;
-import com.augmate.sample.scanner.ScannerActivity;
+import com.augmate.apps.common.ErrorPrompt;
+import com.augmate.apps.common.FlowUtils;
+import com.augmate.apps.scanner.ScannerActivity;
 import com.augmate.sdk.logger.Log;
 
 import java.io.Serializable;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-import static com.augmate.sample.common.FlowUtils.TRANSITION_TIMEOUT;
+import static com.augmate.apps.common.FlowUtils.TRANSITION_TIMEOUT;
 
 public class BaseActivity extends Activity {
     public static final int REQUEST_BARCODE_SCAN = 0x01;

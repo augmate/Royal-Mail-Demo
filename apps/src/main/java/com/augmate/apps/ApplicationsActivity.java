@@ -1,4 +1,4 @@
-package com.augmate.sample;
+package com.augmate.apps;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,11 +8,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.augmate.sample.common.SoundHelper;
-import com.augmate.sample.common.UserUtils;
-import com.augmate.sample.common.activities.BaseActivity;
-import com.augmate.sample.counter.CycleCountActivity;
-import com.augmate.sample.truckloading.TruckLoadingActivity;
+import com.augmate.apps.common.SoundHelper;
+import com.augmate.apps.common.UserUtils;
+import com.augmate.apps.common.activities.BaseActivity;
+import com.augmate.apps.counter.CycleCountActivity;
+import com.augmate.apps.truckloading.TruckLoadingActivity;
 import com.google.android.glass.view.WindowUtils;
 
 public class ApplicationsActivity extends BaseActivity {

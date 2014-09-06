@@ -1,4 +1,4 @@
-package com.augmate.sample.common;
+package com.augmate.apps.common;
 
 import android.content.Context;
 import android.media.AudioManager;

@@ -1,4 +1,4 @@
-package com.augmate.sample.common.activities;
+package com.augmate.apps.common.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.augmate.sample.R;
-import com.augmate.sample.common.FlowUtils;
+import com.augmate.apps.R;
+import com.augmate.apps.common.FlowUtils;
 
 import java.io.Serializable;
 

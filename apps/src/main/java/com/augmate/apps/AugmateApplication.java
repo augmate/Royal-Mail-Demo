@@ -1,4 +1,4 @@
-package com.augmate.sample;
+package com.augmate.apps;
 
 import android.content.Context;
 

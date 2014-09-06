@@ -1,4 +1,4 @@
-package com.augmate.sample.common;
+package com.augmate.apps.common;
 
 /**
  * Created by cesaraguilar on 8/18/14.

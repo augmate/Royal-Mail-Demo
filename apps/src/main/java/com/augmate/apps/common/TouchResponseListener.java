@@ -1,4 +1,4 @@
-package com.augmate.sample.common;
+package com.augmate.apps.common;
 
 import android.view.View;
 import android.view.animation.Animation;

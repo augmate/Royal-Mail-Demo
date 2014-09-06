@@ -1,15 +1,15 @@
-package com.augmate.sample.scanner;
+package com.augmate.apps.scanner;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
 
-import com.augmate.sample.R;
-import com.augmate.sample.common.activities.BaseActivity;
+import com.augmate.apps.R;
+import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.ScannerFragmentBase;
 
-import static com.augmate.sample.common.FlowUtils.SCANNER_TIMEOUT;
+import static com.augmate.apps.common.FlowUtils.SCANNER_TIMEOUT;
 
 public class ScannerActivity extends BaseActivity implements ScannerFragmentBase.OnScannerResultListener {
 

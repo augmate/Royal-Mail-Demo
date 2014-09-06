@@ -1,14 +1,14 @@
-package com.augmate.sample.tests;
+package com.augmate.apps.tests;
 
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.TextView;
 
-import com.augmate.sample.LoginActivity;
-import com.augmate.sample.R;
-import com.augmate.sample.SplashActivity;
-import com.augmate.sample.common.FlowUtils;
+import com.augmate.apps.LoginActivity;
+import com.augmate.apps.R;
+import com.augmate.apps.SplashActivity;
+import com.augmate.apps.common.FlowUtils;
 
 /**
  * @author James Davis (Fuzz)

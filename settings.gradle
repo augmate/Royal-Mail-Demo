@@ -1,1 +1,3 @@
-include ':augmate-sample', ':augmate-sdk:scanner', ':augmate-sdk:voice', ':augmate-sdk:logger', ':augmate-sdk:data', ':employee-scanner', ':warehouse-prototype', ':beacon-test', ':augmate-sdk:beacons'
+include ':apps', ':augmate-sdk:scanner', ':augmate-sdk:voice', ':augmate-sdk:beacons',
+        ':augmate-sdk:logger', ':augmate-sdk:data', ':experiments:employee-scanner',
+        ':experiments:warehouse-prototype', ':experiments:beacon-test'
