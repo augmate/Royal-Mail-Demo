@@ -12,6 +12,7 @@ import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.UserUtils;
 import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.apps.counter.CycleCountActivity;
+import com.augmate.apps.nonretailtouching.NonRetailTouchActivity;
 import com.augmate.apps.truckloading.TruckLoadingActivity;
 import com.google.android.glass.view.WindowUtils;
 
@@ -68,6 +69,14 @@ public class ApplicationsActivity extends BaseActivity {
                     }
                 });
                 return true;
+            case R.id.non_retail_touch:
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        goToNonRetailTouching();
+                    }
+                });
+                return true;
             case R.id.adjust_brightness:
                 mHandler.post(new Runnable() {
                     @Override
@@ -120,4 +129,7 @@ public class ApplicationsActivity extends BaseActivity {
         startActivity(intent);
     }
 
+    private void goToNonRetailTouching() {
+        startActivity(new Intent(this, NonRetailTouchActivity.class));
+    }
 }

@@ -12,6 +12,11 @@
         android:orderInCategory="100"
         android:showAsAction="never"/>
     <item
+        android:id="@+id/non_retail_touch"
+        android:title="@string/action_non_retail_touch"
+        android:orderInCategory="100"
+        android:showAsAction="never"/>
+    <item
         android:id="@+id/adjust_brightness"
         android:title="@string/action_adjust_brightness"
         android:orderInCategory="101"
