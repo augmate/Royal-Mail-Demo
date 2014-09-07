@@ -3,8 +3,10 @@ package com.augmate.apps.nonretailtouching;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import com.augmate.apps.R;
+import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.ScannerFragmentBase;
@@ -57,6 +59,11 @@ public class NonRetailTouchActivity extends BaseActivity implements ScannerFragm
 
         submittedBarcodes.add(barcode);
 
+        NrtScannerFragment nrtScannerFragment = (NrtScannerFragment) getFragmentManager().findFragmentById(R.id.scanner);
+        nrtScannerFragment.onSuccess();
+
+        SoundHelper.success(getBaseContext());
+
         nutsApi.touchNonRetailPiece(barcode, new Callback<Response>() {
             @Override
             public void success(Response result, Response response) {
@@ -72,6 +79,8 @@ public class NonRetailTouchActivity extends BaseActivity implements ScannerFragm
 
                     TextView nrtCounter = (TextView) findViewById(R.id.nrt_counter);
                     nrtCounter.setTextColor(0xFF00FF00);
+
+                    Log.debug("findViewById(R.id.scanner) = " + findViewById(R.id.scanner));
                 }
             }
 
@@ -92,6 +101,8 @@ public class NonRetailTouchActivity extends BaseActivity implements ScannerFragm
 
             recordedBarcodes.clear();
             submittedBarcodes.clear();
+
+            SoundHelper.dismiss(getBaseContext());
 
             TextView nrtCounter = (TextView) findViewById(R.id.nrt_counter);
             nrtCounter.setText("0");
