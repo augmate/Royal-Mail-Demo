@@ -1,40 +1,57 @@
 package com.augmate.sdk.logger.Local;
 
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Level;
-import org.apache.log4j.spi.LoggingEvent;
+import com.augmate.sdk.logger.ILogAppender;
+import com.augmate.sdk.logger.LogLevel;
+import com.augmate.sdk.logger.What;
 
-public class LocalAppender extends AppenderSkeleton {
-    
-    @Override
-    protected void append(LoggingEvent event) {
-        // TODO: allow customizable per-package (and per-class override) tags
-        // eg: com.augmate.sdk.* can have a tag of "Augmate.SDK"
-        //     com.digital-agency.truck-loading.* can have a tag of "DigitalAgency.TruckLoading"
+public class LocalAppender implements ILogAppender {
 
-        String logLine = "Augmate";
-        String msg = getLayout().format(event);
+    private final String sessionId;
+    private final String deviceId;
 
-        if( event.getLevel() == Level.DEBUG)
-            android.util.Log.d(logLine, msg);
-
-        if( event.getLevel() == Level.INFO)
-            android.util.Log.i(logLine, msg);
-
-        if( event.getLevel() == Level.ERROR)
-            android.util.Log.e(logLine, msg);
-
-        if( event.getLevel() == Level.WARN)
-            android.util.Log.wtf(logLine, msg);
+    public LocalAppender(String sessionId, String deviceId) {
+        this.sessionId = sessionId;
+        this.deviceId = deviceId;
     }
 
     @Override
-    public void close() {
+    public void append(LogLevel level, String moduleName, String formattedMsg) {
+        What.Frame callerFrame = What.frameAt(0);
+
+        String tag = callerFrame.packageName.contains("com.augmate.sdk") ? "AugmateSDK" : "AugmateApp";
+        String thread = Thread.currentThread().getName();
+        String formatted = deviceId + " | #" + sessionId + " | " + String.format("%-9s", thread) + " | " + callerFrame.shortPath + "()";
+        String finalMsg = formatted + "; " + formattedMsg;
+
+        switch (level) {
+            case Performance:
+                android.util.Log.d(tag, finalMsg);
+                break;
+            case Debug:
+                android.util.Log.d(tag, finalMsg);
+                break;
+            case Analytics:
+                android.util.Log.d(tag, finalMsg);
+                break;
+            case Info:
+                android.util.Log.i(tag, finalMsg);
+                break;
+            case Warning:
+                android.util.Log.w(tag, finalMsg);
+                break;
+            case Error:
+                android.util.Log.e(tag, finalMsg);
+                break;
+        }
+    }
+
+    @Override
+    public void flush() {
 
     }
 
     @Override
-    public boolean requiresLayout() {
-        return true;
+    public void shutdown() {
+
     }
 }

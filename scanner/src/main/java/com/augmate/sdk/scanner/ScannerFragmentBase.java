@@ -30,7 +30,7 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
      * @param scannerVisualDebugger ScannerVisualDebugger is optional
      */
     public void setupScannerActivity(SurfaceView surfaceView, ScannerVisualDebugger scannerVisualDebugger) {
-        Log.debug("Configuring scanner fragment.");
+        Log.debug("Scanner fragment configured.");
 
         this.surfaceView = surfaceView;
         this.dbgVisualizer = scannerVisualDebugger;
@@ -39,7 +39,6 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
     @Override
     public void onResume() {
         super.onResume();
-        Log.debug("Resuming");
 
         if (surfaceView == null) {
             Log.error("surfaceView is null. Must setupScannerActivity() with a valid SurfaceView in onCreateView().");
@@ -57,7 +56,6 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
     @Override
     public void onPause() {
         super.onPause();
-        Log.debug("Paused");
         isProcessingCapturedFrames = false;
 
         // stop camera frame-grab immediately, let go of preview-surface, and release camera
@@ -69,7 +67,6 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
 
     @Override
     public void onAttach(Activity activity) {
-        Log.debug("Attached");
         super.onAttach(activity);
         try {
             mListener = (OnScannerResultListener) activity;
@@ -119,14 +116,13 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        Log.debug("Surface has been created");
-        Log.debug("  Surface has size of %d x %d", surfaceHolder.getSurfaceFrame().width(), surfaceHolder.getSurfaceFrame().height());
+        //Log.debug("Surface has been created");
+        //Log.debug("  Surface has size of %d x %d", surfaceHolder.getSurfaceFrame().width(), surfaceHolder.getSurfaceFrame().height());
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i2, int i3) {
-        Log.debug("Surface has changed");
-        Log.debug("  Surface has size of %d x %d", surfaceHolder.getSurfaceFrame().width(), surfaceHolder.getSurfaceFrame().height());
+        Log.debug("Surface has changed; size = %d x %d", surfaceHolder.getSurfaceFrame().width(), surfaceHolder.getSurfaceFrame().height());
 
         // configure debugging render-target
         if (dbgVisualizer != null)
