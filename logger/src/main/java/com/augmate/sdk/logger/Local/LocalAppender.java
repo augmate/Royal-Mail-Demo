@@ -15,7 +15,7 @@ public class LocalAppender implements ILogAppender {
     }
 
     @Override
-    public void append(LogLevel level, String moduleName, String formattedMsg) {
+    public void append(LogLevel level, String formattedMsg) {
         What.Frame callerFrame = What.frameAt(0);
 
         String tag = callerFrame.packageName.contains("com.augmate.sdk") ? "AugmateSDK" : "AugmateApp";

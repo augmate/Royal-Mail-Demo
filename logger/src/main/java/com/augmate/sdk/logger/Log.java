@@ -56,13 +56,13 @@ public class Log {
         }
     }
 
-    private static void append(LogLevel level, String module, String msg) {
-        for(ILogAppender appender : logAppenderList) {
-            appender.append(level, module, msg);
-        }
-
+    private static void append(LogLevel level, String msg) {
         if(broadcastThread == null)
             start(null);
+
+        for(ILogAppender appender : logAppenderList) {
+            appender.append(level, msg);
+        }
 
         broadcastThread.interrupt();
     }
@@ -84,31 +84,31 @@ public class Log {
     public static void exception(Exception err, String format, Object... args) {
         String str = safeFormat(format, args);
         if(str != null)
-            append(LogLevel.Error, "Augmate", str + "\n" + ExceptionUtils.getStackTrace(err));
+            append(LogLevel.Error, str + "\n" + ExceptionUtils.getStackTrace(err));
     }
 
     public static void error(String format, Object... args) {
         String str = safeFormat(format, args);
         if(str != null)
-            append(LogLevel.Error, "Augmate", str);
+            append(LogLevel.Error, str);
     }
 
     public static void warn(String format, Object... args) {
         String str = safeFormat(format, args);
         if(str != null)
-            append(LogLevel.Warning, "Augmate", str);
+            append(LogLevel.Warning, str);
     }
 
     public static void info(String format, Object... args) {
         String str = safeFormat(format, args);
         if(str != null)
-            append(LogLevel.Info, "Augmate", str);
+            append(LogLevel.Info, str);
     }
 
     public static void debug(String format, Object... args) {
         String str = safeFormat(format, args);
         if(str != null)
-            append(LogLevel.Debug, "Augmate", str);
+            append(LogLevel.Debug, str);
     }
 
     private static String safeFormat(String format, Object... args) {
@@ -116,7 +116,7 @@ public class Log {
         try {
             str = String.format(format, args);
         } catch(Exception err) {
-            append(LogLevel.Error, Log.SdkLogTag, "Error formatting string: \"" + format + "\"\n" + ExceptionUtils.getStackTrace(err));
+            append(LogLevel.Error, "Error formatting string: \"" + format + "\"\n" + ExceptionUtils.getStackTrace(err));
         }
         return str;
     }

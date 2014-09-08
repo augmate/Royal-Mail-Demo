@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import com.augmate.sdk.logger.Log;
-import com.augmate.sdk.logger.Timer;
 import com.augmate.sdk.logger.What;
 
 import java.util.*;
@@ -41,9 +40,6 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
      * currently this is pretty slow. about 30msec for 6 beacons.
      */
     public List<BeaconInfo> getLatestBeaconDistances() {
-
-        Timer cloneTimer = new Timer("beacons array deep-copy");
-
         // deep-copy the beacons list and its history fifo queue
         // not pretty, but 30x faster than rits.cloning.cloner
         List<BeaconInfo> beacons = new ArrayList<>();
@@ -51,16 +47,12 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
             beacons.add(readOnlyBeacon.duplicate());
         }
 
-        cloneTimer.stop();
-
         if(beacons.size() == 0)
             return new ArrayList<>();
 
         long now = What.timey();
 
 //        Log.debug("-------------------------------------------------");
-
-        Timer beaconStats = new Timer("beacon stat crush");
 
         // process a local-thread copy of the latest beacon list
         for(BeaconInfo beacon : beacons) {
@@ -81,10 +73,12 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
             int index = 0;
             double sum = 0;
             double energy = 0;
+            final int biasRecentSamplesFactor = 3; // [1-10]
+
             for(int i = beacon.lastHistoryIdx; i != (beacon.lastHistoryIdx-1 + beacon.NumHistorySamples) % beacon.NumHistorySamples; i = (i+1) % beacon.NumHistorySamples) {
                 if(beacon.history[i] == null)
                     continue;
-                double weight = Math.pow(2, ((double) (index++)) / 9.0);
+                double weight = Math.pow(biasRecentSamplesFactor, ((double) (index++)) / 9.0);
                 double weightedSample = beacon.history[i].distance * weight;
                 sum += weightedSample;
                 energy += weight;
@@ -94,10 +88,6 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
 //            Log.debug("beacon '%s %d' has weighted average distance: %.2f", beacon.beaconName, beacon.minor, beacon.weightedAvgDistance);
 //            Log.debug("  recent samples: %s", TextUtils.join(",", beacon.history));
         }
-
-        beaconStats.stop();
-
-        Timer beaconSorting = new Timer("sorting beacon list");
 
         // expire long-unseen beacons
         for(Iterator<BeaconInfo> beaconsIter = beacons.iterator(); beaconsIter.hasNext(); ) {
@@ -115,8 +105,6 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
                 return b1.minor - b2.minor;
             }
         });
-
-        beaconSorting.stop();
 
         return sortedBeaconList;
     }

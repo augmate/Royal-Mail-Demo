@@ -10,25 +10,16 @@ public class BeaconInfo {
     public int minor = 0;
     public double weightedAvgDistance = 0;
 
-    public enum BeaconType { Unknown, Estimote, SensorTag };
+    public enum BeaconType { Unknown, Estimote, SensorTag }
     public BeaconType beaconType = BeaconType.Unknown;
 
     // assuming beacons emit 1 sample every 300ms
     // 10 samples will hold 3 seconds worth of data
-    //public CircularFifoQueue<HistorySample> history = new CircularFifoQueue<>(10);
     public final int NumHistorySamples = 10;
     public HistorySample[] history = new HistorySample[NumHistorySamples];
     public int lastHistoryIdx = 0;
     public int numValidSamples = 0;
 
-    // stats crushed on the last X samples above
-    public double distanceMean;
-    public double distanceKurtosis;
-    public double distanceSTD;
-    public double distanceSkewness;
-    public double distancePercentile;
-    public double distanceGeometricMean;
-    public double distanceVariance;
 
     public void addHistorySample(HistorySample sample) {
         history[lastHistoryIdx] = sample;
@@ -46,16 +37,7 @@ public class BeaconInfo {
         info.minor = minor;
         info.beaconType = beaconType;
 
-        //info.history = new CircularFifoQueue<>(Arrays.asList((HistorySample[]) history.toArray()));
         info.history = history.clone();
-
-        info.distanceMean = distanceMean;
-        info.distanceKurtosis = distanceKurtosis;
-        info.distanceSTD = distanceSTD;
-        info.distanceSkewness = distanceSkewness;
-        info.distancePercentile = distancePercentile;
-        info.distanceGeometricMean = distanceGeometricMean;
-        info.distanceVariance = distanceVariance;
 
         return info;
     }

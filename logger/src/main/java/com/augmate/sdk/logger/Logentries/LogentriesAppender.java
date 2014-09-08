@@ -1,7 +1,6 @@
 package com.augmate.sdk.logger.Logentries;
 
 import com.augmate.sdk.logger.ILogAppender;
-import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.logger.LogLevel;
 import com.augmate.sdk.logger.What;
 
@@ -45,7 +44,7 @@ public class LogentriesAppender implements ILogAppender {
             printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new Socket("data.logentries.com", 80).getOutputStream())));
         } catch (Exception e) {
             printWriter = null;
-            android.util.Log.w(Log.SdkLogTag, "Error connecting to data.logentries.com", e);
+            //android.util.Log.w(Log.SdkLogTag, "Error connecting to data.logentries.com", e);
             return false;
         }
         return true;
@@ -55,11 +54,10 @@ public class LogentriesAppender implements ILogAppender {
      * called from any thread, UI, networking, image-decoding, or a random anonymous async by root logger
      *
      * @param level        type of message
-     * @param moduleName   source module (sdk, app-name, helper library)
      * @param formattedMsg wanted log message
      */
     @Override
-    public void append(LogLevel level, String moduleName, String formattedMsg) {
+    public void append(LogLevel level, String formattedMsg) {
         What.Frame callerFrame = What.frameAt(0);
 
         String tag = callerFrame.packageName.contains("com.augmate.sdk") ? "AugmateSDK" : "AugmateApp";
