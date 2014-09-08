@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.augmate.sdk.beacons.BeaconDistance;
 import com.augmate.sdk.beacons.BeaconInfo;
 import com.augmate.sdk.logger.Log;
-import com.augmate.sdk.logger.What;
 
 import java.util.*;
 
@@ -53,16 +52,14 @@ public class MainActivity extends Activity {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                long start = What.timey();
+                // getLatestBeaconDistances() is nice and fast now (<1ms), no need to time it any more :)
                 List<BeaconInfo> beaconDistances = beaconDistance.getLatestBeaconDistances();
-                long span = What.timey() - start;
-                //Log.debug("getLatestBeaconDistances took %d msec", span);
 
                 String displayMsg = String.format("%d beacons are within the area\n", beaconDistances.size());
                 //Log.debug("We know about %d beacons within the area", beaconDistances.size());
 
                 for (BeaconInfo beacon : beaconDistances) {
-                    //Log.debug("beacon %d = mean: %.2f / 80th percentile: %.2f", beacon.minor, beacon.distanceMean, beacon.distancePercentile);
+                    //Log.debug("  beacon %d = mean: %.2f / 80th percentile: %.2f", beacon.minor, beacon.distance, beacon.weightedAvgDistance);
                     displayMsg += String.format("#%d dist=%.2f weighted=%.2f\n", beacon.minor, beacon.distance, beacon.weightedAvgDistance);
                 }
 
@@ -75,7 +72,7 @@ public class MainActivity extends Activity {
                     });
 
                     BeaconInfo nearestBeacon = beaconDistances.get(0);
-                    Log.debug("Nearest beacon: #%d at %.2f units away", nearestBeacon.minor, nearestBeacon.distanceMean);
+                    Log.info("-> Nearest beacon: #%d at %.2f units away", nearestBeacon.minor, nearestBeacon.weightedAvgDistance);
                 }
 
                 Message msg = displayMsgUpdater.obtainMessage();
