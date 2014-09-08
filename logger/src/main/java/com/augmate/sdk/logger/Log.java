@@ -61,6 +61,9 @@ public class Log {
             appender.append(level, module, msg);
         }
 
+        if(broadcastThread == null)
+            start(null);
+
         broadcastThread.interrupt();
     }
 
