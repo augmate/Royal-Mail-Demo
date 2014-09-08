@@ -87,9 +87,10 @@ class CameraController {
         }
 
         // zooming is back on Glass after XE16!
-        camera.startSmoothZoom(14);
+        int zoom = 19;
+        camera.startSmoothZoom(zoom);
 
-        Log.debug("Started camera frame-grabbing.");
+        Log.debug("Started camera frame-grabbing w/ zoom %d", zoom);
     }
 
     /**
