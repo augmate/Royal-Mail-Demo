@@ -1,0 +1,22 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:keepScreenOn="true"
+    style="@style/MatchParent.AppBackground">
+
+    <!--
+    Augmate's Customizable Scanner Fragment
+    style the fragment and this activity anyway you want
+    -->
+    <fragment
+        android:id="@+id/scanner"
+        android:name="com.augmate.apps.scanner.ScanFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/box_scan_fragment" />
+
+    <FrameLayout
+        android:id="@+id/contentView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</FrameLayout>

@@ -1,0 +1,32 @@
+<!-- scanner fragment used by non-retail-touch activity -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ff2435a6">
+
+    <SurfaceView
+        android:id="@+id/camera_preview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        />
+
+    <ImageView
+        android:id="@+id/nrt_scan_overlay"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:src="@drawable/scanner_overlay"
+        android:alpha="0.8"
+        />
+
+    <ImageView
+        android:background="#77FF0000"
+        android:id="@+id/nrt_scan_indicator"
+        android:layout_gravity="center"
+        android:layout_width="fill_parent"
+        android:layout_height="4px"
+        android:layout_margin="30dp"
+        />
+
+</FrameLayout>

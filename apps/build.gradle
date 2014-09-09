@@ -1,0 +1,65 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.12.2'
+    }
+}
+apply plugin: 'com.android.application'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 'Google Inc.:Glass Development Kit Preview:19'
+    buildToolsVersion '20.0.0'
+
+    // to make gradle 0.12 happy
+    useOldManifestMerger true
+
+    // log4j is causing a LOT of lint errors :(
+    lintOptions {
+        abortOnError false
+    }
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 19
+        versionCode 1
+        versionName '1.0'
+        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'LICENSEj'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':augmate-sdk:scanner')
+    compile project(':augmate-sdk:logger')
+    compile project(':augmate-sdk:data')
+    compile 'uk.co.chrisjenx:calligraphy:1.1.+'
+    compile 'com.squareup.retrofit:retrofit:1.6.1'
+    androidTestCompile files('libs/espresso-1.1-bundled.jar')
+}

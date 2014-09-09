@@ -1,0 +1,28 @@
+general:
+  artifacts:
+    - "apps/build/outputs/apk"
+
+machine:
+  environment:
+      ANDROID_HOME: /usr/local/android-sdk-linux
+      ANDROID_NDK_HOME: /home/ubuntu/android-ndk-r10
+
+# Submodule
+checkout:
+  post:
+      - git submodule sync
+      - git submodule update --init # use submodules
+
+dependencies:
+  cache_directories:
+      - /home/ubuntu/.android
+      - /usr/local/android-sdk-linux
+      - /home/ubuntu/android-ndk-r10
+  override:
+      - ./install_dependencies.sh
+      - ./gradlew dependencies
+
+test:
+  override:
+      - ./gradlew :apps:build
+      - ./gradlew test

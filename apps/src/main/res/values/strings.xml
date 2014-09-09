@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Augmate Glassware</string>
+
+    <string name="action_location_history">Location History</string>
+    <string name="action_adjust_brightness">Adjust Brightness</string>
+    <string name="action_cycle_count">Cycle count</string>
+    <string name="action_toggle_animations">Toggle Animations</string>
+    <string name="action_truck_loading">Truck Loading</string>
+    <string name="action_non_retail_touch">Non Retail Touching</string>
+
+    <string name="pref_animation_toggle">ANIMATION_TOGGLE</string>
+    <string name="settings_prefs">SETTINGS</string>
+
+    <string name="lets_login">Let\'s Login</string>
+    <string name="tap_to_scan_badge">Tap to scan your badge</string>
+    <string name="tap_to_scanid">Tap to scan ID</string>
+    <string name="welcome">Welcome %s</string>
+    <string name="report_count">Say “#”\nto report count</string>
+
+    <string name="error_scan">Scan Error</string>
+    <string name="error_timed_out">Timed Out</string>
+    <string name="error_bin">Bin ID Error</string>
+    <string name="error_listening">Sound Error</string>
+    <string name="message_try_again">Try Again</string>
+    <string name="error_network">Network Error</string>
+    <string name="error_number">Say Number</string>
+
+    <string name="bin_confirmed">Count\nverified</string>
+    <string name="yes_no">\"YES?\"\n\"NO?\"</string>
+    <string name="confirme">%s</string>
+    <string name="count_confirmed">Count Confirmed</string>
+
+    <string name="lets_try_again">Let\'s try\nagain</string>
+    <string name="lets_cycle_count">Let\'s cycle count</string>
+    <string name="count_item_prompt">Count the # of items in bin</string>
+    <string name="tap_for_options">Tap for Options</string>
+    <string name="tap_scan_bin">Tap to Scan\nBin Barcode</string>
+    <string name="augmate">AUGMATE</string>
+
+    <string name="lets_load_trucks">Let\'s load trucks</string>
+    <string name="tap_to_scan_package">Tap to Scan\nPackage</string>
+    <string name="package_verified">Package Verified</string>
+</resources>
