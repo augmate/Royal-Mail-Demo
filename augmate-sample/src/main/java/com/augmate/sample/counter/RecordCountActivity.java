@@ -17,6 +17,9 @@ import com.augmate.sample.common.SoundHelper;
 import com.augmate.sample.common.activities.MessageActivity;
 import com.augmate.sample.voice.VoiceActivity;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by cesaraguilar on 8/19/14.
  */
@@ -164,6 +167,10 @@ public class RecordCountActivity extends VoiceActivity {
     public void onResult(String resultString) {
         if (currentState == RecordState.LISTENING) {
             try {
+                Pattern pattern = Pattern.compile("[0-9]+");
+                Matcher matcher = pattern.matcher(resultString);
+                matcher.find();
+                resultString = matcher.group();
                 Integer integer = Integer.valueOf(resultString);
                 synchronized (mLock) {
                     if (mAnimator != null) {
@@ -179,7 +186,7 @@ public class RecordCountActivity extends VoiceActivity {
                 stopRecording(true, 11111);
             }
         } else if (currentState == RecordState.CONFIRM) {
-            if (resultString.equalsIgnoreCase("YES")) {
+            if (SoundHelper.isAffirmative(resultString)) {
                 BinManager.getSharedInstance().saveBin(bin);
                 SoundHelper.success(this);
                 showConfirmation(getString(R.string.bin_confirmed),null,null);

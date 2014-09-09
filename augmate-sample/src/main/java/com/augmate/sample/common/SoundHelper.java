@@ -35,4 +35,12 @@ public class SoundHelper {
         audio.playSoundEffect(Sounds.DISALLOWED);
     }
 
+    public static boolean isAffirmative(String resultString) {
+        resultString = resultString.toLowerCase();
+        if (resultString.contains("yes") ||
+                resultString.contains("correct")) {
+            return true;
+        }
+        return false;
+    }
 }
