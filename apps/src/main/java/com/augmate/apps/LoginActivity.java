@@ -58,7 +58,8 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
-        return mGestureDetector.onMotionEvent(event);
+        mGestureDetector.onMotionEvent(event);
+        return super.onGenericMotionEvent(event);
     }
 
     @Override

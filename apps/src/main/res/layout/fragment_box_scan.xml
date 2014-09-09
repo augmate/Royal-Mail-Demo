@@ -10,7 +10,7 @@
     android:background="#ff2435a6">
 
     <!-- required surface for camera -->
-    <TextureView
+    <SurfaceView
         android:id="@+id/camera_preview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

@@ -74,7 +74,8 @@ public class CycleCountActivity extends BaseActivity {
 
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
-        return mGestureDetector.onMotionEvent(event);
+        mGestureDetector.onMotionEvent(event);
+        return super.onGenericMotionEvent(event);
     }
 
     private boolean handlePromptReturn = true;
@@ -114,19 +115,17 @@ public class CycleCountActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        boolean handled = false;
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
             if (networkInfo != null && networkInfo.isConnected()) {
                 SoundHelper.tap(this);
                 startScanner();
-                handled = true;
             } else {
                 SoundHelper.error(this);
                 showError(ErrorPrompt.NETWORK_ERROR);
-                handled = super.onKeyDown(keyCode, event);
                 handlePromptReturn = false;
             }
+            return true;
         }
-        return handled;
+        return super.onKeyDown(keyCode,event);
     }
 }
