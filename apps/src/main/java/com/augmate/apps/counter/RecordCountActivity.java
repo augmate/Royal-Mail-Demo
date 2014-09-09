@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.augmate.apps.R;
 import com.augmate.apps.common.ErrorPrompt;
+import com.augmate.apps.common.FontHelper;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.activities.MessageActivity;
 import com.augmate.apps.voice.VoiceActivity;
@@ -41,6 +42,10 @@ public class RecordCountActivity extends VoiceActivity {
         bin = (BinModel) getIntent().getSerializableExtra(MessageActivity.DATA);
         enterTextState();
         setRecordingAnimation(true);
+
+        FontHelper.updateFontForBrightness(
+                (TextView)findViewById(R.id.big_image_text)
+                ,(TextView)findViewById(R.id.big_text_text));
     }
 
     private void enterTextState() {

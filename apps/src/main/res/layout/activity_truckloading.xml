@@ -11,7 +11,7 @@
     <RelativeLayout
         style="@style/MatchParent">
         <TextView
-            android:id="@+id/lets_cycle_count"
+            android:id="@+id/lets_load_trucks"
             style="@style/WrapContent.SecondaryTextView.RightAligned"
             android:text="@string/lets_load_trucks" />
     </RelativeLayout>

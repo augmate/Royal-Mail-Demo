@@ -7,11 +7,13 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.augmate.apps.R;
 import com.augmate.apps.common.ErrorPrompt;
 import com.augmate.apps.common.FlowUtils;
+import com.augmate.apps.common.FontHelper;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.TouchResponseListener;
 import com.augmate.apps.common.UserUtils;
@@ -29,6 +31,12 @@ public class CycleCountActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cyclecount);
+
+
+        FontHelper.updateFontForBrightness(
+                (TextView) findViewById(R.id.lets_cycle_count)
+                ,(TextView) findViewById(R.id.count_description)
+                ,(TextView) findViewById(R.id.tap_to_scan));
 
         cm = ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE));
 

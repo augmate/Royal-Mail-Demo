@@ -4,10 +4,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.augmate.apps.common.ErrorPrompt;
 import com.augmate.apps.common.FlowUtils;
+import com.augmate.apps.common.FontHelper;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.TouchResponseListener;
 import com.augmate.apps.common.UserUtils;
@@ -25,6 +27,11 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        FontHelper.updateFontForBrightness(
+                (TextView) findViewById(R.id.lets_login)
+                , (TextView) findViewById(R.id.tap_to_scan));
+
         TouchResponseListener responseListener = new TouchResponseListener(findViewById(R.id.touch));
         mGestureDetector = new GestureDetector(this)
                 .setBaseListener(responseListener)

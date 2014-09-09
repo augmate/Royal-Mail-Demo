@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.augmate.apps.common.FontHelper;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.UserUtils;
 import com.augmate.apps.common.activities.BaseActivity;
@@ -25,6 +26,9 @@ public class ApplicationsActivity extends BaseActivity {
         setContentView(R.layout.activity_applications);
         TextView textView = (TextView) findViewById(R.id.welcomeText);
         textView.setText(getString(R.string.welcome, UserUtils.getUser()));
+
+        FontHelper.updateFontForBrightness(
+                (TextView) findViewById(R.id.tap_for_options));
     }
 
     @Override
