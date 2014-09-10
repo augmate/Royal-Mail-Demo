@@ -30,7 +30,7 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
      * @param scannerVisualDebugger ScannerVisualDebugger is optional
      */
     public void setupScannerActivity(SurfaceView surfaceView, ScannerVisualDebugger scannerVisualDebugger) {
-        Log.debug("Scanner fragment configured.");
+        //Log.debug("Scanner fragment configured.");
 
         this.surfaceView = surfaceView;
         this.dbgVisualizer = scannerVisualDebugger;
@@ -45,25 +45,29 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
             return;
         }
 
+        isProcessingCapturedFrames = true;
+
+        // ensure we have a callback
         SurfaceHolder holder = surfaceView.getHolder();
         holder.removeCallback(this);
         holder.addCallback(this);
-        isProcessingCapturedFrames = true;
-
-        startDecodingThread();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        isProcessingCapturedFrames = false;
-
-        // stop camera frame-grab immediately, let go of preview-surface, and release camera
-        cameraController.endFrameCapture();
-
-        // stop decoding thread
-        shutdownDecodingThread();
-    }
+    // when activity wakes up it runs through a resume/pause/resume cycle, making this unnecessarily complex
+    // we don't need to support resume/pause for our current applications anyway, so killing this.
+//
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        Log.debug("Pausing..");
+//
+//        isProcessingCapturedFrames = false;
+//        SurfaceHolder holder = surfaceView.getHolder();
+//        holder.removeCallback(this);
+//
+//        // stop camera frame-grab immediately, let go of preview-surface, and release camera
+//        cameraController.endFrameCapture();
+//    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -73,13 +77,18 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement OnScannerResultListener");
         }
+
+        // decoding thread lives so long as the fragment is attached to an activity
+        // when paused, we simply don't send anything to it, and the thread idles, taking up no real resources
+        startDecodingThread();
     }
 
     @Override
     public void onDetach() {
-        Log.debug("Detached");
         super.onDetach();
         mListener = null;
+
+        shutdownDecodingThread();
     }
 
     private void startDecodingThread() {

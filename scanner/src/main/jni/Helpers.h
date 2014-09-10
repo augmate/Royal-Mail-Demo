@@ -22,6 +22,6 @@
    #define ABI "unknown"
 #endif
 
-#define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG, "Augmate.Native", __VA_ARGS__)
+#define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG, "AugmateNDK", __VA_ARGS__)
 
 #endif

@@ -26,9 +26,9 @@ JNIEXPORT void JNICALL Java_com_augmate_sdk_scanner_NativeUtils_binarizeToIntBuf
 /*
  * Class:     com_augmate_sdk_scanner_NativeUtils
  * Method:    zxingNativeDecode
- * Signature: ([BII)V
+ * Signature: ([BII)Ljava/lang/String;
  */
-JNIEXPORT void JNICALL Java_com_augmate_sdk_scanner_NativeUtils_zxingNativeDecode
+JNIEXPORT jstring JNICALL Java_com_augmate_sdk_scanner_NativeUtils_zxingNativeDecode
   (JNIEnv *, jclass, jbyteArray, jint, jint);
 
 /*

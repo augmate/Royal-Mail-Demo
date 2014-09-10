@@ -1,4 +1,3 @@
-#if 0
 #include <stdio.h>
 #include "Helpers.h"
 
@@ -29,16 +28,6 @@ using namespace zxing;
 using namespace zxing::multi;
 using namespace zxing::qrcode;
 
-namespace {
-    bool more = false;
-    bool test_mode = false;
-    bool try_harder = false;
-    bool search_multi = false;
-    bool use_hybrid = false;
-    bool use_global = false;
-    bool verbose = false;
-}
-
 vector<Ref<Result> > decode(Ref<BinaryBitmap> image, DecodeHints hints) {
   Ref<Reader> reader(new MultiFormatReader);
   return vector<Ref<Result> >(1, reader->decode(image, hints));
@@ -50,17 +39,18 @@ vector<Ref<Result> > decode_multi(Ref<BinaryBitmap> image, DecodeHints hints) {
   return reader.decodeMultiple(image, hints);
 }
 
-bool runNativeZXingPort(Ref<LuminanceSource> source) {
+bool runNativeZXingPort(Ref<LuminanceSource> source, char* resultBuffer) {
 
     // HACK: throwing an zxing exception here causes some magic to happen which allows their native
     // scanner to work when linked against JNI. yes, really.
+    // only necessary on x86 build in emulator. works fine without this in arm build on glass.
 
     try {
-        LOGD("Practicing throwing a ReaderException..\n");
+        //LOGD("Practicing throwing a ReaderException..\n");
         throw zxing::Exception("practice");
     }
     catch(std::exception& err) {
-        LOGD("Caught practice throw. Moving onto better things..\n");
+        //LOGD("Caught practice throw. Moving onto better things..\n");
     }
 
     // TODO: create a replacement simple binarizer :)
@@ -74,46 +64,44 @@ bool runNativeZXingPort(Ref<LuminanceSource> source) {
     Ref<Result> result;
 
     try {
-        LOGD("Setting up binary bitmap reference..\n");
+        //LOGD("Setting up binary bitmap reference..\n");
         Ref<BinaryBitmap> binary(new BinaryBitmap(binarizer));
-        LOGD("Spawning native qrcode decoder..\n");
+        //LOGD("Spawning native qrcode decoder..\n");
         Ref<zxing::Reader> qrDecoder(new zxing::qrcode::QRCodeReader());
-        LOGD("Decodering..\n");
-        result = qrDecoder->decode(binary, hints);
-        LOGD("Decodering.. Success\n");
 
+        result = qrDecoder->decode(binary, hints);
         bGotResult = true;
     }
     catch(ReaderException& e) {
-        LOGD("Caught ReaderException from decoder.\n");
+        //LOGD("Caught ReaderException from decoder.\n");
     }
     catch(std::exception& e) {
         LOGD("Caught a generic exception from decoder.\n");
     }
 
     if(bGotResult) {
-        LOGD("Binarizer succeeded\n");
-        LOGD("Format: %s\n", BarcodeFormat::barcodeFormatNames[result->getBarcodeFormat()]);
-        LOGD("Result value: %s\n", result->getText()->getText().c_str());
+        //LOGD("Format: %s\n", BarcodeFormat::barcodeFormatNames[result->getBarcodeFormat()]);
+        //LOGD("Result value: %s\n", result->getText()->getText().c_str());
+        strcpy(resultBuffer, result->getText()->getText().c_str());
     }
 
     return bGotResult;
 }
 
-void zxingNativeDecodeImpl(unsigned char* src, unsigned int width, unsigned int height) {
+bool zxingNativeDecodeImpl(unsigned char* src, unsigned int width, unsigned int height, char* resultBuffer) {
     zxing::ArrayRef<char> image = zxing::ArrayRef<char>((char*) src, width * height);
     zxing::GreyscaleLuminanceSource* luminance = new zxing::GreyscaleLuminanceSource(image, width, height, 0, 0, width, height);
     zxing::Ref<LuminanceSource> luminanceSource = zxing::Ref<LuminanceSource>(luminance);
-    runNativeZXingPort(luminanceSource);
+    return runNativeZXingPort(luminanceSource, resultBuffer);
 }
 
 // exportable wrappers for linkage
 extern "C" {
 
-    void zxingNativeDecode(unsigned char* src, unsigned int width, unsigned int height) {
-        LOGD("Executing native decoder under: %s\n", ABI);
-        zxingNativeDecodeImpl(src, width, height);
-        LOGD("Executed native zxing!\n");
+    int zxingNativeDecode(unsigned char* src, unsigned int width, unsigned int height, char* resultBuffer) {
+        //LOGD("Executing native decoder under: %s\n", ABI);
+        int result = zxingNativeDecodeImpl(src, width, height, resultBuffer);
+        return result;
     }
 
     int main() {
@@ -122,12 +110,13 @@ extern "C" {
         int width = 640;
         int height = 360;
         unsigned char* src = new unsigned char[width * height];
+        char resultBuffer[256];
+        memset(resultBuffer, 0, 256);
 
-        zxingNativeDecodeImpl(src, width, height);
+        int resultCode = zxingNativeDecodeImpl(src, width, height, resultBuffer);
 
-        LOGD("ZXing completed successfully.\n");
+        LOGD("ZXing completed successfully; resultCode=%d resultBuffer=[%s]\n", resultCode, resultBuffer);
 
         return 0;
     }
 }
-#endif
