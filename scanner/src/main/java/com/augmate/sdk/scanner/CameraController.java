@@ -1,6 +1,7 @@
 package com.augmate.sdk.scanner;
 
 import android.graphics.ImageFormat;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Build;
 import android.view.SurfaceHolder;
@@ -19,18 +20,14 @@ class CameraController {
      * Configures camera around a rendering context
      * Ensures optimal configuration for capturing barcodes
      *
+     * @param surfaceHolder
      * @param width
      * @param height
-     * @param surfaceHolder
+     * @param surfaceTexture
      */
-    public void beginFrameCapture(SurfaceHolder surfaceHolder, Camera.PreviewCallback callback, int width, int height) {
-        assert (surfaceHolder != null);
+    public void beginFrameCapture(SurfaceHolder surfaceHolder, Camera.PreviewCallback callback, int width, int height, SurfaceTexture surfaceTexture) {
         assert (camera == null);
-
         int numOfCameras = Camera.getNumberOfCameras();
-        Log.debug("There are %d cameras available", numOfCameras);
-
-        assert (numOfCameras > 0);
 
         int bestCameraIdx = 0;
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
@@ -55,7 +52,14 @@ class CameraController {
                     Log.debug("Camera had an error: %d", i);
                 }
             });
-            camera.setPreviewDisplay(surfaceHolder);
+
+            if(surfaceTexture != null) {
+                Log.debug("Set camera render to texture");
+                camera.setPreviewTexture(surfaceTexture);
+            } else {
+                Log.debug("Set camera render to surface");
+                camera.setPreviewDisplay(surfaceHolder);
+            }
         } catch (IOException e) {
             Log.exception(e, "Failed to open camera interface");
         }
@@ -73,10 +77,11 @@ class CameraController {
 
         lastCaptureBufferIdx = 0;
         frameCaptureBuffers = new byte[2][width * height * 3]; // two frame buffers
-        camera.addCallbackBuffer(frameCaptureBuffers[lastCaptureBufferIdx]); // start with the first buffer
-        camera.setPreviewCallbackWithBuffer(callback);
-
-        Log.debug("Assigned camera callback frame buffers");
+        if(callback != null) {
+            camera.addCallbackBuffer(frameCaptureBuffers[lastCaptureBufferIdx]); // start with the first buffer
+            camera.setPreviewCallbackWithBuffer(callback);
+            Log.debug("Assigned camera callback frame buffers");
+        }
 
         try {
             camera.startPreview();

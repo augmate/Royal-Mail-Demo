@@ -13,10 +13,10 @@ import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.decoder.DecodingJob;
 
 public abstract class ScannerFragmentBase extends Fragment implements SurfaceHolder.Callback, Camera.PreviewCallback {
-    private FramebufferSettings frameBufferSettings = new FramebufferSettings(1280, 720);
+    private CameraSettings frameBufferSettings = new CameraSettings(1280, 720);
     private CameraController cameraController = new CameraController();
     private boolean isProcessingCapturedFrames;
-    private OnScannerResultListener mListener;
+    private IScannerResultListener mListener;
     private boolean readyForNextFrame = true;
     private ScannerVisualDebugger dbgVisualizer;
     private DecoderThread decoderThread;
@@ -73,7 +73,7 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnScannerResultListener) activity;
+            mListener = (IScannerResultListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement OnScannerResultListener");
         }
@@ -139,7 +139,7 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
 
         // configure camera frame-grabbing
         cameraController.endFrameCapture();
-        cameraController.beginFrameCapture(surfaceHolder, this, frameBufferSettings.width, frameBufferSettings.height);
+        cameraController.beginFrameCapture(surfaceHolder, this, frameBufferSettings.width, frameBufferSettings.height, null);
     }
 
     @Override
@@ -203,24 +203,6 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
 
         // TODO: try pushing next frame (if we got one) from here
         // may reduce delays by length of one frame (ie 50ms at 20fps)
-    }
-
-    /**
-     * Provides barcode decoding results to a parent Activity (on its own thread)
-     * Must be implemented by parent Activity
-     */
-    public interface OnScannerResultListener {
-        public void onBarcodeScanSuccess(String result);
-    }
-
-    private class FramebufferSettings {
-        public final int width;
-        public final int height;
-
-        private FramebufferSettings(int width, int height) {
-            this.width = width;
-            this.height = height;
-        }
     }
 
     /**
