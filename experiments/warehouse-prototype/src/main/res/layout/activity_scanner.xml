@@ -9,5 +9,5 @@
         android:layout_height="match_parent"
         android:id="@+id/scanner_fragment"
         android:name="com.augmate.warehouse.prototype.ScannerFragment"
-        tools:layout="@layout/box_scan_fragment" />
+        tools:layout="@layout/scanner_fragment" />
 </RelativeLayout>

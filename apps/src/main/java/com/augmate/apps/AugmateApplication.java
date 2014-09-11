@@ -1,18 +1,16 @@
 package com.augmate.apps;
 
 import android.content.Context;
-
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.DecoderManager;
 import com.augmate.sdk.scanner.decoder.scandit.Configuration;
-
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class AugmateApplication extends android.app.Application {
 
+    private int activityStackSize = 0;
     private static Context sContext;
-
     public static Context getContext() {
         return sContext;
     }
@@ -39,5 +37,9 @@ public class AugmateApplication extends android.app.Application {
         super.onTerminate();
         Log.debug("Application ended");
         Log.shutdown();
+    }
+
+    public int getActivityStackSize() {
+        return activityStackSize;
     }
 }

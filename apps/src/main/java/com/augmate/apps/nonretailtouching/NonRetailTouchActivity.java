@@ -66,7 +66,7 @@ public class NonRetailTouchActivity extends BaseActivity implements IScannerResu
         nutsApi.touchNonRetailPiece(barcode, new Callback<Response>() {
             @Override
             public void success(Response result, Response response) {
-                Log.debug("Got response from server: code=" + response.getStatus() + " url=" + response.getUrl());
+                Log.debug("Got response from server: code=" + response.getStatus());
 
                 if(!submittedBarcodes.contains(barcode))
                     return;
@@ -74,12 +74,9 @@ public class NonRetailTouchActivity extends BaseActivity implements IScannerResu
                 submittedBarcodes.remove(barcode);
 
                 if (submittedBarcodes.size() == 0) {
-                    Log.debug("Synced with Nuts API :D:D:D");
-
+                    Log.debug("Synced with Nuts API");
                     TextView nrtCounter = (TextView) findViewById(R.id.nrt_counter);
                     nrtCounter.setTextColor(0xFF00FF00);
-
-                    Log.debug("findViewById(R.id.scanner) = " + findViewById(R.id.scanner));
                 }
             }
 
