@@ -8,12 +8,12 @@ import android.support.v4.app.FragmentActivity;
 import com.augmate.employeescanner.Constants;
 import com.augmate.employeescanner.R;
 import com.augmate.sdk.logger.Log;
-import com.augmate.sdk.scanner.ScannerFragmentBase;
+import com.augmate.sdk.scanner.IScannerResultListener;
 
 /**
  * Created by premnirmal on 8/18/14.
  */
-public class IDScannerActivity extends FragmentActivity implements ScannerFragmentBase.OnScannerResultListener {
+public class IDScannerActivity extends FragmentActivity implements IScannerResultListener {
 
     private static final long TIMEOUT_MS = 5000;
 

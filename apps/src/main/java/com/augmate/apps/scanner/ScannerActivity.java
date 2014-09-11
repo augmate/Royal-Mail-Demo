@@ -7,11 +7,11 @@ import android.view.WindowManager;
 import com.augmate.apps.R;
 import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
-import com.augmate.sdk.scanner.ScannerFragmentBase;
+import com.augmate.sdk.scanner.IScannerResultListener;
 
 import static com.augmate.apps.common.FlowUtils.SCANNER_TIMEOUT;
 
-public class ScannerActivity extends BaseActivity implements ScannerFragmentBase.OnScannerResultListener {
+public class ScannerActivity extends BaseActivity implements IScannerResultListener {
 
     public static final String BARCODE = "barcodeString";
     public static final String EXITED = "EXITED";
