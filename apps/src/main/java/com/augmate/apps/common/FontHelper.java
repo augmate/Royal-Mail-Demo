@@ -17,7 +17,7 @@ public class FontHelper {
         float brightness = context.getSharedPreferences(context.getPackageName(),Context.MODE_PRIVATE).getFloat("BRIGHTNESS",0.5f);
         String fontName = "fonts/GothamNarrow-Thin.otf";
         if (brightness < 0.25f) {
-            fontName = "fonts/GothamNarrow-Medium.otf";
+            fontName = "fonts/GothamNarrow-Book.otf";
         }
         for (TextView view : views) {
             CalligraphyUtils.applyFontToTextView(view.getContext(),view,fontName);

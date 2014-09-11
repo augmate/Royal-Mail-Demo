@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.augmate.apps.R;
 import com.augmate.apps.common.FlowUtils;
+import com.augmate.apps.common.FontHelper;
 
 import java.io.Serializable;
 
@@ -31,6 +32,7 @@ public class MessageActivity extends BaseActivity {
 
         TextView message1 = ((TextView) findViewById(R.id.messageLine1));
         TextView message2 = ((TextView) findViewById(R.id.messageLine2));
+        FontHelper.updateFontForBrightness(message1,message2);
         ImageView imageView = ((ImageView) findViewById(R.id.imageView));
         String message = "";
 

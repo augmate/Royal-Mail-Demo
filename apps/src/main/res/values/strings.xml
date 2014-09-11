@@ -26,7 +26,7 @@
     <string name="error_network">Network Error</string>
     <string name="error_number">Say Number</string>
 
-    <string name="bin_confirmed">Count\nverified</string>
+    <string name="bin_confirmed">Bin\nConfirmed</string>
     <string name="yes_no">\"YES?\"\n\"NO?\"</string>
     <string name="confirme">%s</string>
     <string name="count_confirmed">Count Confirmed</string>
