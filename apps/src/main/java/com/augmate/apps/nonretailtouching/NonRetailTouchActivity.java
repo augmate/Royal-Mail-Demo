@@ -3,13 +3,12 @@ package com.augmate.apps.nonretailtouching;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.WindowManager;
-import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import com.augmate.apps.R;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
-import com.augmate.sdk.scanner.ScannerFragmentBase;
+import com.augmate.sdk.scanner.IScannerResultListener;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -17,7 +16,7 @@ import retrofit.client.Response;
 
 import java.util.ArrayList;
 
-public class NonRetailTouchActivity extends BaseActivity implements ScannerFragmentBase.OnScannerResultListener {
+public class NonRetailTouchActivity extends BaseActivity implements IScannerResultListener {
 
     NutsApiService nutsApi = new RestAdapter.Builder().setEndpoint("http://nuts.googlex.augmate.com:6969/").build().create(NutsApiService.class);
 

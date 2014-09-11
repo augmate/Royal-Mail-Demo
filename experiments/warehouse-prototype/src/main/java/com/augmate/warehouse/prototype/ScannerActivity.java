@@ -1,6 +1,5 @@
 package com.augmate.warehouse.prototype;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -8,13 +7,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 
-import com.augmate.sdk.scanner.ScannerFragmentBase;
+import com.augmate.sdk.scanner.IScannerResultListener;
 import com.google.android.glass.media.Sounds;
 
 /**
  * @author James Davis (Fuzz)
  */
-public class ScannerActivity extends FragmentActivity implements ScannerFragmentBase.OnScannerResultListener {
+public class ScannerActivity extends FragmentActivity implements IScannerResultListener {
     public static final String BARCODE_STRING = "bcs";
 
     public static final int RESULT_TIMED_OUT = 10;

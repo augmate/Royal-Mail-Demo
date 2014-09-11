@@ -12,6 +12,13 @@
         android:layout_gravity="center"
         />
 
+    <!-- oh yeah! very early stages for glsv -->
+    <!--<android.opengl.GLSurfaceView-->
+        <!--android:id="@+id/opengl_camera_preview"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="fill_parent"/>-->
+
     <ImageView
         android:id="@+id/nrt_scan_overlay"
         android:layout_width="fill_parent"
