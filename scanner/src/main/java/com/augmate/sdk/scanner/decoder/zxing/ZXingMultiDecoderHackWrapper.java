@@ -76,37 +76,6 @@ public class ZXingMultiDecoderHackWrapper implements IBarcodeScannerWrapper {
             Result result = reader.decode(bitmap, hints);
 
             if (result != null) {
-
-                // bottomLeft, topLeft, topRight
-                ResultPoint[] pts = result.getResultPoints();
-
-//                Point pt1 = null;
-//                Point pt2 = null;
-//                Point pt3 = null;
-//                Point pt4 = null;
-//
-//                if (pts.length == 2) {
-//                    // pts[0] and pts[1] form a horizontal line within the image
-//                    // so we pad it vertically up and down and create a small rectangle
-//                    pt1 = new Point((int) pts[0].getX(), (int) pts[0].getY() - 10);
-//                    pt2 = new Point((int) pts[1].getX(), (int) pts[1].getY() - 10);
-//                    pt3 = new Point((int) pts[0].getX(), (int) pts[0].getY() + 10);
-//                    pt4 = new Point((int) pts[1].getX(), (int) pts[1].getY() + 10);
-//                }
-//
-//                if (pts.length == 3) {
-//                    // pts[0,1,2] represent 3 points of a triangle capturing the finder points of a qr-code
-//                    // the 4th point is reconstructed, forming a square in 3d space
-//                    pt1 = new Point((int) pts[0].getX(), (int) pts[0].getY());
-//                    pt2 = new Point((int) pts[1].getX(), (int) pts[1].getY());
-//                    pt3 = new Point((int) pts[2].getX(), (int) pts[2].getY());
-//
-//                    Point rightVector = new Point(pt3.x - pt2.x, pt3.y - pt2.y);
-//                    pt4 = new Point(pt1.x + rightVector.x, pt1.y + rightVector.y); // bottom right
-//                }
-//
-//                job.result.setDirectly(pt1, pt2, pt3, pt4);
-
                 // confidence values [0,1]
                 job.result.confidence = 1;
                 job.result.value = result.getText();

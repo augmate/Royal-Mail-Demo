@@ -54,8 +54,8 @@ bool runNativeZXingPort(Ref<LuminanceSource> source, char* resultBuffer) {
     }
 
     // TODO: create a replacement simple binarizer :)
-    //Ref<Binarizer> binarizer(new HybridBinarizer(source));
-    Ref<Binarizer> binarizer(new GlobalHistogramBinarizer(source));
+    Ref<Binarizer> binarizer(new HybridBinarizer(source));
+    //Ref<Binarizer> binarizer(new GlobalHistogramBinarizer(source));
 
     // QR only
     DecodeHints hints(DecodeHints::QR_CODE_HINT);
