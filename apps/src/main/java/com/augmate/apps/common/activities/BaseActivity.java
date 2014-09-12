@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ViewFlipper;
@@ -14,6 +15,8 @@ import com.augmate.apps.common.ErrorPrompt;
 import com.augmate.apps.common.FlowUtils;
 import com.augmate.apps.scanner.ScannerActivity;
 import com.augmate.sdk.logger.Log;
+import com.google.android.glass.touchpad.Gesture;
+import com.google.android.glass.touchpad.GestureDetector;
 
 import java.io.Serializable;
 
@@ -24,8 +27,10 @@ import static com.augmate.apps.common.FlowUtils.TRANSITION_TIMEOUT;
 public class BaseActivity extends Activity {
     public static final int REQUEST_BARCODE_SCAN = 0x01;
     public static final int REQUEST_PROMPT = 0x02;
+    public static final int EXIT_CODE = 123;
     protected Handler mHandler = new Handler();
     PowerManager.WakeLock wakeLock;
+    private GestureDetector gestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +42,14 @@ public class BaseActivity extends Activity {
         super.onResume();
         float brightness = getSharedPreferences(getApplication().getPackageName(),MODE_PRIVATE).getFloat("BRIGHTNESS",0.5f);
         WindowManager.LayoutParams params = getWindow().getAttributes();
-        params.screenBrightness =brightness;
+        params.screenBrightness = brightness;
         getWindow().setAttributes(params);
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK , "");
         wakeLock.acquire(FlowUtils.SCREEN_ON_TIME);
+
+        gestureDetector = createGestureDetector(this);
     }
 
     @Override
@@ -89,6 +96,10 @@ public class BaseActivity extends Activity {
         } else if (requestCode == REQUEST_PROMPT) {
             if (resultCode == RESULT_CANCELED) {
                 handlePromptReturn();
+            }
+        } else if (requestCode == EXIT_CODE){
+            if (resultCode != RESULT_CANCELED){
+                finish();
             }
         }
         super.onActivityResult(requestCode,resultCode, data);
@@ -137,5 +148,32 @@ public class BaseActivity extends Activity {
             intent.putExtra(MessageActivity.DATA, data);
         }
         startActivityForResult(intent, REQUEST_PROMPT);
+    }
+
+    protected GestureDetector createGestureDetector(Context context) {
+        GestureDetector detector = new GestureDetector(context);
+        //Create a base listener for generic gestures
+        detector.setBaseListener(new GestureDetector.BaseListener() {
+            @Override
+            public boolean onGesture(Gesture gesture) {
+                boolean handled = false;
+                if (gesture == Gesture.TWO_TAP) {
+                    Intent intent = new Intent(BaseActivity.this, ExitActivity.class);
+                    startActivityForResult(intent, EXIT_CODE);
+                    handled = true;
+                }
+                return handled;
+            }
+        });
+
+        return detector;
+    }
+
+    @Override
+    public boolean onGenericMotionEvent(MotionEvent event) {
+        if (gestureDetector != null) {
+            return gestureDetector.onMotionEvent(event);
+        }
+        return super.onGenericMotionEvent(event);
     }
 }

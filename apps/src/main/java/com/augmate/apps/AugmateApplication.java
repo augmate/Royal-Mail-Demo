@@ -25,11 +25,11 @@ public class AugmateApplication extends android.app.Application {
         // if using the scandit scanner, configure it here
         DecoderManager.ScanditConfiguration = Configuration.createFromContext(getBaseContext());
     }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(new CalligraphyContextWrapper(newBase));
-    }
+//
+//    @Override
+//    protected void attachBaseContext(Context newBase) {
+//        super.attachBaseContext(new CalligraphyContextWrapper(newBase));
+//    }
 
     // never called in production
     @Override

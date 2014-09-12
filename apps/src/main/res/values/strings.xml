@@ -41,4 +41,7 @@
     <string name="lets_load_trucks">Let\'s load trucks</string>
     <string name="tap_to_scan_package">Tap to Scan\nPackage</string>
     <string name="package_verified">Package Verified</string>
+
+    <string name="exit_icon">■</string>
+    <string name="exit_prompt">Exiting Augmate</string>
 </resources>
