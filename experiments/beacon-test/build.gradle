@@ -53,4 +53,5 @@ dependencies {
     compile project(':augmate-sdk:beacons')
     compile project(':augmate-sdk:scanner')
     compile project(':augmate-sdk:logger')
+    compile 'joda-time:joda-time:2.3'
 }
