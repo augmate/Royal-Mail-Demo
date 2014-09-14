@@ -38,6 +38,15 @@ public class Log {
             logManager.append(LogLevel.Error, str + "\n" + ExceptionUtils.getStackTrace(err));
     }
 
+    /**
+     * An expected exception was generated, interesting yet non-fatal
+     */
+    public static void expected_exception(Exception err, String format, Object... args) {
+        String str = safeFormat(format, args);
+        if(str != null)
+            logManager.append(LogLevel.Debug, str + "\n" + ExceptionUtils.getStackTrace(err));
+    }
+
     public static void error(String format, Object... args) {
         String str = safeFormat(format, args);
         if(str != null)
