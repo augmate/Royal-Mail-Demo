@@ -26,7 +26,7 @@
                 android:resource="@xml/voice_trigger"/>
         </activity>
 
-        <activity android:name=".BluetoothPairingActivity" />
+        <activity android:name=".BluetoothPairingActivity" android:exported="true" />
 
     </application>
 
