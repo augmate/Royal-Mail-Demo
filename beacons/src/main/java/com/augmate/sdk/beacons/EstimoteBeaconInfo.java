@@ -1,6 +1,7 @@
 package com.augmate.sdk.beacons;
 
 import com.augmate.sdk.logger.Log;
+import com.estimote.sdk.internal.HashCode;
 
 import java.util.List;
 
@@ -9,6 +10,7 @@ public class EstimoteBeaconInfo {
     public int major;
     public int measuredPower;
     public int minor;
+    public String proximityUUID;
 
     public static EstimoteBeaconInfo getFromScanRecord(byte[] scanRecord) {
 
@@ -34,6 +36,9 @@ public class EstimoteBeaconInfo {
                 estimote.major = data[20] << 16 | data[21];
                 estimote.minor = data[22] << 16 | data[23];
                 estimote.measuredPower = (int) data[24];
+
+                String scanRecordAsHex = HashCode.fromBytes(scanRecord).toString();
+                estimote.proximityUUID = String.format("%s-%s-%s-%s-%s", scanRecordAsHex.substring(16, 24), scanRecordAsHex.substring(24, 28), scanRecordAsHex.substring(28, 32), scanRecordAsHex.substring(32, 36), scanRecordAsHex.substring(36, 48));
 
                 Log.debug("major=%d minor=%d measuredPower=%d", estimote.major, estimote.minor, estimote.measuredPower);
 

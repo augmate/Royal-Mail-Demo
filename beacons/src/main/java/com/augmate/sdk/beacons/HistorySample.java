@@ -3,6 +3,7 @@ package com.augmate.sdk.beacons;
 public class HistorySample {
     public long timestamp;
     public double distance;
+    public double life;
 
     @Override
     public String toString() {

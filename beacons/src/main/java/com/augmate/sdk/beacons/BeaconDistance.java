@@ -1,6 +1,5 @@
 package com.augmate.sdk.beacons;
 
-import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -9,35 +8,53 @@ import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.logger.What;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
 public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
     private BluetoothAdapter bluetoothAdapter;
     private Context context;
 
-    @SuppressLint("UseSparseArrays")
     private Map<String, BeaconInfo> beaconInfos = new ConcurrentHashMap<>();
+    private ScheduledFuture<?> scheduledFuture;
 
     public void configureFromContext(Context ctx) {
         context = ctx;
     }
 
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+
     public void startListening() {
         final BluetoothManager bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
 
-        Log.debug("Starting BLE Scanner");
-        bluetoothAdapter.startLeScan(this);
+        // scan for 2 seconds, wait 1 second, repeat
+        scheduledFuture = scheduler.scheduleWithFixedDelay(new Runnable() {
+            @Override
+            public void run() {
+                Log.debug("Starting Short Burst BLE Scan..");
+                bluetoothAdapter.startLeScan(BeaconDistance.this);
+
+                // stop 2 seconds later
+                scheduler.schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.debug("Stopping BLE Scan");
+                        bluetoothAdapter.stopLeScan(BeaconDistance.this);
+                    }
+                }, 2, TimeUnit.SECONDS);
+            }
+        }, 0, 3, TimeUnit.SECONDS);
     }
 
     public void stopListening() {
-        Log.debug("Stopping BLE Scanner");
-        bluetoothAdapter.stopLeScan(this);
+        if(scheduledFuture != null) {
+            scheduledFuture.cancel(false);
+        }
     }
 
     /**
      * may be called from UI-thread or a periodic timer's thread
-     * currently this is pretty slow. about 30msec for 6 beacons.
+     * this was rewritten a while ago. it's fast. <1 msec for 6 beacons.
      */
     public List<BeaconInfo> getLatestBeaconDistances() {
         // deep-copy the beacons list and its history fifo queue
@@ -60,17 +77,20 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
             // expire long unseen beacons
             beacon.numValidSamples = 0;
             for(int i = 0; i < beacon.NumHistorySamples; i ++) {
-                if(beacon.history[i] != null) {
-                    if(now - beacon.history[i].timestamp > 10000) {
+                if (beacon.history[i] != null) {
+
+                    // gradual extinction. devalue aging samples quickly and smoothly.
+                    beacon.history[i].life = 1 - (double) (now - beacon.history[i].timestamp) / 3000.0;
+
+                    if (beacon.history[i].life < 0.01) {
                         beacon.history[i] = null;
                     } else {
-                        beacon.numValidSamples ++;
+                        beacon.numValidSamples++;
                     }
                 }
             }
 
             // weighted average beacon samples
-            int index = 0;
             double sum = 0;
             double energy = 0;
             final int biasRecentSamplesFactor = 3; // [1-10]
@@ -78,7 +98,7 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
             for(int i = beacon.lastHistoryIdx; i != (beacon.lastHistoryIdx-1 + beacon.NumHistorySamples) % beacon.NumHistorySamples; i = (i+1) % beacon.NumHistorySamples) {
                 if(beacon.history[i] == null)
                     continue;
-                double weight = Math.pow(biasRecentSamplesFactor, ((double) (index++)) / 9.0);
+                double weight = Math.pow(biasRecentSamplesFactor, 9.0 * beacon.history[i].life);
                 double weightedSample = beacon.history[i].distance * weight;
                 sum += weightedSample;
                 energy += weight;
@@ -131,14 +151,14 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
             // the first time we locate a new device, parse it for useful information
             Log.debug("Found new device: " + device.getName() + " @ " + device.getAddress());
 
-            if(Objects.equals(device.getName(), "estimote")) {
-                EstimoteBeaconInfo estimoteBeaconInfo = EstimoteBeaconInfo.getFromScanRecord(scanRecord);
+//            ParcelUuid[] uuids = device.getUuids();
+//            for(ParcelUuid uuid : uuids) {
+//                Log.debug("  uuid: " + uuid.toString());
+//            }
 
-                if(estimoteBeaconInfo == null) {
-                    Log.error("Sanity Failure: failed to parse estimote's scan-record.");
-                    return;
-                }
-
+            // try to parse beacon info
+            EstimoteBeaconInfo estimoteBeaconInfo = EstimoteBeaconInfo.getFromScanRecord(scanRecord);
+            if(estimoteBeaconInfo != null) {
                 beaconInfo.major = estimoteBeaconInfo.major;
                 beaconInfo.minor = estimoteBeaconInfo.minor;
                 beaconInfo.measuredPower = estimoteBeaconInfo.measuredPower;
@@ -169,6 +189,7 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
         HistorySample sample = new HistorySample();
         sample.distance = beacon.distance;
         sample.timestamp = What.timey();
+        sample.life = 1;
 
         // adds to a fixed size FIFO queue
         beacon.addHistorySample(sample);

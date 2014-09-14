@@ -17,6 +17,7 @@ public class BluetoothBarcodeScannerService extends Service {
     public static final String ACTION_BARCODE_SCANNED = "com.augmate.sdk.scanner.bluetooth.action.SCANNED";
     public static final String ACTION_SCANNER_FOUND = "com.augmate.sdk.scanner.bluetooth.action.BARCODE_SCANNER_FOUND";
     public static final String ACTION_SCANNER_CONNECTED = "com.augmate.sdk.scanner.bluetooth.action.BARCODE_SCANNER_CONNECTED";
+    public static final String ACTION_SCANNER_CONNECTING = "com.augmate.sdk.scanner.bluetooth.action.BARCODE_SCANNER_CONNECTING";
     public static final String ACTION_SCANNER_DISCONNECTED = "com.augmate.sdk.scanner.bluetooth.action.BARCODE_SCANNER_DISCONNECTED";
 
     public static final String EXTRA_BARCODE_STRING = "com.augmate.sdk.scanner.bluetooth.extra.BARCODE_STRING";
@@ -126,10 +127,12 @@ public class BluetoothBarcodeScannerService extends Service {
 
     private void connectToScanner(BluetoothDevice device) {
         if (barcodeStreamer != null) {
-            Log.warn("Sanity Failure: asked to connect to a device while another connection is still alive.");
+            Log.warn("Sanity Failure: asked to connect to a device while another connection is still alive. ignoring.");
+            return;
         }
 
         Log.debug("Connecting to barcode-scanner: %s", device.getAddress());
+        sendBroadcast(new Intent(BluetoothBarcodeScannerService.ACTION_SCANNER_CONNECTING).putExtra(BluetoothBarcodeScannerService.EXTRA_BARCODE_SCANNER_DEVICE, device));
         new Thread(barcodeStreamer = new BluetoothBarcodeConnection(device, getBaseContext()), "bt-scanner").start();
     }
 
