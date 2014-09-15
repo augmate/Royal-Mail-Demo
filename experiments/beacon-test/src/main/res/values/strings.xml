@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Beacon Test</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="app_name">Augmate Beacons</string>
+    <string name="title_activity_main">Augmate Beacon Listener</string>
+    <string name="title_activity_pairing">Augmate Beacon Pairing</string>
     <string name="action_settings">Settings</string>
 
 </resources>

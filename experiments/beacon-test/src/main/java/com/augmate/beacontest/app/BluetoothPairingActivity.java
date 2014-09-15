@@ -2,22 +2,19 @@ package com.augmate.beacontest.app;
 
 import android.app.Activity;
 import android.content.*;
+import android.graphics.PorterDuff;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.text.method.ScrollingMovementMethod;
 import android.view.KeyEvent;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.augmate.sdk.beacons.BeaconDistance;
-import com.augmate.sdk.beacons.BeaconInfo;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.bluetooth.BluetoothBarcodeScannerService;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
-
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 public class BluetoothPairingActivity extends Activity {
     private BluetoothBarcodeScannerService bluetoothScannerService;
@@ -45,11 +42,7 @@ public class BluetoothPairingActivity extends Activity {
             switch (action) {
                 case BluetoothBarcodeScannerService.ACTION_BARCODE_SCANNED:
                     String barcode = intent.getStringExtra(BluetoothBarcodeScannerService.EXTRA_BARCODE_STRING);
-                    Log.debug("Received barcode value: [%s]", barcode);
-                    int nearestBeaconMinorId = getNearestBeacon();
-                    ((TextView) findViewById(R.id.barcodeScannerResults)).setText(
-                            String.format("Barcode: [%s] near #%d\nat %s", barcode, nearestBeaconMinorId, DateTime.now().toString(DateTimeFormat.mediumDateTime()))
-                    );
+                    onBarcodeScanned(barcode);
                     break;
 
                 case BluetoothBarcodeScannerService.ACTION_SCANNER_CONNECTING:
@@ -62,12 +55,14 @@ public class BluetoothPairingActivity extends Activity {
                     ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("Scanner Connected");
                     ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFF00FF00);
                     ((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
+                    beaconDistanceMeasurer.startListening();
                     break;
 
                 case BluetoothBarcodeScannerService.ACTION_SCANNER_DISCONNECTED:
                     ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("No Scanner");
                     ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFFFF0000);
                     ((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
+                    beaconDistanceMeasurer.stopListening();
                     break;
 
                 default:
@@ -76,36 +71,45 @@ public class BluetoothPairingActivity extends Activity {
         }
     };
 
-    private int getNearestBeacon() {
-        List<BeaconInfo> beaconDistances = beaconDistanceMeasurer.getLatestBeaconDistances();
+    private void onBarcodeScanned(String barcode) {
+        int nearestTruckId = RegionProcessor.getNearestRegionId(beaconDistanceMeasurer.getLatestBeaconDistances());
 
-        Log.debug("We know about %d beacons within the area", beaconDistances.size());
+        ((TextView) findViewById(R.id.barcodeScannerResults)).setText(
+                String.format("Barcode: [%s] near Truck %d\nat %s", barcode, nearestTruckId, DateTime.now().toString(DateTimeFormat.mediumDateTime()))
+        );
 
-        for (BeaconInfo beacon : beaconDistances) {
-            Log.debug("  beacon %d = mean: %.2f / 80th percentile: %.2f", beacon.minor, beacon.distance, beacon.weightedAvgDistance);
+        Log.debug("Received barcode value: [%s] in region %d", barcode, nearestTruckId);
+
+        // reset trucks
+        ((ImageView) findViewById(R.id.beaconRegionTruck1)).setColorFilter(0xFF000000, PorterDuff.Mode.SRC_IN);
+        ((ImageView) findViewById(R.id.beaconRegionTruck2)).setColorFilter(0xFF000000, PorterDuff.Mode.SRC_IN);
+
+        // update count and highlight the nearest truck
+
+        if (nearestTruckId == 1) {
+            ((TextView) findViewById(R.id.truck1LoadCounter)).setText("" + ++packageCountTruck1);
+            ((ImageView) findViewById(R.id.beaconRegionTruck1)).setColorFilter(0xFF78B3EC, PorterDuff.Mode.SRC_IN);
         }
 
-        if(beaconDistances.size() > 0) {
-            Collections.sort(beaconDistances, new Comparator<BeaconInfo>() {
-                @Override
-                public int compare(BeaconInfo b1, BeaconInfo b2) {
-                    return (int) (b1.weightedAvgDistance * 500 - b2.weightedAvgDistance * 500);
-                }
-            });
-
-            BeaconInfo nearestBeacon = beaconDistances.get(0);
-            Log.info("-> Nearest beacon: #%d at %.2f units away", nearestBeacon.minor, nearestBeacon.weightedAvgDistance);
-            return nearestBeacon.minor;
+        if (nearestTruckId == 2) {
+            ((TextView) findViewById(R.id.truck2LoadCounter)).setText("" + ++packageCountTruck2);
+            ((ImageView) findViewById(R.id.beaconRegionTruck2)).setColorFilter(0xFF78B3EC, PorterDuff.Mode.SRC_IN);
         }
 
-        return -1;
+        ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).playSoundEffect(AudioManager.FX_KEYPRESS_STANDARD);
     }
+
+    private int packageCountTruck1 = 0;
+    private int packageCountTruck2 = 0;
 
     // captures keys before UI elements can steal them :)
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN &&
+                (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER
+                        || event.getKeyCode() == KeyEvent.KEYCODE_MENU)) {
             Log.debug("User requested scanner reconnect.");
+            beaconDistanceMeasurer.stopListening();
             if (bluetoothScannerService != null)
                 bluetoothScannerService.reconnect();
             return true;
@@ -123,7 +127,9 @@ public class BluetoothPairingActivity extends Activity {
         setContentView(R.layout.activity_barcode_scanner);
         Log.start(this);
 
-        ((TextView) findViewById(R.id.barcodeScannerResults)).setMovementMethod(new ScrollingMovementMethod());
+        // prep beacon ranger but don't start it until we have a scanner bonded and connected.
+        // ranging seems to interfere with ordinary bluetooth connections :(
+        beaconDistanceMeasurer.configureFromContext(this);
 
         Log.debug("Binding from scanner service.");
         bindService(new Intent(this, BluetoothBarcodeScannerService.class), bluetoothScannerConnection, Context.BIND_AUTO_CREATE);
@@ -133,9 +139,6 @@ public class BluetoothPairingActivity extends Activity {
         this.registerReceiver(receiver, new IntentFilter(BluetoothBarcodeScannerService.ACTION_SCANNER_CONNECTING)); // can take a few seconds
         this.registerReceiver(receiver, new IntentFilter(BluetoothBarcodeScannerService.ACTION_SCANNER_CONNECTED)); // barcode-scanner connected
         this.registerReceiver(receiver, new IntentFilter(BluetoothBarcodeScannerService.ACTION_SCANNER_DISCONNECTED)); // barcode-scanner disconnected
-
-        beaconDistanceMeasurer.configureFromContext(this);
-        beaconDistanceMeasurer.startListening();
     }
 
     BeaconDistance beaconDistanceMeasurer = new BeaconDistance();

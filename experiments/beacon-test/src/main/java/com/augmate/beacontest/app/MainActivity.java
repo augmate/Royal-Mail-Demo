@@ -52,28 +52,32 @@ public class MainActivity extends Activity {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                // getLatestBeaconDistances() is nice and fast now (<1ms), no need to time it any more :)
+                // getLatestBeaconDistances() is nice and fast now (<1ms)
                 List<BeaconInfo> beaconDistances = beaconDistance.getLatestBeaconDistances();
 
                 String displayMsg = String.format("%d beacons are within the area\n", beaconDistances.size());
                 //Log.debug("We know about %d beacons within the area", beaconDistances.size());
 
+                BeaconRegion truck1 = new BeaconRegion();
+                BeaconRegion truck2 = new BeaconRegion();
+
                 for (BeaconInfo beacon : beaconDistances) {
                     //Log.debug("  beacon %d = mean: %.2f / 80th percentile: %.2f", beacon.minor, beacon.distance, beacon.weightedAvgDistance);
-                    displayMsg += String.format("#%d dist=%.2f weighted=%.2f\n", beacon.minor, beacon.distance, beacon.weightedAvgDistance);
+                    displayMsg += String.format("#%d samples=%02d weighted=%.2f\n", beacon.minor, beacon.numValidSamples, beacon.weightedAvgDistance);
+
+                    if(beacon.minor == 1 || beacon.minor == 2) {
+                        truck1.minDistance = Math.min(truck1.minDistance, beacon.weightedAvgDistance);
+                        truck1.numOfBeacons++;
+                    }
+
+                    if(beacon.minor == 3 || beacon.minor == 4) {
+                        truck2.minDistance = Math.min(truck2.minDistance, beacon.weightedAvgDistance);
+                        truck2.numOfBeacons++;
+                    }
                 }
 
-                if(beaconDistances.size() > 0) {
-                    Collections.sort(beaconDistances, new Comparator<BeaconInfo>() {
-                        @Override
-                        public int compare(BeaconInfo b1, BeaconInfo b2) {
-                            return (int) (b1.weightedAvgDistance * 500 - b2.weightedAvgDistance * 500);
-                        }
-                    });
-
-                    BeaconInfo nearestBeacon = beaconDistances.get(0);
-                    Log.info("-> Nearest beacon: #%d at %.2f units away", nearestBeacon.minor, nearestBeacon.weightedAvgDistance);
-                }
+                displayMsg += String.format("Truck 1: samples=%d dist=%.1f\n", truck1.numOfBeacons, truck1.minDistance);
+                displayMsg += String.format("Truck 2: samples=%d dist=%.1f\n", truck2.numOfBeacons, truck2.minDistance);
 
                 Message msg = displayMsgUpdater.obtainMessage();
                 Bundle bundle = new Bundle();
@@ -81,6 +85,7 @@ public class MainActivity extends Activity {
                 msg.setData(bundle);
                 msg.sendToTarget();
             }
-        }, 0, 500);
+        }, 0, 100);
     }
+
 }
