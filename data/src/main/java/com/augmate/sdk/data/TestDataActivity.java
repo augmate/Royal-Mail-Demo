@@ -2,6 +2,7 @@ package com.augmate.sdk.data;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -22,10 +23,17 @@ public class TestDataActivity extends Activity {
 
         String expected = new Gson().toJson(sampleAugmateDatas);
 
-        new AugmateData(this).save("ArrayList", sampleAugmateDatas);
-        String readData = new AugmateData(this).read("ArrayList");
+        AugmateData augmateData = new AugmateData(this);
+        augmateData.save("ArrayList", sampleAugmateDatas);
+        String readData = augmateData.read("ArrayList");
 
-        assert(expected.equals(readData));
+        Log.d(getClass().getName(), "Does write data equal read data (should be true)? " + expected.equals(readData));
+
+        augmateData.refreshPackageLoadData();
+
+        String loadPosition = augmateData.getLoadPosition("1Z0031340358655382");
+
+        Log.d(getClass().getName(), "(Should be 109) Load position: " + loadPosition);
     }
 
     static private class SampleAugmateData {

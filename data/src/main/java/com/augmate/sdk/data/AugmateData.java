@@ -8,14 +8,18 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.util.List;
+
 public class AugmateData {
 
     public static final String PARSE_KEY_PAYLOAD = "payload";
+    public static final String CAR_LOADING_PACKAGE_LOAD = "CarLoadingPackageLoad";
     private static boolean initialized = false;
 
     public AugmateData(Context context) {
         synchronized (this) {
             if (AugmateData.initialized == false) {
+                Parse.enableLocalDatastore(context);
                 Parse.initialize(context, "dXdrCRra51kK5zV2LT7fxT3Q1dnYOM79AmxXvguP", "6On5YIMRg6VAH7w7Svy6WnYmt2fYqBU5qSU0OQEE");
                 AugmateData.initialized = true;
             }
@@ -46,4 +50,38 @@ public class AugmateData {
 
         return objJson;
     }
+
+    public void refreshPackageLoadData() {
+        List<ParseObject> packageLoads = null;
+
+        try {
+            packageLoads = new ParseQuery<>(CAR_LOADING_PACKAGE_LOAD).find();
+        } catch (ParseException e) {
+            Log.e(this.getClass().getName(), e.toString());
+        }
+
+        try {
+            ParseObject.pinAll(packageLoads);
+        } catch (ParseException e) {
+            Log.e(this.getClass().getName(), e.toString());
+        }
+    }
+
+    public String getLoadPosition(String trackingNumber) {
+        String loadPosition = null;
+
+        try {
+            ParseObject foundPackage = new ParseQuery<>(CAR_LOADING_PACKAGE_LOAD)
+                    .fromLocalDatastore()
+                    .whereEqualTo("TrackingNumber", trackingNumber)
+                    .getFirst();
+
+            loadPosition = foundPackage.getString("LoadPosition");
+        } catch (ParseException e) {
+            Log.e(this.getClass().getName(), e.toString());
+        }
+
+        return loadPosition;
+    }
+
 }
