@@ -1,8 +1,10 @@
 package com.augmate.apps.common.activities;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -31,6 +33,7 @@ public class BaseActivity extends Activity {
     protected Handler mHandler = new Handler();
     PowerManager.WakeLock wakeLock;
     private GestureDetector gestureDetector;
+    private BroadcastReceiver mReceiver = new Receiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,8 @@ public class BaseActivity extends Activity {
         wakeLock.acquire(FlowUtils.SCREEN_ON_TIME);
 
         gestureDetector = createGestureDetector(this);
+
+        registerReceiver(mReceiver,new IntentFilter(Intent.ACTION_SCREEN_ON));
     }
 
     @Override
@@ -175,5 +180,16 @@ public class BaseActivity extends Activity {
             return gestureDetector.onMotionEvent(event);
         }
         return super.onGenericMotionEvent(event);
+    }
+
+    private class Receiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            float brightness = getSharedPreferences(getApplication().getPackageName(),MODE_PRIVATE).getFloat("BRIGHTNESS",0.5f);
+            WindowManager.LayoutParams params = getWindow().getAttributes();
+            params.screenBrightness = brightness;
+            getWindow().setAttributes(params);
+        }
     }
 }
