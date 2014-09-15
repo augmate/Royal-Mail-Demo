@@ -68,8 +68,8 @@ public class CycleCountActivity extends BaseActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         outState.putBoolean("LoadAnimation", false);
+        super.onSaveInstanceState(outState);
     }
 
     @Override

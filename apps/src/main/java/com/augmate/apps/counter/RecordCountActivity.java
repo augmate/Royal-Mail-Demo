@@ -136,13 +136,7 @@ public class RecordCountActivity extends VoiceActivity {
                     showError(ErrorPrompt.SOUND_ERROR);
                     break;
                 case SpeechRecognizer.ERROR_NETWORK:
-                    wasNetworkIssue = true;
-                    showError(ErrorPrompt.NETWORK_ERROR);
-                    break;
                 case SpeechRecognizer.ERROR_CLIENT:
-                    wasNetworkIssue = false;
-                    showError(ErrorPrompt.SOUND_ERROR);
-                    break;
                 case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
                     wasNetworkIssue = true;
                     showError(ErrorPrompt.NETWORK_ERROR);
