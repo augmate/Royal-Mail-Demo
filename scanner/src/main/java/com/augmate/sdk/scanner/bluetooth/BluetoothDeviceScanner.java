@@ -11,7 +11,11 @@ import com.augmate.sdk.logger.Log;
 import java.util.Arrays;
 import java.util.List;
 
-public class BluetoothBroadcastReceiver extends BroadcastReceiver {
+/**
+ * Scans for traditional bluetooth devices
+ * attempts to locate a barcode scanner or another white-listed device in discovery mode
+ */
+public class BluetoothDeviceScanner extends BroadcastReceiver {
     private BluetoothBarcodeScannerService bluetoothBarcodeScannerService;
     private BluetoothAdapter bluetoothAdapter;
 
@@ -22,7 +26,7 @@ public class BluetoothBroadcastReceiver extends BroadcastReceiver {
         return whitelistedDevices.contains(deviceId);
     }
 
-    BluetoothBroadcastReceiver(BluetoothBarcodeScannerService bluetoothBarcodeScannerService, BluetoothAdapter bluetoothAdapter) {
+    BluetoothDeviceScanner(BluetoothBarcodeScannerService bluetoothBarcodeScannerService, BluetoothAdapter bluetoothAdapter) {
         this.bluetoothBarcodeScannerService = bluetoothBarcodeScannerService;
         this.bluetoothAdapter = bluetoothAdapter;
     }

@@ -11,11 +11,9 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
-    private BluetoothAdapter bluetoothAdapter;
     private Context context;
-
-    private Map<String, BeaconInfo> beaconInfos = new ConcurrentHashMap<>();
-    private ScheduledFuture<?> scheduledFuture;
+    private Map<String, BeaconInfo> beaconData = new ConcurrentHashMap<>();
+    private ScheduledFuture<?> periodicScanBLE;
 
     public void configureFromContext(Context ctx) {
         context = ctx;
@@ -24,31 +22,28 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 
     public void startListening() {
-        final BluetoothManager bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
-        bluetoothAdapter = bluetoothManager.getAdapter();
+        final BluetoothAdapter bluetoothAdapter = ((BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
 
-        // scan for 2 seconds, wait 1 second, repeat
-        scheduledFuture = scheduler.scheduleWithFixedDelay(new Runnable() {
+        // scan a little, wait a little
+        periodicScanBLE = scheduler.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
-                Log.debug("Starting Short Burst BLE Scan..");
                 bluetoothAdapter.startLeScan(BeaconDistance.this);
 
-                // stop 2 seconds later
                 scheduler.schedule(new Runnable() {
                     @Override
                     public void run() {
-                        Log.debug("Stopping BLE Scan");
                         bluetoothAdapter.stopLeScan(BeaconDistance.this);
                     }
-                }, 2, TimeUnit.SECONDS);
+                }, 400, TimeUnit.MILLISECONDS);
             }
-        }, 0, 3, TimeUnit.SECONDS);
+        }, 0, 500, TimeUnit.MILLISECONDS);
     }
 
     public void stopListening() {
-        if(scheduledFuture != null) {
-            scheduledFuture.cancel(false);
+        if(periodicScanBLE != null) {
+            periodicScanBLE.cancel(false);
+            periodicScanBLE = null;
         }
     }
 
@@ -60,7 +55,7 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
         // deep-copy the beacons list and its history fifo queue
         // not pretty, but 30x faster than rits.cloning.cloner
         List<BeaconInfo> beacons = new ArrayList<>();
-        for(BeaconInfo readOnlyBeacon : beaconInfos.values()) {
+        for(BeaconInfo readOnlyBeacon : beaconData.values()) {
             beacons.add(readOnlyBeacon.duplicate());
         }
 
@@ -69,44 +64,9 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
 
         long now = What.timey();
 
-//        Log.debug("-------------------------------------------------");
-
         // process a local-thread copy of the latest beacon list
         for(BeaconInfo beacon : beacons) {
-
-            // expire long unseen beacons
-            beacon.numValidSamples = 0;
-            for(int i = 0; i < beacon.NumHistorySamples; i ++) {
-                if (beacon.history[i] != null) {
-
-                    // gradual extinction. devalue aging samples quickly and smoothly.
-                    beacon.history[i].life = 1 - (double) (now - beacon.history[i].timestamp) / 3000.0;
-
-                    if (beacon.history[i].life < 0.01) {
-                        beacon.history[i] = null;
-                    } else {
-                        beacon.numValidSamples++;
-                    }
-                }
-            }
-
-            // weighted average beacon samples
-            double sum = 0;
-            double energy = 0;
-            final int biasRecentSamplesFactor = 3; // [1-10]
-
-            for(int i = beacon.lastHistoryIdx; i != (beacon.lastHistoryIdx-1 + beacon.NumHistorySamples) % beacon.NumHistorySamples; i = (i+1) % beacon.NumHistorySamples) {
-                if(beacon.history[i] == null)
-                    continue;
-                double weight = Math.pow(biasRecentSamplesFactor, 9.0 * beacon.history[i].life);
-                double weightedSample = beacon.history[i].distance * weight;
-                sum += weightedSample;
-                energy += weight;
-            }
-            beacon.weightedAvgDistance = sum / energy;
-
-//            Log.debug("beacon '%s %d' has weighted average distance: %.2f", beacon.beaconName, beacon.minor, beacon.weightedAvgDistance);
-//            Log.debug("  recent samples: %s", TextUtils.join(",", beacon.history));
+            updateBeaconSample(now, beacon);
         }
 
         // expire long-unseen beacons
@@ -117,16 +77,56 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
             }
         }
 
-        List<BeaconInfo> sortedBeaconList = new ArrayList<>(beacons);
-
-        Collections.sort(sortedBeaconList, new Comparator<BeaconInfo>() {
+        Collections.sort(beacons, new Comparator<BeaconInfo>() {
             @Override
             public int compare(BeaconInfo b1, BeaconInfo b2) {
                 return b1.minor - b2.minor;
             }
         });
 
-        return sortedBeaconList;
+        return beacons;
+    }
+
+    private void updateBeaconSample(long now, BeaconInfo beacon) {
+        // expire long unseen beacons
+        beacon.numValidSamples = 0;
+        for(int i = 0; i < BeaconInfo.NumHistorySamples; i ++) {
+            if (beacon.history[i] == null)
+                continue;
+
+            beacon.history[i].life = Math.max(0, 1 - (double) (now - beacon.history[i].timestamp) / 2000.0); // [0-1]
+
+            if (beacon.history[i].life < 0.01) {
+                beacon.history[i] = null;
+            } else {
+                beacon.numValidSamples++;
+            }
+        }
+
+        if(beacon.numValidSamples == 0) {
+            beacon.weightedAvgDistance = 100; // throw beacon away
+            return;
+        }
+
+        // weighted average beacon samples
+        double sum = 0;
+        double energy = 0;
+        final int biasRecentSamplesFactor = 3; // [1-10]
+
+        // order doesn't matter because we are measuring extinction independently above
+        for(int i = 0; i < BeaconInfo.NumHistorySamples; i++) {
+            if(beacon.history[i] == null)
+                continue;
+            double weight = Math.pow(biasRecentSamplesFactor, 9.0 * beacon.history[i].life);
+            sum += beacon.history[i].distance * weight;
+            energy += weight;
+        }
+
+        beacon.weightedAvgDistance = sum / energy;
+
+//        Log.debug("beacon minor='%d' / distance: %.2f / energy: %.2f / samples: %d", beacon.minor, beacon.weightedAvgDistance, energy, beacon.numValidSamples);
+//        Log.debug("  recent samples: %s", TextUtils.join(" | ", beacon.history));
+//        Log.debug("\n");
     }
 
     /* callback from BluetoothAdapter comes from its own thread */
@@ -139,7 +139,7 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
         String uniqueBeaconId = device.getAddress();
 
         // grab existing beacon-entry, else create a new one
-        BeaconInfo beaconInfo = beaconInfos.get(uniqueBeaconId);
+        BeaconInfo beaconInfo = beaconData.get(uniqueBeaconId);
         if(beaconInfo == null)
             beaconInfo = new BeaconInfo();
 
@@ -147,14 +147,9 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
         beaconInfo.beaconName = device.getName() != null ? device.getName() : "<unnamed>";
         beaconInfo.lastSeen = What.timey();
 
-        if(!beaconInfos.containsKey(beaconInfo.uniqueBleDeviceId)) {
+        if(!beaconData.containsKey(beaconInfo.uniqueBleDeviceId)) {
             // the first time we locate a new device, parse it for useful information
-            Log.debug("Found new device: " + device.getName() + " @ " + device.getAddress());
-
-//            ParcelUuid[] uuids = device.getUuids();
-//            for(ParcelUuid uuid : uuids) {
-//                Log.debug("  uuid: " + uuid.toString());
-//            }
+            //Log.debug("Found new device: " + device.getName() + " @ " + device.getAddress());
 
             // try to parse beacon info
             EstimoteBeaconInfo estimoteBeaconInfo = EstimoteBeaconInfo.getFromScanRecord(scanRecord);
@@ -169,26 +164,21 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
             }
         }
 
-        // calculate approximate distance using rssi and power parameters
-        beaconInfo.distance = computeAccuracy(rssi, beaconInfo.measuredPower);
-
         //Log.debug("Pinged device: type=" + beaconInfo.beaconType + " rssi=" + rssi + " power=" + beaconInfo.measuredPower + " dist=" + String.format("%.2f", beaconInfo.distance));
 
         // only commit recognized beacons
         if(beaconInfo.beaconType != BeaconInfo.BeaconType.Unknown) {
-            onBeaconDiscovered(beaconInfo);
+            onBeaconDiscovered(beaconInfo, rssi);
         }
     }
 
-
-
     /* will be called from BluetoothAdapter's own thread */
-    private void onBeaconDiscovered(BeaconInfo beacon) {
-        beaconInfos.put(beacon.uniqueBleDeviceId, beacon);
+    private void onBeaconDiscovered(BeaconInfo beacon, int observedPower) {
+        beaconData.put(beacon.uniqueBleDeviceId, beacon);
 
         HistorySample sample = new HistorySample();
-        sample.distance = beacon.distance;
-        sample.timestamp = What.timey();
+        sample.distance = approximateDistanceInMeters(observedPower, beacon.measuredPower);
+        sample.timestamp = beacon.lastSeen;
         sample.life = 1;
 
         // adds to a fixed size FIFO queue
@@ -196,12 +186,12 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
     }
 
     /* ripped out of Estimotes' SDK */
-    private static double computeAccuracy(double rssi, double power) {
-        if (rssi == 0) {
+    private static double approximateDistanceInMeters(double observedPower, double broadcastPowerAt1Meter) {
+        if (observedPower == 0) {
             return -1.0D;
         }
-        double ratio = rssi / power;
-        double rssiCorrection = 0.96D + Math.pow(Math.abs(rssi), 3.0D) % 10.0D / 150.0D;
+        double ratio = observedPower / broadcastPowerAt1Meter;
+        double rssiCorrection = 0.96D + Math.pow(Math.abs(observedPower), 3.0D) % 10.0D / 150.0D;
         if (ratio <= 1.0D) {
             return Math.pow(ratio, 9.98D) * rssiCorrection;
         }

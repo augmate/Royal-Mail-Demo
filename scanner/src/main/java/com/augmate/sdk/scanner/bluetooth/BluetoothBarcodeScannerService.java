@@ -23,7 +23,7 @@ public class BluetoothBarcodeScannerService extends Service {
     public static final String EXTRA_BARCODE_STRING = "com.augmate.sdk.scanner.bluetooth.extra.BARCODE_STRING";
     public static final String EXTRA_BARCODE_SCANNER_DEVICE = "com.augmate.sdk.scanner.bluetooth.extra.BARCODE_SCANNER";
 
-    private BluetoothBroadcastReceiver bluetoothAdapterReceiver;
+    private BluetoothDeviceScanner bluetoothAdapterReceiver;
     private BluetoothBarcodeConnection barcodeStreamer;
     private BluetoothAdapter bluetoothAdapter;
 
@@ -69,6 +69,9 @@ public class BluetoothBarcodeScannerService extends Service {
         // TODO: enable bluetooth adapter if disabled
         bluetoothAdapter = ((BluetoothManager) this.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
 
+        if(!bluetoothAdapter.isEnabled())
+            bluetoothAdapter.enable();
+
         findBarcodeScannerDevice();
     }
 
@@ -100,7 +103,7 @@ public class BluetoothBarcodeScannerService extends Service {
             Log.debug("Bluetooth broadcast-receiver created");
 
             // sign-up for relevant events
-            bluetoothAdapterReceiver = new BluetoothBroadcastReceiver(this, bluetoothAdapter);
+            bluetoothAdapterReceiver = new BluetoothDeviceScanner(this, bluetoothAdapter);
             this.registerReceiver(bluetoothAdapterReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
             this.registerReceiver(bluetoothAdapterReceiver, new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED));
             this.registerReceiver(bluetoothAdapterReceiver, new IntentFilter(BluetoothDevice.ACTION_UUID));

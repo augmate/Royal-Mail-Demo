@@ -40,7 +40,7 @@ public class EstimoteBeaconInfo {
                 String scanRecordAsHex = HashCode.fromBytes(scanRecord).toString();
                 estimote.proximityUUID = String.format("%s-%s-%s-%s-%s", scanRecordAsHex.substring(16, 24), scanRecordAsHex.substring(24, 28), scanRecordAsHex.substring(28, 32), scanRecordAsHex.substring(32, 36), scanRecordAsHex.substring(36, 48));
 
-                Log.debug("major=%d minor=%d measuredPower=%d", estimote.major, estimote.minor, estimote.measuredPower);
+                //Log.debug("major=%d minor=%d measuredPower=%d", estimote.major, estimote.minor, estimote.measuredPower);
 
                 return estimote;
             }
