@@ -4,7 +4,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
-import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.logger.What;
 
 import java.util.*;
@@ -158,16 +157,18 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
                 beaconInfo.minor = estimoteBeaconInfo.minor;
                 beaconInfo.measuredPower = estimoteBeaconInfo.measuredPower;
                 beaconInfo.beaconType = BeaconInfo.BeaconType.Estimote;
-            } else {
-                Log.debug("Device not recognized. Treating as generic.");
-                beaconInfo.beaconType = BeaconInfo.BeaconType.Unknown;
+
+                // FIXME: this probably shouldn't be done here
+                if(beaconInfo.minor == 2 || beaconInfo.minor == 4)
+                    beaconInfo.regionId = 1;
+                if(beaconInfo.minor == 3 || beaconInfo.minor == 5)
+                    beaconInfo.regionId = 2;
             }
         }
 
-        //Log.debug("Pinged device: type=" + beaconInfo.beaconType + " rssi=" + rssi + " power=" + beaconInfo.measuredPower + " dist=" + String.format("%.2f", beaconInfo.distance));
-
         // only commit recognized beacons
-        if(beaconInfo.beaconType != BeaconInfo.BeaconType.Unknown) {
+        if((beaconInfo.beaconType != BeaconInfo.BeaconType.Unknown) && (beaconInfo.regionId != 0)) {
+            //Log.debug("Pinged device: major=" + beaconInfo.major + " minor=" + beaconInfo.minor + " rssi=" + rssi + " power=" + beaconInfo.measuredPower);
             onBeaconDiscovered(beaconInfo, rssi);
         }
     }

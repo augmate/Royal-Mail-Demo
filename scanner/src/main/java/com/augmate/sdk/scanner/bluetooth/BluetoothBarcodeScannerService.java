@@ -106,7 +106,7 @@ public class BluetoothBarcodeScannerService extends Service {
             bluetoothAdapterReceiver = new BluetoothDeviceScanner(this, bluetoothAdapter);
             this.registerReceiver(bluetoothAdapterReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
             this.registerReceiver(bluetoothAdapterReceiver, new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED));
-            this.registerReceiver(bluetoothAdapterReceiver, new IntentFilter(BluetoothDevice.ACTION_UUID));
+            //this.registerReceiver(bluetoothAdapterReceiver, new IntentFilter(BluetoothDevice.ACTION_UUID));
             this.registerReceiver(bluetoothAdapterReceiver, new IntentFilter(BluetoothDevice.ACTION_PAIRING_REQUEST));
         }
 

@@ -7,6 +7,7 @@ public class BeaconInfo {
     public long lastSeen = 0;
     public int major = 0;
     public int minor = 0;
+    public int regionId = 0;
     public double weightedAvgDistance = 0;
 
     public enum BeaconType { Unknown, Estimote, SensorTag }
@@ -33,6 +34,7 @@ public class BeaconInfo {
         info.major = major;
         info.minor = minor;
         info.beaconType = beaconType;
+        info.regionId = regionId;
 
         info.history = history.clone();
 
