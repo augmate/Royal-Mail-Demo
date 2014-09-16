@@ -12,7 +12,7 @@ import com.augmate.sdk.logger.Log;
 
 import java.util.*;
 
-public class MainActivity extends Activity {
+public class BeaconListeningActivity extends Activity {
     BeaconDistance beaconDistance = new BeaconDistance();
     private Timer timer = new Timer();
 
@@ -20,7 +20,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_beacon_listening);
     }
 
     private Handler displayMsgUpdater = new Handler() {

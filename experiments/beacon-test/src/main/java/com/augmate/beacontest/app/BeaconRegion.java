@@ -8,7 +8,7 @@ import java.util.List;
 public class BeaconRegion {
     public int numOfBeacons = 0;
     public double minDistance = 100;
-    private List<Integer> beaconIds;
+    public List<Integer> beaconIds;
     public int regionId = 0;
 
     public BeaconRegion(Integer... beaconIds) {
@@ -26,6 +26,6 @@ public class BeaconRegion {
 
     @Override
     public String toString() {
-        return String.format("Region %d: beacons=[%s] found=%d minDist=%.1f", regionId, TextUtils.join(",", beaconIds), numOfBeacons, minDistance);
+        return String.format("Region %d: beacons=[%s] found=%d minDist=%.2f", regionId, TextUtils.join(",", beaconIds), numOfBeacons, minDistance);
     }
 }

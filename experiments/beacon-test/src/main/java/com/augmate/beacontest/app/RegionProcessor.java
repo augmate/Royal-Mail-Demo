@@ -3,19 +3,20 @@ package com.augmate.beacontest.app;
 import com.augmate.sdk.beacons.BeaconInfo;
 import com.augmate.sdk.logger.Log;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class RegionProcessor {
 
-    static int getNearestRegionId(List<BeaconInfo> beaconDistances) {
+    private List<BeaconRegion> beaconRegions;
 
-        List<BeaconRegion> beaconRegions = Arrays.asList(
-                new BeaconRegion(1, 2).setRegionId(1),
-                new BeaconRegion(3, 4).setRegionId(2)
-        );
+    public RegionProcessor(List<BeaconRegion> beaconRegions) {
+
+        this.beaconRegions = beaconRegions;
+    }
+
+    int getNearestRegionId(List<BeaconInfo> beaconDistances) {
 
         // accumulate beacons into regions
         for (BeaconInfo beacon : beaconDistances) {
@@ -49,7 +50,7 @@ public class RegionProcessor {
         Collections.sort(beaconRegions, new Comparator<BeaconRegion>() {
             @Override
             public int compare(BeaconRegion lhs, BeaconRegion rhs) {
-                return (int) (5000 * (lhs.minDistance - rhs.minDistance));
+                return (int) (5000 * lhs.minDistance - 5000 * rhs.minDistance);
             }
         });
 

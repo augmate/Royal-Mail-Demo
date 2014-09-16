@@ -46,6 +46,10 @@
                 <TextView
                     android:id="@+id/truck1LoadCounter"
                     android:text="0"
+                    android:shadowColor="#FF000000"
+                    android:shadowDx="0"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
                     android:textSize="20sp"
                     android:layout_marginBottom="10dp"
                     android:layout_marginLeft="15dp"
@@ -78,6 +82,10 @@
                 <TextView
                     android:id="@+id/truck2LoadCounter"
                     android:text="0"
+                    android:shadowColor="#FF000000"
+                    android:shadowDx="0"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
                     android:textSize="20sp"
                     android:layout_marginBottom="10dp"
                     android:layout_marginLeft="15dp"
@@ -92,4 +100,12 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
     </LinearLayout>
+    <!--
+    <com.augmate.beacontest.app.RegionVisualization
+        android:alpha="0.5"
+        android:id="@+id/beaconVisualizer"
+        android:layout_width="match_parent"
+        android:layout_height="300px"
+        android:layout_gravity="bottom" />
+        -->
 </FrameLayout>
