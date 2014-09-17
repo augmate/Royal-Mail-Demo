@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.augmate.apps.R;
 import com.augmate.apps.common.ErrorPrompt;
+import com.augmate.apps.common.FlowUtils;
 import com.augmate.apps.common.FontHelper;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.activities.MessageActivity;
@@ -45,7 +46,8 @@ public class RecordCountActivity extends VoiceActivity {
 
         FontHelper.updateFontForBrightness(
                 (TextView)findViewById(R.id.big_image_text)
-                ,(TextView)findViewById(R.id.big_text_text));
+                ,(TextView)findViewById(R.id.yes_big_text)
+                ,(TextView)findViewById(R.id.no_big_text));
     }
 
     private void enterTextState() {
@@ -65,6 +67,14 @@ public class RecordCountActivity extends VoiceActivity {
         ImageView processing = (ImageView) findViewById(R.id.processing);
         bigText.setVisibility(View.VISIBLE);
         processing.setVisibility(View.GONE);
+        findViewById(R.id.yes_big_text).setAlpha(1.0f);
+        findViewById(R.id.yes_big_text).setScaleX(1.0f);
+        findViewById(R.id.yes_background).setAlpha(0f);
+        findViewById(R.id.yes_big_text).setScaleY(1.0f);
+        findViewById(R.id.no_big_text).setAlpha(1.0f);
+        findViewById(R.id.no_big_text).setScaleX(1.0f);
+        findViewById(R.id.no_background).setAlpha(0f);
+        findViewById(R.id.no_big_text).setScaleY(1.0f);
         findViewById(R.id.big_image_state).setVisibility(View.GONE);
         findViewById(R.id.big_text_state).setVisibility(View.VISIBLE);
     }
@@ -186,16 +196,56 @@ public class RecordCountActivity extends VoiceActivity {
             }
         } else if (currentState == RecordState.CONFIRM) {
             if (SoundHelper.isAffirmative(resultString)) {
-                BinManager.getSharedInstance().saveBin(bin);
-                SoundHelper.success(this);
-                showConfirmation(getString(R.string.count_confirmed),null,null);
-                finish();
+                fadeOutNonAnswer(findViewById(R.id.no_big_text),findViewById(R.id.yes_background),new Runnable(){
+                    @Override
+                    public void run() {
+                        showCountConfirmed();
+                    }
+                });
+
             } else {
-                enterTextState();
-                currentState = RecordState.LISTENING;
-                startRecording();
+                fadeOutNonAnswer(findViewById(R.id.yes_big_text),findViewById(R.id.no_background), new Runnable(){
+                    @Override
+                    public void run() {
+                        resumeRecording();
+                    }
+                });
             }
         }
+    }
+
+    private void fadeOutNonAnswer(View fadingView, View fadeInView, final Runnable run) {
+        final ViewPropertyAnimator animator = fadingView.animate()
+                .setDuration(FlowUtils.TRANSITION_TIMEOUT_SHORT)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .scaleX(0f)
+                .scaleY(0f)
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        getHandler().postDelayed(run,FlowUtils.TRANSITION_TIMEOUT_SHORT);
+                    }
+                })
+                .alpha(0.0f);
+        ViewPropertyAnimator animator1 = fadeInView.animate()
+                .setDuration(FlowUtils.TRANSITION_TIMEOUT_SHORT)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .alpha(1.0f);
+        animator1.start();
+        animator.start();
+    }
+
+    private void resumeRecording() {
+        enterTextState();
+        currentState = RecordState.LISTENING;
+        startRecording();
+    }
+
+    private void showCountConfirmed() {
+        BinManager.getSharedInstance().saveBin(bin);
+        SoundHelper.success(this);
+        showConfirmation(getString(R.string.count_confirmed),null,null);
+        finish();
     }
 
     public void setRecordingAnimation(boolean recording){

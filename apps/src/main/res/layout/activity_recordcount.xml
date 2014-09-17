@@ -46,13 +46,56 @@
 
         </FrameLayout>
 
-        <TextView
-            style="@style/MatchParent.SecondaryTextView"
-            android:layout_weight="1"
+        <LinearLayout
+            style="@style/MatchParent"
+            android:orientation="vertical"
             android:gravity="center"
-            android:text="@string/yes_no"
-            android:paddingRight="@dimen/pad_edge"
-            android:id="@+id/big_text_text" />
+            android:layout_weight="1">
+            <RelativeLayout
+                style="@style/WrapContent">
+                <FrameLayout
+                    android:background="@drawable/outline"
+                    android:id="@+id/yes_background"
+                    android:layout_width="wrap_content"
+                    android:layout_alignTop="@+id/yes_big_text"
+                    android:layout_alignBottom="@+id/yes_big_text"
+                    android:layout_alignLeft="@+id/yes_big_text"
+                    android:layout_alignRight="@+id/yes_big_text"
+                    android:alpha="0"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    style="@style/WrapContent.SecondaryTextView"
+                    android:gravity="center"
+                    android:text="@string/yes"
+                    android:minHeight="48dp"
+                    android:minWidth="110dp"
+                    android:background="#00000000"
+                    android:id="@+id/yes_big_text" />
+            </RelativeLayout>
+            <RelativeLayout
+                style="@style/WrapContent">
+                <FrameLayout
+                    android:background="@drawable/outline"
+                    android:id="@+id/no_background"
+                    android:layout_width="wrap_content"
+                    android:layout_alignTop="@+id/no_big_text"
+                    android:layout_alignBottom="@+id/no_big_text"
+                    android:layout_alignLeft="@+id/no_big_text"
+                    android:layout_alignRight="@+id/no_big_text"
+                    android:alpha="0"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    style="@style/WrapContent.SecondaryTextView"
+                    android:gravity="center"
+                    android:text="@string/no"
+                    android:background="#00000000"
+                    android:minHeight="48dp"
+                    android:minWidth="110dp"
+                    android:id="@+id/no_big_text" />
+            </RelativeLayout>
+
+
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

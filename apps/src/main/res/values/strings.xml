@@ -28,6 +28,10 @@
 
     <string name="bin_confirmed">Bin\nConfirmed</string>
     <string name="yes_no">\"YES?\"\n\"NO?\"</string>
+
+    <string name="yes">\"YES?\"</string>
+    <string name="no">\"NO?\"</string>
+
     <string name="confirme">%s</string>
     <string name="count_confirmed">Count Confirmed</string>
 
