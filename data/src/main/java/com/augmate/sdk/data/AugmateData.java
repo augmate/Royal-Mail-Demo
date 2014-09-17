@@ -10,7 +10,7 @@ import com.parse.ParseQuery;
 
 import java.util.List;
 
-public class AugmateData {
+public class AugmateData<T extends ParseObject>{
 
     public static final String PARSE_KEY_PAYLOAD = "payload";
     public static final String CAR_LOADING_PACKAGE_LOAD = "CarLoadingPackageLoad";
@@ -21,6 +21,7 @@ public class AugmateData {
             if (AugmateData.initialized == false) {
                 Parse.enableLocalDatastore(context);
                 Parse.initialize(context, "dXdrCRra51kK5zV2LT7fxT3Q1dnYOM79AmxXvguP", "6On5YIMRg6VAH7w7Svy6WnYmt2fYqBU5qSU0OQEE");
+                ParseObject.registerSubclass(PackageCarLoad.class);
                 AugmateData.initialized = true;
             }
         }
@@ -67,21 +68,18 @@ public class AugmateData {
         }
     }
 
-    public String getLoadPosition(String trackingNumber) {
-        String loadPosition = null;
+    public T find(Class<T> clazz, String key, String value){
+        T foundPackage = null;
 
         try {
-            ParseObject foundPackage = new ParseQuery<>(CAR_LOADING_PACKAGE_LOAD)
+            foundPackage = ParseQuery.getQuery(clazz)
                     .fromLocalDatastore()
-                    .whereEqualTo("TrackingNumber", trackingNumber)
+                    .whereEqualTo(key, value)
                     .getFirst();
-
-            loadPosition = foundPackage.getString("LoadPosition");
         } catch (ParseException e) {
             Log.e(this.getClass().getName(), e.toString());
         }
 
-        return loadPosition;
+        return foundPackage;
     }
-
 }
