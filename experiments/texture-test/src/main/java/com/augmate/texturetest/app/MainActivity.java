@@ -60,11 +60,9 @@ public class MainActivity extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
-
     private void launchScanActivity() {
         Log.debug("Starting TextureScannerActivity activity..");
         Intent intent = new Intent(this, TextureScannerActivity.class);
         startActivity(intent);
-        //finish();
     }
 }

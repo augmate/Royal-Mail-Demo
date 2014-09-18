@@ -8,19 +8,81 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:keepScreenOn="true">
 
-    <fragment
-        android:id="@+id/scanner"
-        android:name="com.augmate.texturetest.app.TextureScannerFragment"
-        android:layout_width="180dp"
-        android:layout_height="match_parent"/>
 
-    <TextView
-        android:id="@+id/beaconScanResults"
-        android:text="We know about 5 beacons in the area"
+    <ViewFlipper
         android:layout_width="170dp"
         android:layout_height="fill_parent"
-        android:textSize="20dp"
-        android:alpha=".8"
-        android:layout_gravity="right|top"/>
+        android:id="@+id/viewFlipper">
+
+        <TextView
+            android:id="@+id/cameraScanResult"
+            android:text="These are the optical scan result"
+            android:layout_width="170dp"
+            android:layout_height="fill_parent"
+            android:textSize="20dp"
+            android:alpha="1"
+            android:layout_gravity="left|top"/>
+
+        <fragment
+            android:id="@+id/scanner"
+            android:name="com.augmate.texturetest.app.TextureScannerFragment"
+            android:layout_width="170dp"
+            android:layout_height="match_parent"/>
+
+
+    </ViewFlipper>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="right|top">
+
+        <TextView
+            android:id="@+id/beaconScanResults"
+            android:text="We know about 5 beacons in the area"
+            android:layout_width="170dp"
+            android:layout_height="75dp"
+            android:textSize="15dp"
+            android:alpha="1"
+            android:layout_gravity="right|top"/>
+
+        <!--
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/beaconStrength1"
+            android:layout_marginTop="10dp"/>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/beaconStrength2"
+            android:layout_marginTop="10dp"/>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/beaconStrength3"
+            android:layout_marginTop="10dp"/>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/beaconStrength4"
+            android:layout_marginTop="10dp"/>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/beaconStrength5"
+            android:layout_marginTop="10dp"/>
+            -->
+    </LinearLayout>
 
 </FrameLayout>
