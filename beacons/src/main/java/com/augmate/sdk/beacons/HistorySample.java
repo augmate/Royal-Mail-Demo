@@ -4,6 +4,7 @@ public class HistorySample {
     public long timestamp = 0;
     public double distance = 100;
     public double life = 0;
+    public double power = 0;
 
     @Override
     public String toString() {

@@ -179,6 +179,7 @@ public class BeaconDistance implements BluetoothAdapter.LeScanCallback {
 
         HistorySample sample = new HistorySample();
         sample.distance = approximateDistanceInMeters(observedPower, beacon.measuredPower);
+        sample.power = observedPower;
         sample.timestamp = beacon.lastSeen;
         sample.life = 1;
 

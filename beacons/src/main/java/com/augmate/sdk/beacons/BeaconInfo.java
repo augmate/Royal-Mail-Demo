@@ -9,6 +9,7 @@ public class BeaconInfo {
     public int minor = 0;
     public int regionId = 0;
     public double weightedAvgDistance = 0;
+    public double lastestPower = 0;
 
     public enum BeaconType { Unknown, Estimote, SensorTag }
     public BeaconType beaconType = BeaconType.Unknown;
@@ -21,6 +22,7 @@ public class BeaconInfo {
     public int numValidSamples = 0;
 
     public void addHistorySample(HistorySample sample) {
+        lastestPower = sample.power;
         history[lastHistoryIdx] = sample;
         lastHistoryIdx = (lastHistoryIdx + 1) % NumHistorySamples;
     }
@@ -35,7 +37,7 @@ public class BeaconInfo {
         info.minor = minor;
         info.beaconType = beaconType;
         info.regionId = regionId;
-
+        info.lastestPower = lastestPower;
         info.history = history.clone();
 
         return info;

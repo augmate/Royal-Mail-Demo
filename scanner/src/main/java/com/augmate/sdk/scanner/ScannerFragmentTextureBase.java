@@ -2,16 +2,18 @@ package com.augmate.sdk.scanner;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.SurfaceTexture;
 import android.os.Handler;
 import android.os.Message;
 import android.view.TextureView;
 import com.augmate.sdk.logger.Log;
+import com.augmate.sdk.logger.What;
 import com.augmate.sdk.scanner.decoder.DecodingJob;
 
 public abstract class ScannerFragmentTextureBase extends Fragment implements TextureView.SurfaceTextureListener {
-    private CameraSettings frameBufferSettings = new CameraSettings(1280, 720);
+    private CameraSettings frameBufferSettings = new CameraSettings(720, 480);
     private CameraController cameraController = new CameraController();
     private boolean isProcessingCapturedFrames;
     private IScannerResultListener mListener;
@@ -97,23 +99,6 @@ public abstract class ScannerFragmentTextureBase extends Fragment implements Tex
         }
     }
 
-    public final class ScannerFragmentMessages extends Handler {
-        private ScannerFragmentTextureBase fragment;
-
-        ScannerFragmentMessages(ScannerFragmentTextureBase fragment) {
-            this.fragment = fragment;
-            Log.debug("Msg Pump created on thread=%d", Thread.currentThread().getId());
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            //Log.debug("On thread=%d got msg=%d", Thread.currentThread().getId(), msg.what);
-            if (msg.what == R.id.scannerFragmentJobCompleted) {
-                fragment.onJobCompleted((DecodingJob) msg.obj);
-            }
-        }
-    }
-
     private void onJobCompleted(DecodingJob job) {
         Log.debug("Job stats: skipped frames=%d, binarization=%d msec, total=%d msec", framesSkipped, job.binarizationDuration(), job.totalDuration());
 
@@ -141,6 +126,22 @@ public abstract class ScannerFragmentTextureBase extends Fragment implements Tex
         // may reduce delays by length of one frame (ie 50ms at 20fps)
     }
 
+    public final class ScannerFragmentMessages extends Handler {
+        private ScannerFragmentTextureBase fragment;
+
+        ScannerFragmentMessages(ScannerFragmentTextureBase fragment) {
+            this.fragment = fragment;
+            Log.debug("Msg Pump created on thread=%d", Thread.currentThread().getId());
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            //Log.debug("On thread=%d got msg=%d", Thread.currentThread().getId(), msg.what);
+            if (msg.what == R.id.scannerFragmentJobCompleted) {
+                fragment.onJobCompleted((DecodingJob) msg.obj);
+            }
+        }
+    }
 
     //Texture Listening
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
@@ -161,6 +162,78 @@ public abstract class ScannerFragmentTextureBase extends Fragment implements Tex
     }
 
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-        // Invoked every time there's a new Camera preview frame
+
+        if (!isProcessingCapturedFrames) {
+            Log.debug("Ignoring new frame because we are paused");
+            return;
+        }
+
+
+        if (readyForNextFrame) {
+            // kick-off frame decoding in a dedicated thread
+
+            //byte[] bytes = byteBuffer.array();
+
+            long start = What.timey();
+
+            Bitmap bitmap = textureView.getBitmap(frameBufferSettings.width, frameBufferSettings.height);
+            long fetchBitmap = What.timey();
+            Log.debug("textureview bitmap fetch = %d ms", fetchBitmap - start);
+
+            byte[] bytes = getNV21(frameBufferSettings.width, frameBufferSettings.height,bitmap);
+            long convertBitmap = What.timey();
+            Log.debug("textureview bitmap convert = %d ms", convertBitmap - fetchBitmap);
+
+            DecodingJob job = new DecodingJob(frameBufferSettings.width, frameBufferSettings.height,
+                    bytes, dbgVisualizer != null ? dbgVisualizer.getNextDebugBuffer() : null);
+
+            decoderThread.getMessagePump().obtainMessage(R.id.decodingThreadNewJob, job).sendToTarget();
+
+            // change capture-buffer to prevent camera from modifying buffer sent to decoder
+            // this avoids copying buffers on every frame
+            //cameraController.changeFrameBuffer();
+            readyForNextFrame = false;
+            framesSkipped = 0;
+        } else {
+            framesSkipped++;
+        }
     }
+
+    //http://stackoverflow.com/questions/5960247/convert-bitmap-array-to-yuv-ycbcr-nv21
+    byte[] getNV21(int inputWidth, int inputHeight, Bitmap scaled) {
+
+        int[] argb = new int[inputWidth * inputHeight];
+
+        scaled.getPixels(argb, 0, inputWidth, 0, 0, inputWidth, inputHeight);
+
+        byte[] yuv = new byte[inputWidth * inputHeight * 3 / 2];
+        encodeYUV420SP(yuv, argb, inputWidth, inputHeight);
+
+        scaled.recycle();
+
+        return yuv;
+    }
+
+    void encodeYUV420SP(byte[] yuv420sp, int[] argb, int width, int height) {
+        final int frameSize = width * height;
+
+        int yIndex = 0;
+
+        int a, R, G, B, Y, U, V;
+        int index = 0;
+        for (int j = 0; j < height * width; j++) {
+
+            R = (argb[index] & 0xff0000) >> 16;
+            G = (argb[index] & 0xff00) >> 8;
+            B = (argb[index] & 0xff) >> 0;
+
+            // well known RGB to YUV algorithm
+            Y = ((66 * R + 129 * G + 25 * B + 128) >> 8) + 16;
+
+            yuv420sp[yIndex++] = (byte) ((Y < 0) ? 0 : ((Y > 255) ? 255 : Y));
+
+            index++;
+        }
+    }
+
 }
