@@ -2,8 +2,8 @@
 <resources>
 
     <string name="app_name">Augmate Beacons</string>
-    <string name="title_activity_main">Augmate B-Listener</string>
-    <string name="title_activity_pairing">Augmate B-Pairing</string>
+    <string name="title_activity_beaconlistener">Augmate B-Listener</string>
+    <string name="title_activity_beaconbtscanner">Augmate B-Pairing</string>
     <string name="action_settings">Settings</string>
 
 </resources>

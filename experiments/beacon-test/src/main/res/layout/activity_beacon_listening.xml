@@ -11,7 +11,7 @@
 
     <TextView
         android:id="@+id/beaconScanResults"
-        android:text="We know about 5 beacons in the area"
+        android:text="Starting search for beacons.."
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:textSize="20dp" />
