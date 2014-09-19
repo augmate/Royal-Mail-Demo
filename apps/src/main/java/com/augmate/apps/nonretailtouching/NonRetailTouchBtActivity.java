@@ -8,7 +8,8 @@ import com.augmate.apps.R;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
-import com.augmate.sdk.scanner.IScannerResultListener;
+import com.augmate.sdk.scanner.bluetooth.BluetoothScannerConnector;
+import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -16,9 +17,9 @@ import retrofit.client.Response;
 
 import java.util.ArrayList;
 
-public class NonRetailTouchBtActivity extends BaseActivity implements IScannerResultListener {
-
-    NutsApiService nutsApi = new RestAdapter.Builder().setEndpoint("http://nuts.googlex.augmate.com:6969/").build().create(NutsApiService.class);
+public class NonRetailTouchBtActivity extends BaseActivity implements IBluetoothScannerEvents {
+    private NutsApiService nutsApi = new RestAdapter.Builder().setEndpoint("http://nuts.googlex.augmate.com:6969/").build().create(NutsApiService.class);
+    private BluetoothScannerConnector bluetoothScannerConnector = new BluetoothScannerConnector(this);
 
     private ArrayList<String> recordedBarcodes = new ArrayList<>();
     private ArrayList<String> submittedBarcodes = new ArrayList<>();
@@ -27,25 +28,14 @@ public class NonRetailTouchBtActivity extends BaseActivity implements IScannerRe
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_non_retail_touch);
+        setContentView(R.layout.activity_non_retail_touch_bt);
+        bluetoothScannerConnector.start();
     }
 
     @Override
-    public void onBarcodeScanSuccess(String result) {
-        Log.debug("Got scanning result: [%s]", result);
-
-        if (!recordedBarcodes.contains(result)) {
-            recordedBarcodes.add(result);
-
-            Log.debug("-> unique scanning result: [%s] (array size: %d)", result, recordedBarcodes.size());
-
-            // we have a new unique barcode
-            TextView nrtCounter = (TextView) findViewById(R.id.nrt_counter);
-            nrtCounter.setText("" + recordedBarcodes.size());
-            nrtCounter.setTextColor(0xFFFFFF00);
-
-            queueBarcodeCommit(result);
-        }
+    protected void onDestroy() {
+        super.onDestroy();
+        bluetoothScannerConnector.stop();
     }
 
     /**
@@ -108,5 +98,41 @@ public class NonRetailTouchBtActivity extends BaseActivity implements IScannerRe
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBtScannerResult(String barcode) {
+        Log.debug("Got scanning result: [%s]", barcode);
+
+        if (!recordedBarcodes.contains(barcode)) {
+            recordedBarcodes.add(barcode);
+
+            Log.debug("-> unique scanning result: [%s] (array size: %d)", barcode, recordedBarcodes.size());
+
+            // we have a new unique barcode
+            TextView nrtCounter = (TextView) findViewById(R.id.nrt_counter);
+            nrtCounter.setText("" + recordedBarcodes.size());
+            nrtCounter.setTextColor(0xFFFFFF00);
+
+            queueBarcodeCommit(barcode);
+        }
+    }
+
+    @Override
+    public void onBtScannerConnecting() {
+        ((TextView) findViewById(R.id.nrt_bt_scanner_status)).setText("Searching for scanner..");
+        ((TextView) findViewById(R.id.nrt_bt_scanner_status)).setTextColor(0xFFFFFF00);
+    }
+
+    @Override
+    public void onBtScannerConnected() {
+        ((TextView) findViewById(R.id.nrt_bt_scanner_status)).setText("Scanner Connected");
+        ((TextView) findViewById(R.id.nrt_bt_scanner_status)).setTextColor(0xFF00FF00);
+    }
+
+    @Override
+    public void onBtScannerDisconnected() {
+        ((TextView) findViewById(R.id.nrt_bt_scanner_status)).setText("Tap to connect scanner");
+        ((TextView) findViewById(R.id.nrt_bt_scanner_status)).setTextColor(0xFFFF0000);
     }
 }
