@@ -1,0 +1,111 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:orientation="vertical"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/barcodeScannerResults"
+        android:text="Waiting for barcode scanner.."
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textSize="20dp"
+        android:layout_marginTop="30dp"
+        android:minLines="10"
+        android:layout_gravity="bottom"/>
+
+    <TextView
+        android:id="@+id/barcodeScannerStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Scanner"
+        android:textSize="20dp"
+        android:scrollbars="vertical"
+        android:textColor="#f00"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_margin="5dp"
+            android:layout_weight="50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:background="#333"
+                    android:id="@+id/beaconRegionTruck1"
+                    android:src="@drawable/ic_launcher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:layout_gravity="bottom" />
+                <TextView
+                    android:id="@+id/truck1LoadCounter"
+                    android:text="0"
+                    android:shadowColor="#FF000000"
+                    android:shadowDx="0"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </FrameLayout>
+            <TextView
+                android:text="Truck 1"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_margin="5dp"
+            android:layout_weight="50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:background="#333"
+                    android:id="@+id/beaconRegionTruck2"
+                    android:src="@drawable/ic_launcher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:layout_gravity="bottom" />
+                <TextView
+                    android:id="@+id/truck2LoadCounter"
+                    android:text="0"
+                    android:shadowColor="#FF000000"
+                    android:shadowDx="0"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </FrameLayout>
+            <TextView
+                android:text="Truck 2"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+    <!--
+    <com.augmate.beacontest.app.RegionVisualization
+        android:alpha="0.5"
+        android:id="@+id/beaconVisualizer"
+        android:layout_width="match_parent"
+        android:layout_height="300px"
+        android:layout_gravity="bottom" />
+        -->
+</FrameLayout>

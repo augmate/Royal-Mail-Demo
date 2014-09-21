@@ -1,3 +1,16 @@
-include ':apps', ':augmate-sdk:scanner', ':augmate-sdk:voice', ':augmate-sdk:beacons',
-        ':augmate-sdk:logger', ':augmate-sdk:data', ':experiments:employee-scanner',
-        ':experiments:warehouse-prototype', ':experiments:beacon-test', ':experiments:texture-test'
+// sdk components
+include ':augmate-sdk:scanner',
+        ':augmate-sdk:voice',
+        ':augmate-sdk:beacons',
+        ':augmate-sdk:logger',
+        ':augmate-sdk:data'
+
+// apps
+include ':apps'
+
+// experiments, demos, samples, and proof of concepts
+include ':experiments:employee-scanner',        // ?
+        ':experiments:warehouse-prototype',     // ?
+        ':experiments:bluetooth-scanner',       // bluetooth-scanner experimentation (alex)
+        ':experiments:beacon-test',             // bluetooth-beacon experimentation (alex)
+        ':experiments:texture-test'             // optical-scanner rendering experimentation (frank)

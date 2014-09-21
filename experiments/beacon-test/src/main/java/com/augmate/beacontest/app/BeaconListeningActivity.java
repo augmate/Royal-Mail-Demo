@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import com.augmate.sdk.beacons.BeaconDistance;
 import com.augmate.sdk.beacons.BeaconInfo;
+import com.augmate.sdk.beacons.BeaconRegion;
 import com.augmate.sdk.logger.Log;
 
 import java.util.*;

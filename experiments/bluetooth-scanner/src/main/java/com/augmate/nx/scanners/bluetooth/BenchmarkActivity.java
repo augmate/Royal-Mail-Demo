@@ -1,4 +1,4 @@
-package com.augmate.beacontest.app;
+package com.augmate.nx.scanners.bluetooth;
 
 import android.app.Activity;
 import android.content.Context;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BeaconBtScannerActivity extends Activity implements IBluetoothScannerEvents {
+public class BenchmarkActivity extends Activity implements IBluetoothScannerEvents {
     private BluetoothScannerConnector bluetoothScannerConnector = new BluetoothScannerConnector(this);
     private BeaconDistance beaconDistanceMeasurer = new BeaconDistance();
 
@@ -48,7 +48,7 @@ public class BeaconBtScannerActivity extends Activity implements IBluetoothScann
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_barcode_scanner);
+        setContentView(R.layout.activity_benchmark);
         Log.start(this);
 
         // prep beacon ranger but don't start it until we have a scanner bonded and connected.
@@ -84,13 +84,10 @@ public class BeaconBtScannerActivity extends Activity implements IBluetoothScann
     @Override
     public void onBtScannerResult(String barcode) {
         List<BeaconInfo> latestBeaconDistances = beaconDistanceMeasurer.getLatestBeaconDistances();
-        // region-processor must take a mutable region-list, as it will get trimmed due to lack of beaons
         RegionProcessor regionProcessor = new RegionProcessor(new ArrayList<>(Arrays.asList(
                 new BeaconRegion(2, 4).setRegionId(1),
                 new BeaconRegion(3, 5).setRegionId(2)
         )));
-
-        // may return -1 if there are no regions detected at all
         int nearestTruckId = regionProcessor.getNearestRegionId(latestBeaconDistances);
 
         ((TextView) findViewById(R.id.barcodeScannerResults)).setText(
@@ -129,7 +126,7 @@ public class BeaconBtScannerActivity extends Activity implements IBluetoothScann
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("Scanner Connected");
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFF00FF00);
         ((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
-        beaconDistanceMeasurer.startListening();
+        //beaconDistanceMeasurer.startListening();
     }
 
     @Override
@@ -137,6 +134,6 @@ public class BeaconBtScannerActivity extends Activity implements IBluetoothScann
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("No Scanner");
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFFFF0000);
         ((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
-        beaconDistanceMeasurer.stopListening();
+        //beaconDistanceMeasurer.stopListening();
     }
 }
