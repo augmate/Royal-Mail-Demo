@@ -4,31 +4,69 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.os.ParcelUuid;
+import android.os.Parcelable;
 import com.augmate.sdk.logger.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
+/**
+ * UUIDs:
+ *  00001124-0000-1000-8000-00805f9b34fb = HID (doesn't seem to work)
+ *  00001101-0000-1000-8000-00805f9b34fb = SPP (works on android, but scanner must be in discoverable/connectable mode)
+ *  00000000-0000-1000-8000-00805f9b34fb = ???
+ *
+ *  BluetoothClasses:
+ *      Scanfob (opn-2006) = 114 = BluetoothClass.Device.COMPUTER_PALM_SIZE_PC_PDA
+ */
+
 class BluetoothBarcodeConnection implements Runnable {
     private String accumulationBuffer = "";
     private BluetoothDevice device;
     private BluetoothSocket socket;
+    private UUID service;
     private Context parentContext;
 
-    public BluetoothBarcodeConnection(BluetoothDevice device, Context parentContext) {
-        this.device = device;
+    public static final UUID UUID_SPP = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"); // definitely works
+    public static final UUID UUID_HID = UUID.fromString("00001124-0000-1000-8000-00805f9b34fb");
+
+    public static UUID findBestService(ParcelUuid[] uuids) {
+        for (Parcelable parceableUuid : uuids) {
+            UUID uuid = UUID.fromString(parceableUuid.toString());
+
+            if(UUID_SPP.compareTo(uuid) == 0) {
+                Log.debug("  found SPP service: %s", uuid.toString());
+                return uuid;
+            }
+
+            if(UUID_HID.compareTo(uuid) == 0) {
+                Log.debug("  found HID service: %s", uuid.toString());
+                return uuid;
+            }
+
+
+            Log.debug("  unknown service: %s", uuid.toString());
+        }
+
+        return null;
+    }
+
+    public BluetoothBarcodeConnection(BluetoothDevice device, UUID service, Context parentContext) {
         this.parentContext = parentContext;
+        this.service = service;
+        this.device = device;
     }
 
     @Override
     public void run() {
-        Log.debug("Barcode streaming thread entered.");
+        Log.debug("Connecting to: %s + %s", device.getAddress(), service.toString());
 
         InputStream stream = null;
 
         try {
-            socket = device.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"));
+            socket = device.createRfcommSocketToServiceRecord(service);
             socket.connect();
             stream = socket.getInputStream();
         } catch (IOException e) {
@@ -82,12 +120,18 @@ class BluetoothBarcodeConnection implements Runnable {
      * @param buffer byte buffer
      */
     private void onReadScannerData(int read, byte[] buffer) {
-        accumulationBuffer += new String(buffer, 0, read);
+        String newData = new String(buffer, 0, read);
+        accumulationBuffer += newData;
+        Log.debug("received from scanner: [%s] (%d bytes)", newData, read);
 
-        if (accumulationBuffer.contains("\r\n")) {
-            String barcode = accumulationBuffer.substring(0, accumulationBuffer.indexOf("\r\n"));
-            accumulationBuffer = accumulationBuffer.substring(accumulationBuffer.indexOf("\r\n")).trim();
-            //Log.debug("Scanned barcode: [%s]", barcode);
+        // normalize line-endings between various scanners
+        accumulationBuffer = accumulationBuffer.replace("\r\n", "\n");
+        accumulationBuffer = accumulationBuffer.replace("\r", "\n"); // scanfob likes to use \r
+
+        if (accumulationBuffer.contains("\n")) {
+            String barcode = accumulationBuffer.substring(0, accumulationBuffer.indexOf("\n"));
+            accumulationBuffer = accumulationBuffer.substring(accumulationBuffer.indexOf("\n")).trim();
+            Log.debug("Scanned barcode: [%s]", barcode);
 
             // broadcast scanned code
             parentContext.sendBroadcast(

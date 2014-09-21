@@ -19,11 +19,15 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
     private BluetoothBarcodeScannerService bluetoothBarcodeScannerService;
     private BluetoothAdapter bluetoothAdapter;
 
-    // ecom ES301 handheld barcode scanner, alex's phone
-    private final List<String> whitelistedDevices = Arrays.asList("00:1C:97:90:8A:4F", "F8:A9:D0:AC:51:77");
+    // ecom ES301 handheld barcode scanner, alex's phone. scanfob 2006
+    public static final List<String> WhitelistedDevices = Arrays.asList(
+            //"00:1C:97:90:8A:4F",
+            //"F8:A9:D0:AC:51:77",
+            "38:89:DC:00:0C:91"
+    );
 
     private boolean deviceIsWhitelisted(String deviceId) {
-        return whitelistedDevices.contains(deviceId);
+        return WhitelistedDevices.contains(deviceId);
     }
 
     BluetoothDeviceScanner(BluetoothBarcodeScannerService bluetoothBarcodeScannerService, BluetoothAdapter bluetoothAdapter) {
@@ -32,20 +36,19 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
     }
 
     public void onReceive(Context context, Intent intent) {
-        BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+        final BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
         switch (intent.getAction()) {
             case BluetoothDevice.ACTION_FOUND:
                 Log.debug("Found device: \"%s\" @ %s", device.getName(), device.getAddress());
 
                 if (deviceIsWhitelisted(device.getAddress())) {
-
                     // must cancel discovery mode before attempting to bond or connect with a device
                     bluetoothAdapter.cancelDiscovery();
 
                     Log.debug("  device.getBondState= " + device.getBondState());
                     Log.debug("  device.getBluetoothClass = " + device.getBluetoothClass());
-                    Log.debug("  device.getType = " + device.getType());
+                    Log.debug("  device.getType = " + device.getType() + "(unknown=0, classic=1, LE=2, dual=3)");
                     Log.debug("  device.getName = " + device.getName());
 
                     if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
@@ -95,6 +98,10 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
                 Log.debug("Received device pairing request. Sending pin number and pairing confirmation..");
                 device.setPin(Utils.convertPinToBytes("1234"));
                 device.setPairingConfirmation(true);
+                break;
+
+            case BluetoothDevice.ACTION_ACL_CONNECTED:
+                Log.debug("Device connection established to %s", device.getAddress());
                 break;
         }
     }

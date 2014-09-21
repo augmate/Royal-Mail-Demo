@@ -5,6 +5,10 @@ import android.content.*;
 import android.os.IBinder;
 import com.augmate.sdk.logger.Log;
 
+/**
+ * Activities that require bluetooth-scanner should use this connector
+ * it will abstract away background services, discovery, and pairing
+ */
 public class BluetoothScannerConnector {
 
     private Activity activity;
