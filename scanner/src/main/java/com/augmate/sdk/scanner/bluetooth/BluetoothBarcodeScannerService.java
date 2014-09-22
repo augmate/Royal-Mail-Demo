@@ -48,7 +48,8 @@ public class BluetoothBarcodeScannerService extends Service {
                 case ACTION_SCANNER_FOUND: {
                     BluetoothDevice device = intent.getParcelableExtra(EXTRA_BARCODE_SCANNER_DEVICE);
                     Log.debug("Trying discovered device..");
-                    tryHardToConnectToDevice(device);
+                    //tryHardToConnectToDevice(device);
+                    attemptDeviceConnection(device);
                 } break;
 
                 // from BluetoothBarcodeConnection
@@ -95,7 +96,7 @@ public class BluetoothBarcodeScannerService extends Service {
         disconnectFromScanner();
     }
 
-    private List<String> blacklistedDevices = new ArrayList<String>();
+    private List<String> blacklistedDevices = new ArrayList<>();
 
     /**
      * finds an appropriate service on the device and attempts an async connection
@@ -172,6 +173,11 @@ public class BluetoothBarcodeScannerService extends Service {
      * so perhaps all of this logic should be moved to a non-ui thread
      */
     private void findBarcodeScannerDevice() {
+        disconnectFromScanner();
+
+        // always stop discovery just in case it's already going
+        // could even have been started by another application
+        stopDiscovery();
 
         // ties down ui-thread brute-forcing a device
 //        BluetoothDevice device = bluetoothAdapter.getRemoteDevice("38:89:DC:00:0C:91");
@@ -202,7 +208,7 @@ public class BluetoothBarcodeScannerService extends Service {
         // this allows us to cycle through bonded scanners and take a stab at discovery
         blacklistedDevices.clear();
 
-        Log.debug("Bonded barcode-scanner not found. Scanning for a new one..");
+        //Log.debug("Bonded barcode-scanner not found. Scanning for a new one..");
         startDiscovery();
     }
 

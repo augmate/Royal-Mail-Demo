@@ -11,6 +11,8 @@ import com.augmate.sdk.logger.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * UUIDs:
@@ -28,6 +30,7 @@ class BluetoothBarcodeConnection implements Runnable {
     private BluetoothSocket socket;
     private UUID service;
     private Context parentContext;
+    private CountDownLatch threadExitSignal = new CountDownLatch(1);
 
     public static final UUID UUID_SPP = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"); // definitely works
     public static final UUID UUID_HID = UUID.fromString("00001124-0000-1000-8000-00805f9b34fb");
@@ -87,6 +90,7 @@ class BluetoothBarcodeConnection implements Runnable {
         parentContext.sendBroadcast(new Intent(BluetoothBarcodeScannerService.ACTION_SCANNER_DISCONNECTED).putExtra(BluetoothBarcodeScannerService.EXTRA_BARCODE_SCANNER_DEVICE, device));
 
         Log.debug("Barcode streaming thread exiting.");
+        threadExitSignal.countDown();
     }
 
     /**
@@ -153,6 +157,12 @@ class BluetoothBarcodeConnection implements Runnable {
         } catch (IOException e) {
             // this is expected. we are disrupting the bluetooth socket and input stream.
             Log.exception(e, "Caught exception while closing bluetooth socket.");
+        }
+
+        try {
+            threadExitSignal.await(1000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            //Log.exception(e, "Interrupted waiting for thread-exit");
         }
     }
 }
