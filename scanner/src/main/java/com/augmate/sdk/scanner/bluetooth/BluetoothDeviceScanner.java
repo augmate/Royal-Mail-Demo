@@ -19,11 +19,10 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
     private BluetoothBarcodeScannerService bluetoothBarcodeScannerService;
     private BluetoothAdapter bluetoothAdapter;
 
-    // ecom ES301 handheld barcode scanner, alex's phone. scanfob 2006
+    // FIXME: get rid of mac-whitelist and replace with bluetooth class and name matching
     public static final List<String> WhitelistedDevices = Arrays.asList(
-            "00:1C:97:90:8A:4F"
-            //"F8:A9:D0:AC:51:77",
-            //"38:89:DC:00:0C:91"
+            "00:1C:97:90:8A:4F", // ES 301 handheld scanner
+            "38:89:DC:00:0C:91" // scanfob 2006
     );
 
     private boolean deviceIsWhitelisted(String deviceId) {
@@ -46,9 +45,9 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
         switch (intent.getAction()) {
             case BluetoothDevice.ACTION_FOUND:
                 Log.debug("Found device: \"%s\" @ %s", device.getName(), device.getAddress());
-                Log.debug("  device.getBondState= " + device.getBondState());
-                Log.debug("  device.getBluetoothClass = " + device.getBluetoothClass());
-                Log.debug("  device.getType = " + device.getType() + " (unknown=0, classic=1, LE=2, dual=3)");
+//                Log.debug("  device.getBondState= " + device.getBondState());
+//                Log.debug("  device.getBluetoothClass = " + device.getBluetoothClass());
+//                Log.debug("  device.getType = " + device.getType() + " (unknown=0, classic=1, LE=2, dual=3)");
 
                 if (deviceIsWhitelisted(device.getAddress())) {
                     // must cancel discovery mode before attempting to bond or connect with a device

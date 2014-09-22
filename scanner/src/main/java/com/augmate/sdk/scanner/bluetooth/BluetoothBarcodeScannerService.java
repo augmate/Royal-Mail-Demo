@@ -1,10 +1,7 @@
 package com.augmate.sdk.scanner.bluetooth;
 
 import android.app.Service;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothSocket;
+import android.bluetooth.*;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -105,7 +102,10 @@ public class BluetoothBarcodeScannerService extends Service {
      */
     private boolean attemptDeviceConnection(BluetoothDevice device) {
         if(device.getUuids() == null) {
+            // device is probably offline and there is no cached services list
             Log.warn("Sanity Failure: device '%s' has no services available!", device.getName());
+            blacklistedDevices.add(device.getAddress());
+            return false;
         }
 
         UUID bestService = BluetoothBarcodeConnection.findBestService(device.getUuids());

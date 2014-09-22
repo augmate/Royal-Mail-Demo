@@ -49,8 +49,7 @@ class BluetoothBarcodeConnection implements Runnable {
                 return uuid;
             }
 
-
-            Log.debug("  unknown service: %s", uuid.toString());
+            //Log.debug("  unknown service: %s", uuid.toString());
         }
 
         return null;
@@ -126,7 +125,7 @@ class BluetoothBarcodeConnection implements Runnable {
     private void onReadScannerData(int read, byte[] buffer) {
         String newData = new String(buffer, 0, read);
         accumulationBuffer += newData;
-        Log.debug("received from scanner: [%s] (%d bytes)", newData, read);
+        //Log.debug("received from scanner: [%s] (%d bytes)", newData, read);
 
         // normalize line-endings between various scanners
         accumulationBuffer = accumulationBuffer.replace("\r\n", "\n");
