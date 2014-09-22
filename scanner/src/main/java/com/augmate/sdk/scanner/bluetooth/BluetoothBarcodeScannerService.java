@@ -103,6 +103,10 @@ public class BluetoothBarcodeScannerService extends Service {
      * @return true if an appropriate service exists, false if this device is completely inappropriate
      */
     private boolean attemptDeviceConnection(BluetoothDevice device) {
+        if(device.getUuids() == null) {
+            Log.warn("Sanity Failure: device '%s' has no services available!", device.getName());
+        }
+
         UUID bestService = BluetoothBarcodeConnection.findBestService(device.getUuids());
         if(bestService != null) {
             connectToScanner(device, bestService);
@@ -185,10 +189,12 @@ public class BluetoothBarcodeScannerService extends Service {
             if(blacklistedDevices.contains(device.getAddress()))
                 continue;
 
+            BluetoothDevice remoteDevice = bluetoothAdapter.getRemoteDevice(device.getAddress());
+
             Log.debug("Trying bonded device: %s (%s)", device.getName(), device.getAddress());
             // if attempt couldn't be started, then the device doesn't contain relevant services
             // blacklist it for a while
-            if(attemptDeviceConnection(device))
+            if(attemptDeviceConnection(remoteDevice))
                 return;
         }
 

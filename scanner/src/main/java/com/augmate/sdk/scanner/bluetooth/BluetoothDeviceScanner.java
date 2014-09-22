@@ -21,9 +21,9 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
 
     // ecom ES301 handheld barcode scanner, alex's phone. scanfob 2006
     public static final List<String> WhitelistedDevices = Arrays.asList(
-            //"00:1C:97:90:8A:4F",
+            "00:1C:97:90:8A:4F"
             //"F8:A9:D0:AC:51:77",
-            "38:89:DC:00:0C:91"
+            //"38:89:DC:00:0C:91"
     );
 
     private boolean deviceIsWhitelisted(String deviceId) {
