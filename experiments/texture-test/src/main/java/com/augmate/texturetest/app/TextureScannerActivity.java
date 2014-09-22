@@ -29,6 +29,10 @@ public class TextureScannerActivity extends FragmentActivity  implements IScanne
     private TextView cameraScanResult;
     private TextView beaconScanResults;
     private ProgressBar beaconStrength1;
+    private ProgressBar beaconStrength2;
+    private ProgressBar beaconStrength3;
+    private ProgressBar beaconStrength4;
+    private ProgressBar beaconStrength5;
 
     private Timer beaconTimer = new Timer();
     private BeaconDistance beaconDistance = new BeaconDistance();
@@ -40,7 +44,11 @@ public class TextureScannerActivity extends FragmentActivity  implements IScanne
         viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
         cameraScanResult = (TextView) findViewById(R.id.cameraScanResult);
         beaconScanResults = (TextView) findViewById(R.id.beaconScanResults);
-        //beaconStrength1 = (ProgressBar) findViewById(R.id.beaconStrength1);
+        beaconStrength1 = (ProgressBar) findViewById(R.id.beaconStrength1);
+        beaconStrength2 = (ProgressBar) findViewById(R.id.beaconStrength2);
+        beaconStrength3 = (ProgressBar) findViewById(R.id.beaconStrength3);
+        beaconStrength4 = (ProgressBar) findViewById(R.id.beaconStrength4);
+        beaconStrength5 = (ProgressBar) findViewById(R.id.beaconStrength5);
     }
 
     @Override
@@ -79,19 +87,21 @@ public class TextureScannerActivity extends FragmentActivity  implements IScanne
 
             for (BeaconInfo beacon : beaconDistances) {
 
-                displayMsg += String.format("#%d lastestPower=%.02f\n", beacon.minor,  beacon.lastestPower);
+                //displayMsg += String.format("#%d lastestPower=%.02f\n", beacon.minor,  beacon.lastestPower);
+                int tmpPow = Math.abs((int)beacon.lastestPower);
+                tmpPow = Math.min(100,tmpPow);
+                tmpPow = Math.max(0, tmpPow);
 
                 switch (beacon.minor) {
-                    case 1:
-                       // beaconStrength1.setProgress();
+                    case 1: beaconStrength1.setProgress(tmpPow);
                         break;
-                    case 2:
+                    case 2: beaconStrength2.setProgress(tmpPow);
                         break;
-                    case 3:
+                    case 3: beaconStrength3.setProgress(tmpPow);
                         break;
-                    case 4:
+                    case 4: beaconStrength4.setProgress(tmpPow);
                         break;
-                    case 5:
+                    case 5: beaconStrength5.setProgress(tmpPow);
                         break;
                     default:
                         break;

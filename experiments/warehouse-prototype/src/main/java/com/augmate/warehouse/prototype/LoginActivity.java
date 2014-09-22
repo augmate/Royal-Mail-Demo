@@ -53,7 +53,7 @@ public class LoginActivity extends BaseActivity implements GestureDetector.BaseL
         if (requestCode == LOGIN_SCANNER_REQUEST){
             if (resultCode == RESULT_OK){
                 String user = data.getStringExtra(ScannerActivity.BARCODE_STRING);
-                if (!user.contains("user_")){
+                if (!user.contains("User_")){
                     intent.putExtra(MessageActivity.ERROR, true);
                     intent.putExtra(MessageActivity.MESSAGE, getString(R.string.error_scan));
                     startActivityForResult(intent, 999);

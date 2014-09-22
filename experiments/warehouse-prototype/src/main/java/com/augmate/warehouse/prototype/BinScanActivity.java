@@ -41,7 +41,7 @@ public class BinScanActivity extends BaseActivity implements GestureDetector.Bas
         boolean handled = false;
 
         if (gesture == Gesture.TAP){
-            Intent scannerIntent = new Intent(this, ScannerActivity.class);
+            Intent scannerIntent = new Intent(this, HandheldScannerActivity.class);
             startActivityForResult(scannerIntent, BIN_SCANNER_REQUEST);
             playSoundEffect(Sounds.TAP);
             handled = true;
@@ -65,7 +65,7 @@ public class BinScanActivity extends BaseActivity implements GestureDetector.Bas
 
         if (requestCode == BIN_SCANNER_REQUEST){
             if (resultCode == RESULT_OK){
-                String binId = data.getStringExtra(ScannerActivity.BARCODE_STRING);
+                String binId = data.getStringExtra(HandheldScannerActivity.BARCODE_STRING);
                 if (!binId.contains("bin_")){
                     intent.putExtra(MessageActivity.ERROR, true);
                     intent.putExtra(MessageActivity.MESSAGE, getString(R.string.error_bin));
@@ -79,11 +79,11 @@ public class BinScanActivity extends BaseActivity implements GestureDetector.Bas
                 }
             } else if (resultCode == RESULT_CANCELED){
 
-            } else if (resultCode == ScannerActivity.RESULT_ERROR){
+            } else if (resultCode == HandheldScannerActivity.RESULT_ERROR){
                 intent.putExtra(MessageActivity.ERROR, true);
                 intent.putExtra(MessageActivity.MESSAGE, getString(R.string.error_scan));
                 startActivityForResult(intent, 999);
-            } else if (resultCode == ScannerActivity.RESULT_TIMED_OUT){
+            } else if (resultCode == HandheldScannerActivity.RESULT_TIMED_OUT){
                 intent.putExtra(MessageActivity.ERROR, true);
                 intent.putExtra(MessageActivity.MESSAGE, getString(R.string.error_timed_out));
                 startActivityForResult(intent, 999);
