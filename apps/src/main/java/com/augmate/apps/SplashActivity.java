@@ -10,14 +10,10 @@ import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.augmate.apps.common.FontHelper;
 import com.augmate.apps.common.activities.BaseActivity;
 
-import static com.augmate.apps.common.FlowUtils.SPLASH_ANIMATION_1_DURATION;
-import static com.augmate.apps.common.FlowUtils.SPLASH_ANIMATION_1_START_DELAY;
-import static com.augmate.apps.common.FlowUtils.SPLASH_ANIMATION_2_DURATION;
-import static com.augmate.apps.common.FlowUtils.SPLASH_ANIMATION_2_START_DELAY;
+import static com.augmate.apps.common.FlowUtils.*;
 
 public class SplashActivity extends BaseActivity {
 
@@ -29,8 +25,8 @@ public class SplashActivity extends BaseActivity {
         FontHelper.updateFontForBrightness((TextView)findViewById(R.id.augmate_text));
     }
 
-    private void goToLogin() {
-        Intent intent = new Intent(this, LoginActivity.class);
+    private void goToApplicationList() {
+        Intent intent = new Intent(this, ApplicationsActivity.class);
         startActivity(intent);
         finish();
     }
@@ -95,7 +91,7 @@ public class SplashActivity extends BaseActivity {
                         getHandler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                goToLogin();
+                                goToApplicationList();
                             }
                         },500);
                     }
