@@ -19,6 +19,8 @@ import com.google.android.glass.view.WindowUtils;
 
 public class ApplicationsActivity extends BaseActivity {
 
+    private boolean isAttached = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,22 @@ public class ApplicationsActivity extends BaseActivity {
             return true;
         }
         return super.onCreatePanelMenu(featureId, menu);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(isAttached) {
+            openOptionsMenu();
+        }
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        this.isAttached = true;
+        openOptionsMenu();
     }
 
     @Override
