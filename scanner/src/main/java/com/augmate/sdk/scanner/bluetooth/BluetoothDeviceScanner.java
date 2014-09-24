@@ -42,12 +42,15 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         final BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
+        if(device.getBluetoothClass().getDeviceClass() != 0x114)
+            return;
+
         switch (intent.getAction()) {
             case BluetoothDevice.ACTION_FOUND:
                 Log.debug("Found device: \"%s\" @ %s", device.getName(), device.getAddress());
-//                Log.debug("  device.getBondState= " + device.getBondState());
-//                Log.debug("  device.getBluetoothClass = " + device.getBluetoothClass());
-//                Log.debug("  device.getType = " + device.getType() + " (unknown=0, classic=1, LE=2, dual=3)");
+                Log.debug("  device.getBondState= " + device.getBondState());
+                Log.debug("  device.getBluetoothClass = " + device.getBluetoothClass());
+                Log.debug("  device.getType = " + device.getType() + " (unknown=0, classic=1, LE=2, dual=3)");
 
                 if (deviceIsWhitelisted(device.getAddress())) {
                     // must cancel discovery mode before attempting to bond or connect with a device
@@ -55,8 +58,7 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
 
                     if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
                         Log.debug("Device is paired. Broadcasting device find.");
-                        service.sendBroadcast(new Intent(service.ACTION_SCANNER_FOUND)
-                                .putExtra(service.EXTRA_BARCODE_SCANNER_DEVICE, device));
+                        service.sendBroadcast(new Intent(service.ACTION_SCANNER_FOUND).putExtra(service.EXTRA_BARCODE_SCANNER_DEVICE, device));
                     } else if (device.getBondState() == BluetoothDevice.BOND_BONDING) {
                         Log.debug("Device in pairing-state. Waiting on it.");
                     } else {

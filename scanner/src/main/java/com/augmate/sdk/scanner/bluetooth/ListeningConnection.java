@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 class ListeningConnection implements Runnable {
-    public static final UUID UUID_SPP = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
+    public static final UUID UUID_SPP = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     private CountDownLatch threadExitSignal = new CountDownLatch(1);
     private BluetoothServerSocket listeningServer;
@@ -46,18 +46,20 @@ class ListeningConnection implements Runnable {
             try {
                 BluetoothAdapter bluetoothAdapter = ((BluetoothManager) parentContext.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
 
+                bluetoothAdapter.cancelDiscovery();
+                bluetoothAdapter.setName("GlassTester");
+
                 // long-running method
                 // it could have been interrupted by the shutdown request
                 // in which case we need to break out of the loop immediately
-                tryRestorePairedDeviceConnection(bluetoothAdapter);
-
-                if(!alive) return;
+                //tryRestorePairedDeviceConnection(bluetoothAdapter);
+                //if(!alive) return;
 
                 // if we couldn't create an outgoing connection to a pre-bonded device
                 // listen for an incoming connection
 
                 Log.debug("Opening listening socket..");
-                listeningServer = bluetoothAdapter.listenUsingRfcommWithServiceRecord("Server", UUID_SPP);
+                listeningServer = bluetoothAdapter.listenUsingInsecureRfcommWithServiceRecord("Server", UUID_SPP);
 
                 Log.debug("Waiting for connection..");
                 listeningSocket = listeningServer.accept();

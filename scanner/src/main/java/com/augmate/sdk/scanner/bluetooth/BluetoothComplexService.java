@@ -14,6 +14,7 @@ import com.augmate.sdk.logger.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -182,6 +183,16 @@ public class BluetoothComplexService extends Service {
         // could even have been started by another application
         stopDiscovery();
 
+        for (BluetoothDevice device : bluetoothAdapter.getBondedDevices()) {
+            removeBond(device);
+        }
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Log.exception(e, "Interrupted while napping");
+        }
+
         // ties down ui-thread brute-forcing a device
 //        BluetoothDevice device = bluetoothAdapter.getRemoteDevice("38:89:DC:00:0C:91");
 //        tryHardToConnectToDevice(device);
@@ -193,31 +204,42 @@ public class BluetoothComplexService extends Service {
 //            connectToScanner(device, bestService);
 //        }
 
-        blacklistedDevices.clear();
-
-        // just because a device is bonded doesn't mean it's connectable! :(
-        for (BluetoothDevice device : bluetoothAdapter.getBondedDevices()) {
-            if(blacklistedDevices.contains(device.getAddress()))
-                continue;
-
-            if(!BluetoothDeviceScanner.deviceIsWhitelisted(device.getAddress()))
-                continue;
-
-            BluetoothDevice remoteDevice = bluetoothAdapter.getRemoteDevice(device.getAddress());
-
-            Log.debug("Trying bonded device: %s (%s)", device.getName(), device.getAddress());
-            // if attempt couldn't be started, then the device doesn't contain relevant services
-            // blacklist it for a while
-            if(attemptDeviceConnection(remoteDevice))
-                return;
-        }
+//        blacklistedDevices.clear();
+//
+//        // just because a device is bonded doesn't mean it's connectable! :(
+//        for (BluetoothDevice device : bluetoothAdapter.getBondedDevices()) {
+//            if(blacklistedDevices.contains(device.getAddress()))
+//                continue;
+//
+//            if(!BluetoothDeviceScanner.deviceIsWhitelisted(device.getAddress()))
+//                continue;
+//
+//            BluetoothDevice remoteDevice = bluetoothAdapter.getRemoteDevice(device.getAddress());
+//
+//            Log.debug("Trying bonded device: %s (%s)", device.getName(), device.getAddress());
+//            // if attempt couldn't be started, then the device doesn't contain relevant services
+//            // blacklist it for a while
+//            if(attemptDeviceConnection(remoteDevice))
+//                return;
+//        }
 
         // clear blacklist if doing discovery
         // this allows us to cycle through bonded scanners and take a stab at discovery
         //blacklistedDevices.clear();
 
         //Log.debug("Bonded barcode-scanner not found. Scanning for a new one..");
-        //startDiscovery();
+        startDiscovery();
+    }
+
+    private boolean removeBond(BluetoothDevice device) {
+        try {
+            Method m = device.getClass().getMethod("removeBond", (Class[]) null);
+            m.invoke(device, (Object[]) null);
+            return true;
+        } catch (Exception e) {
+            Log.exception(e, "Failed removing bond on device");
+        }
+        return false;
     }
 
     private void connectToScanner(BluetoothDevice device, UUID service) {

@@ -1,17 +1,16 @@
 package com.augmate.sdk.scanner.bluetooth;
 
-import android.bluetooth.*;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.os.ParcelUuid;
 import android.os.Parcelable;
-import android.text.TextUtils;
 import com.augmate.sdk.logger.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -78,75 +77,75 @@ class BluetoothBarcodeConnection implements Runnable {
     @Override
     public void run() {
 
+//        try {
+//            BluetoothAdapter bluetoothAdapter = ((BluetoothManager) parentContext.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+//
+//            Log.debug("Opening listening socket..");
+//            listeningServer = bluetoothAdapter.listenUsingRfcommWithServiceRecord("Server5712", UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
+//            Log.debug("Waiting for connection..");
+//            listeningSocket = listeningServer.accept();
+//            Log.debug("Accepted connection from '%s' @ %s", listeningSocket.getRemoteDevice().getName(), listeningSocket.getRemoteDevice().getAddress());
+//            InputStream inputStream = listeningSocket.getInputStream();
+//
+//            int read;
+//            byte[] buffer = new byte[128];
+//
+//            try {
+//                while ((read = inputStream.read(buffer)) >= 0) {
+//
+//                    /**
+//                     * typical formats
+//                     * scanfob 2006
+//                     *   default: prefix=STX, suffix=CR
+//                     *                   0x02, 0x0A
+//                     *   strangely their CR is actuall \n, but it can sometimes be \r
+//                     */
+//
+//                    ArrayList<String> bytes = new ArrayList<>();
+//                    for (int i = 0; i < read; i++) {
+//                        bytes.add(String.format("%X", buffer[i]));
+//                    }
+//                    Log.debug("Raw input: [%s] (%d bytes)", TextUtils.join(",", bytes), read);
+//
+//                    if(buffer[0] == 0x02 && buffer[read-1] == 0x0A) {
+//                        String value = new String(Arrays.copyOfRange(buffer, 1, read-1), "ISO-8859-1");
+//                        Log.debug("Decoded Scanfob STX+CR format; result: [%s]", value);
+//                    }
+//
+//
+//                }
+//            } catch (IOException exception) {
+//                Log.debug("Barcode streamer interrupted: %s", exception.getMessage());
+//            }
+//
+//        } catch (IOException e) {
+//            Log.exception(e, "Error while listening for an incoming bluetooth connection");
+//        }
+
+        Log.debug("Connecting to: %s + %s", device.getAddress(), service.toString());
+
+        InputStream stream = null;
+
         try {
-            BluetoothAdapter bluetoothAdapter = ((BluetoothManager) parentContext.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
-
-            Log.debug("Opening listening socket..");
-            listeningServer = bluetoothAdapter.listenUsingRfcommWithServiceRecord("Server", UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
-            Log.debug("Waiting for connection..");
-            listeningSocket = listeningServer.accept();
-            Log.debug("Accepted connection from '%s' @ %s", listeningSocket.getRemoteDevice().getName(), listeningSocket.getRemoteDevice().getAddress());
-            InputStream inputStream = listeningSocket.getInputStream();
-
-            int read;
-            byte[] buffer = new byte[128];
-
-            try {
-                while ((read = inputStream.read(buffer)) >= 0) {
-
-                    /**
-                     * typical formats
-                     * scanfob 2006
-                     *   default: prefix=STX, suffix=CR
-                     *                   0x02, 0x0A
-                     *   strangely their CR is actuall \n, but it can sometimes be \r
-                     */
-
-                    ArrayList<String> bytes = new ArrayList<>();
-                    for (int i = 0; i < read; i++) {
-                        bytes.add(String.format("%X", buffer[i]));
-                    }
-                    Log.debug("Raw input: [%s] (%d bytes)", TextUtils.join(",", bytes), read);
-
-                    if(buffer[0] == 0x02 && buffer[read-1] == 0x0A) {
-                        String value = new String(Arrays.copyOfRange(buffer, 1, read-1), "ISO-8859-1");
-                        Log.debug("Decoded Scanfob STX+CR format; result: [%s]", value);
-                    }
-
-
-                }
-            } catch (IOException exception) {
-                Log.debug("Barcode streamer interrupted: %s", exception.getMessage());
-            }
-
+            socket = device.createRfcommSocketToServiceRecord(service);
+            socket.connect();
+            stream = socket.getInputStream();
         } catch (IOException e) {
-            Log.exception(e, "Error while listening for an incoming bluetooth connection");
+            Log.exception(e, "Could not open rfcomm socket and stream to device.");
         }
 
-//        Log.debug("Connecting to: %s + %s", device.getAddress(), service.toString());
-//
-//        InputStream stream = null;
-//
-//        try {
-//            socket = device.createRfcommSocketToServiceRecord(service);
-//            socket.connect();
-//            stream = socket.getInputStream();
-//        } catch (IOException e) {
-//            Log.exception(e, "Could not open rfcomm socket and stream to device.");
-//        }
-//
-//        if (socket != null && stream != null) {
-//            // broadcast that we connected to the device
-//            parentContext.sendBroadcast(new Intent(BluetoothBarcodeScannerService.ACTION_SCANNER_CONNECTED).putExtra(BluetoothBarcodeScannerService.EXTRA_BARCODE_SCANNER_DEVICE, device));
-//
-//            // start processing input stream
-//            processBarcodeScannerStream(stream);
-//        }
-//
-//        socket = null;
-//
-//        // broadcast that we disconnected from the device and are no longer processing its stream
-//        parentContext.sendBroadcast(new Intent(BluetoothBarcodeScannerService.ACTION_SCANNER_DISCONNECTED).putExtra(BluetoothBarcodeScannerService.EXTRA_BARCODE_SCANNER_DEVICE, device));
+        if (socket != null && stream != null) {
+            // broadcast that we connected to the device
+            parentContext.sendBroadcast(new Intent(BluetoothSimpleService.ACTION_SCANNER_CONNECTED).putExtra(BluetoothSimpleService.EXTRA_BARCODE_SCANNER_DEVICE, device));
+
+            // start processing input stream
+            processBarcodeScannerStream(stream);
+        }
+
+        socket = null;
+
+        // broadcast that we disconnected from the device and are no longer processing its stream
+        parentContext.sendBroadcast(new Intent(BluetoothSimpleService.ACTION_SCANNER_DISCONNECTED).putExtra(BluetoothSimpleService.EXTRA_BARCODE_SCANNER_DEVICE, device));
 
         Log.debug("Barcode streaming thread exiting.");
         threadExitSignal.countDown();
