@@ -9,6 +9,7 @@ import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.IScannerResultListener;
+import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -16,7 +17,7 @@ import retrofit.client.Response;
 
 import java.util.ArrayList;
 
-public class NonRetailTouchActivity extends BaseActivity implements IScannerResultListener {
+public class NonRetailTouchActivity extends BaseActivity implements IScannerResultListener, IBluetoothScannerEvents {
 
     NutsApiService nutsApi = new RestAdapter.Builder().setEndpoint("http://nuts.googlex.augmate.com:6969/").build().create(NutsApiService.class);
 
@@ -34,6 +35,10 @@ public class NonRetailTouchActivity extends BaseActivity implements IScannerResu
     public void onBarcodeScanSuccess(String result) {
         Log.debug("Got scanning result: [%s]", result);
 
+        processResultFromScan(result);
+    }
+
+    private void processResultFromScan(String result) {
         if (!recordedBarcodes.contains(result)) {
             recordedBarcodes.add(result);
 
@@ -108,5 +113,25 @@ public class NonRetailTouchActivity extends BaseActivity implements IScannerResu
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBtScannerResult(String barcode) {
+
+    }
+
+    @Override
+    public void onBtScannerConnecting() {
+
+    }
+
+    @Override
+    public void onBtScannerConnected() {
+
+    }
+
+    @Override
+    public void onBtScannerDisconnected() {
+
     }
 }
