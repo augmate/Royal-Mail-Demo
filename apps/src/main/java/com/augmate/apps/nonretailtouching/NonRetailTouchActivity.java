@@ -8,7 +8,7 @@ import com.augmate.apps.R;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
-import com.augmate.sdk.scanner.IScannerResultListener;
+import com.augmate.sdk.scanner.bluetooth.BluetoothScannerConnector;
 import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -17,9 +17,10 @@ import retrofit.client.Response;
 
 import java.util.ArrayList;
 
-public class NonRetailTouchActivity extends BaseActivity implements IScannerResultListener, IBluetoothScannerEvents {
+public class NonRetailTouchActivity extends BaseActivity implements IBluetoothScannerEvents {
 
-    NutsApiService nutsApi = new RestAdapter.Builder().setEndpoint("http://nuts.googlex.augmate.com:6969/").build().create(NutsApiService.class);
+    private BluetoothScannerConnector bluetoothScannerConnector = new BluetoothScannerConnector(this);
+    private NutsApiService nutsApi = new RestAdapter.Builder().setEndpoint("http://nuts.googlex.augmate.com:6969/").build().create(NutsApiService.class);
 
     private ArrayList<String> recordedBarcodes = new ArrayList<>();
     private ArrayList<String> submittedBarcodes = new ArrayList<>();
@@ -29,13 +30,8 @@ public class NonRetailTouchActivity extends BaseActivity implements IScannerResu
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_non_retail_touch);
-    }
 
-    @Override
-    public void onBarcodeScanSuccess(String result) {
-        Log.debug("Got scanning result: [%s]", result);
-
-        processResultFromScan(result);
+        bluetoothScannerConnector.start();
     }
 
     private void processResultFromScan(String result) {
@@ -51,6 +47,13 @@ public class NonRetailTouchActivity extends BaseActivity implements IScannerResu
 
             queueBarcodeCommit(result);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        bluetoothScannerConnector.stop();
     }
 
     /**
@@ -117,21 +120,25 @@ public class NonRetailTouchActivity extends BaseActivity implements IScannerResu
 
     @Override
     public void onBtScannerResult(String barcode) {
+        Log.debug("Received scan from barcode %s", barcode);
 
+        ((TextView)findViewById(R.id.scan_content_view)).setText(barcode);
+
+        processResultFromScan(barcode);
     }
 
     @Override
     public void onBtScannerConnecting() {
-
+        Log.debug("BT Scanner Connecting...");
     }
 
     @Override
     public void onBtScannerConnected() {
-
+        Log.debug("BT Scanner Connected!");
     }
 
     @Override
     public void onBtScannerDisconnected() {
-
+        Log.debug("BT Scanner Disconnected!");
     }
 }
