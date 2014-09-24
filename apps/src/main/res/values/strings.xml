@@ -7,7 +7,7 @@
     <string name="action_cycle_count">Cycle count</string>
     <string name="action_toggle_animations">Toggle Animations</string>
     <string name="action_truck_loading">Truck Loading</string>
-    <string name="action_non_retail_touch">Non Retail Touching</string>
+    <string name="action_non_retail_touch">Non Retail Touch</string>
 
     <string name="pref_animation_toggle">ANIMATION_TOGGLE</string>
     <string name="settings_prefs">SETTINGS</string>
