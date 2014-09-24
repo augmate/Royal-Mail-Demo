@@ -12,7 +12,7 @@ import com.augmate.sdk.logger.Log;
 public class BluetoothScannerConnector {
 
     private Activity activity;
-    private IBluetoothScannerEvents connector;
+    private IBluetoothScannerEvents callbackReceiver;
 
     /**
      * I'll be honest, Java has a pretty great implementation of generics now: base class and interface in one typename!
@@ -22,20 +22,20 @@ public class BluetoothScannerConnector {
      */
     public <T extends Activity & IBluetoothScannerEvents> BluetoothScannerConnector(T activity) {
         this.activity = activity;
-        this.connector = activity;
+        this.callbackReceiver = activity;
     }
 
-    private BluetoothBarcodeScannerService bluetoothScannerService;
+    private BluetoothSimpleService bluetoothScannerService;
     private ServiceConnection bluetoothScannerConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            bluetoothScannerService = ((BluetoothBarcodeScannerService.ScannerBinder) service).getService();
-            Log.debug("Service connected: " + name.flattenToShortString());
+            bluetoothScannerService = ((BluetoothSimpleService.ScannerBinder) service).getService();
+            Log.debug("Service bound: " + name.flattenToShortString());
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Log.debug("Service disconnected: " + name.flattenToShortString());
+            Log.debug("Service unbound: " + name.flattenToShortString());
             bluetoothScannerService = null;
         }
     };
@@ -49,20 +49,16 @@ public class BluetoothScannerConnector {
             String action = intent.getAction();
 
             switch (action) {
-                case BluetoothBarcodeScannerService.ACTION_BARCODE_SCANNED:
-                    connector.onBtScannerResult(intent.getStringExtra(BluetoothBarcodeScannerService.EXTRA_BARCODE_STRING));
+                case BluetoothSimpleService.ACTION_BARCODE_SCANNED:
+                    callbackReceiver.onBtScannerResult(intent.getStringExtra(BluetoothSimpleService.EXTRA_BARCODE_STRING));
                     break;
 
-                case BluetoothBarcodeScannerService.ACTION_SCANNER_CONNECTING:
-                    connector.onBtScannerConnecting();
+                case BluetoothSimpleService.ACTION_SCANNER_CONNECTED:
+                    callbackReceiver.onBtScannerConnected();
                     break;
 
-                case BluetoothBarcodeScannerService.ACTION_SCANNER_CONNECTED:
-                    connector.onBtScannerConnected();
-                    break;
-
-                case BluetoothBarcodeScannerService.ACTION_SCANNER_DISCONNECTED:
-                    connector.onBtScannerDisconnected();
+                case BluetoothSimpleService.ACTION_SCANNER_DISCONNECTED:
+                    callbackReceiver.onBtScannerDisconnected();
                     break;
 
                 default:
@@ -72,8 +68,7 @@ public class BluetoothScannerConnector {
     };
 
     public void reconnect() {
-        if (bluetoothScannerService != null)
-            bluetoothScannerService.reconnect();
+
     }
 
     /**
@@ -83,13 +78,12 @@ public class BluetoothScannerConnector {
      */
     public void start() {
         Log.debug("Binding activity to scanner service..");
-        activity.bindService(new Intent(activity, BluetoothBarcodeScannerService.class), bluetoothScannerConnection, Context.BIND_AUTO_CREATE);
+        activity.bindService(new Intent(activity, BluetoothSimpleService.class), bluetoothScannerConnection, Context.BIND_AUTO_CREATE);
 
         // register for scanner notifications
-        activity.registerReceiver(receiver, new IntentFilter(BluetoothBarcodeScannerService.ACTION_BARCODE_SCANNED)); // barcode scanned
-        activity.registerReceiver(receiver, new IntentFilter(BluetoothBarcodeScannerService.ACTION_SCANNER_CONNECTING)); // can take a few seconds
-        activity.registerReceiver(receiver, new IntentFilter(BluetoothBarcodeScannerService.ACTION_SCANNER_CONNECTED)); // barcode-scanner connected
-        activity.registerReceiver(receiver, new IntentFilter(BluetoothBarcodeScannerService.ACTION_SCANNER_DISCONNECTED)); // barcode-scanner disconnected
+        activity.registerReceiver(receiver, new IntentFilter(BluetoothSimpleService.ACTION_BARCODE_SCANNED)); // barcode scanned
+        activity.registerReceiver(receiver, new IntentFilter(BluetoothSimpleService.ACTION_SCANNER_CONNECTED)); // barcode-scanner connected
+        activity.registerReceiver(receiver, new IntentFilter(BluetoothSimpleService.ACTION_SCANNER_DISCONNECTED)); // barcode-scanner disconnected
     }
 
     /**

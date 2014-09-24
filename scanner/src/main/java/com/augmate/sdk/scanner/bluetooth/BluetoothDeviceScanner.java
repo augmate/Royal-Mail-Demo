@@ -16,21 +16,21 @@ import java.util.List;
  * attempts to locate a barcode scanner or another white-listed device in discovery mode
  */
 public class BluetoothDeviceScanner extends BroadcastReceiver {
-    private BluetoothBarcodeScannerService bluetoothBarcodeScannerService;
+    private BluetoothComplexService service;
     private BluetoothAdapter bluetoothAdapter;
 
     // FIXME: get rid of mac-whitelist and replace with bluetooth class and name matching
     public static final List<String> WhitelistedDevices = Arrays.asList(
-            "00:1C:97:90:8A:4F", // ES 301 handheld scanner
+            //"00:1C:97:90:8A:4F", // ES 301 handheld scanner
             "38:89:DC:00:0C:91" // scanfob 2006
     );
 
-    private boolean deviceIsWhitelisted(String deviceId) {
+    public static boolean deviceIsWhitelisted(String deviceId) {
         return WhitelistedDevices.contains(deviceId);
     }
 
-    BluetoothDeviceScanner(BluetoothBarcodeScannerService bluetoothBarcodeScannerService, BluetoothAdapter bluetoothAdapter) {
-        this.bluetoothBarcodeScannerService = bluetoothBarcodeScannerService;
+    BluetoothDeviceScanner(BluetoothComplexService service, BluetoothAdapter bluetoothAdapter) {
+        this.service = service;
         this.bluetoothAdapter = bluetoothAdapter;
     }
 
@@ -55,8 +55,8 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
 
                     if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
                         Log.debug("Device is paired. Broadcasting device find.");
-                        bluetoothBarcodeScannerService.sendBroadcast(new Intent(BluetoothBarcodeScannerService.ACTION_SCANNER_FOUND)
-                                .putExtra(BluetoothBarcodeScannerService.EXTRA_BARCODE_SCANNER_DEVICE, device));
+                        service.sendBroadcast(new Intent(service.ACTION_SCANNER_FOUND)
+                                .putExtra(service.EXTRA_BARCODE_SCANNER_DEVICE, device));
                     } else if (device.getBondState() == BluetoothDevice.BOND_BONDING) {
                         Log.debug("Device in pairing-state. Waiting on it.");
                     } else {
@@ -83,8 +83,8 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
                         break;
                     case BluetoothDevice.BOND_BONDED:
                         Log.debug("Device pairing successful. Broadcasting device find.");
-                        bluetoothBarcodeScannerService.sendBroadcast(new Intent(BluetoothBarcodeScannerService.ACTION_SCANNER_FOUND)
-                                .putExtra(BluetoothBarcodeScannerService.EXTRA_BARCODE_SCANNER_DEVICE, device));
+                        service.sendBroadcast(new Intent(service.ACTION_SCANNER_FOUND)
+                                .putExtra(service.EXTRA_BARCODE_SCANNER_DEVICE, device));
                         break;
                 }
                 break;

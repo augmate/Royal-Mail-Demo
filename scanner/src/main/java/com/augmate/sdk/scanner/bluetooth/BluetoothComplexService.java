@@ -18,7 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class BluetoothBarcodeScannerService extends Service {
+/**
+ * This one does too much. Handles pairing and connecting to devices.
+ */
+public class BluetoothComplexService extends Service {
 
     public static final String ACTION_BARCODE_SCANNED = "com.augmate.sdk.scanner.bluetooth.action.SCANNED";
     public static final String ACTION_SCANNER_FOUND = "com.augmate.sdk.scanner.bluetooth.action.BARCODE_SCANNER_FOUND";
@@ -190,9 +193,14 @@ public class BluetoothBarcodeScannerService extends Service {
 //            connectToScanner(device, bestService);
 //        }
 
+        blacklistedDevices.clear();
+
         // just because a device is bonded doesn't mean it's connectable! :(
         for (BluetoothDevice device : bluetoothAdapter.getBondedDevices()) {
             if(blacklistedDevices.contains(device.getAddress()))
+                continue;
+
+            if(!BluetoothDeviceScanner.deviceIsWhitelisted(device.getAddress()))
                 continue;
 
             BluetoothDevice remoteDevice = bluetoothAdapter.getRemoteDevice(device.getAddress());
@@ -206,14 +214,14 @@ public class BluetoothBarcodeScannerService extends Service {
 
         // clear blacklist if doing discovery
         // this allows us to cycle through bonded scanners and take a stab at discovery
-        blacklistedDevices.clear();
+        //blacklistedDevices.clear();
 
         //Log.debug("Bonded barcode-scanner not found. Scanning for a new one..");
-        startDiscovery();
+        //startDiscovery();
     }
 
     private void connectToScanner(BluetoothDevice device, UUID service) {
-        sendBroadcast(new Intent(BluetoothBarcodeScannerService.ACTION_SCANNER_CONNECTING).putExtra(BluetoothBarcodeScannerService.EXTRA_BARCODE_SCANNER_DEVICE, device));
+        //sendBroadcast(new Intent(BluetoothSimpleService.ACTION_SCANNER_CONNECTING).putExtra(BluetoothBarcodeScannerService.EXTRA_BARCODE_SCANNER_DEVICE, device));
         new Thread(barcodeStreamer = new BluetoothBarcodeConnection(device, service, getBaseContext()), "bt-scanner").start();
     }
 
@@ -271,8 +279,8 @@ public class BluetoothBarcodeScannerService extends Service {
     }
 
     public class ScannerBinder extends Binder {
-        public BluetoothBarcodeScannerService getService() {
-            return BluetoothBarcodeScannerService.this;
+        public BluetoothComplexService getService() {
+            return BluetoothComplexService.this;
         }
     }
 }
