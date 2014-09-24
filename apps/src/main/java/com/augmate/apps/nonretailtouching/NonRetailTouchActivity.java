@@ -120,7 +120,7 @@ public class NonRetailTouchActivity extends BaseActivity implements IBluetoothSc
 
     @Override
     public void onBtScannerResult(String barcode) {
-        Log.debug("Received scan from barcode %s", barcode);
+        Log.debug("NRT - Received scan from barcode %s", barcode);
 
         ((TextView)findViewById(R.id.scan_content_view)).setText(barcode);
 
@@ -129,16 +129,16 @@ public class NonRetailTouchActivity extends BaseActivity implements IBluetoothSc
 
     @Override
     public void onBtScannerConnecting() {
-        Log.debug("BT Scanner Connecting...");
+        Log.debug("NRT - BT Scanner Connecting...");
     }
 
     @Override
     public void onBtScannerConnected() {
-        Log.debug("BT Scanner Connected!");
+        Log.debug("NRT - BT Scanner Connected!");
     }
 
     @Override
     public void onBtScannerDisconnected() {
-        Log.debug("BT Scanner Disconnected!");
+        Log.debug("NRT - BT Scanner Disconnected!");
     }
 }
