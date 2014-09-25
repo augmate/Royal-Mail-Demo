@@ -2,19 +2,20 @@ package com.augmate.apps.counter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 import com.augmate.apps.R;
-import com.augmate.apps.common.*;
+import com.augmate.apps.common.ErrorPrompt;
+import com.augmate.apps.common.FontHelper;
+import com.augmate.apps.common.SoundHelper;
+import com.augmate.apps.common.UserUtils;
 import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
@@ -39,8 +40,6 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_structured_cyclecount);
 
-
-        android.util.Log.d("WTF", "onCreate has started");
 
         FontHelper.updateFontForBrightness((TextView) findViewById(R.id.barcodeScannerStatus));
 
@@ -82,7 +81,6 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
 //        }, 10000);
 
         bluetoothScannerConnector.start();
-        bluetoothScannerConnector.reconnect();
     }
 
     @Override
@@ -95,14 +93,11 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
     @Override
     protected void onResume() {
         super.onResume();
-        bluetoothScannerConnector.start();
-        bluetoothScannerConnector.reconnect();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        bluetoothScannerConnector.stop();
     }
 
     @Override
@@ -176,11 +171,9 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
         resultIntent.putExtra(BARCODE_STRING, barcode);
         setResult(RESULT_OK, resultIntent);
         playSoundEffect(Sounds.SUCCESS);
-        if (barcode.contains("bin_"))
-            processBarcodeScanning(barcode, false,true,false);
-        else
-            processBarcodeScanning(barcode, false,false,false);
-        //finish();
+
+        // always pass the barcode
+        processBarcodeScanning(barcode, false,true,false);
     }
 
     private AudioManager mAudioManager;

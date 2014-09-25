@@ -14,8 +14,9 @@ import com.augmate.sdk.beacons.BeaconInfo;
 import com.augmate.sdk.beacons.BeaconRegion;
 import com.augmate.sdk.beacons.RegionProcessor;
 import com.augmate.sdk.logger.Log;
-import com.augmate.sdk.scanner.bluetooth.IncomingConnector;
 import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
+import com.augmate.sdk.scanner.bluetooth.IncomingConnector;
+import com.augmate.sdk.scanner.bluetooth.OutgoingConnector;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
@@ -24,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BenchmarkActivity extends Activity implements IBluetoothScannerEvents {
-    private IncomingConnector incomingConnector = new IncomingConnector(this);
+    private OutgoingConnector connector = new OutgoingConnector(this);
     private BeaconDistance beaconDistanceMeasurer = new BeaconDistance();
 
     // captures keys before UI elements can steal them :)
@@ -35,7 +36,7 @@ public class BenchmarkActivity extends Activity implements IBluetoothScannerEven
                         || event.getKeyCode() == KeyEvent.KEYCODE_MENU)) {
             Log.debug("User requested scanner reconnect.");
             beaconDistanceMeasurer.stopListening();
-            incomingConnector.reconnect();
+            connector.reconnect();
 
             return true;
         }
@@ -54,7 +55,7 @@ public class BenchmarkActivity extends Activity implements IBluetoothScannerEven
         // prep beacon ranger but don't start it until we have a scanner bonded and connected.
         // ranging seems to interfere with ordinary bluetooth connections :(
         beaconDistanceMeasurer.configureFromContext(this);
-        incomingConnector.start();
+        connector.start();
     }
 
     @Override
@@ -63,7 +64,7 @@ public class BenchmarkActivity extends Activity implements IBluetoothScannerEven
         Log.debug("Unbinding from scanner service.");
 
         beaconDistanceMeasurer.stopListening();
-        incomingConnector.stop();
+        connector.stop();
     }
 
     private int packageCountTruck1 = 0;

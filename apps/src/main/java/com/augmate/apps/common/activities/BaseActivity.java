@@ -12,17 +12,15 @@ import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ViewFlipper;
-
 import com.augmate.apps.common.ErrorPrompt;
 import com.augmate.apps.common.FlowUtils;
 import com.augmate.apps.scanner.ScannerActivity;
 import com.augmate.sdk.logger.Log;
 import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import java.io.Serializable;
-
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static com.augmate.apps.common.FlowUtils.TRANSITION_TIMEOUT;
 
@@ -146,7 +144,7 @@ public class BaseActivity extends Activity {
     public void showConfirmation(String confirmationText,Class clazz, Serializable data) {
         Intent intent = new Intent(this, MessageActivity.class);
         intent.putExtra(MessageActivity.MESSAGE, confirmationText);
-        if (clazz != null) {
+        if (clazz != null && clazz.getName() != null) {
             intent.putExtra(MessageActivity.CLASS, clazz.getName());
         }
         if (data != null) {
