@@ -13,25 +13,18 @@ import android.view.MotionEvent;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 import com.augmate.apps.R;
-import com.augmate.apps.common.ErrorPrompt;
-import com.augmate.apps.common.FlowUtils;
-import com.augmate.apps.common.FontHelper;
-import com.augmate.apps.common.SoundHelper;
-import com.augmate.apps.common.TouchResponseListener;
-import com.augmate.apps.common.UserUtils;
+import com.augmate.apps.common.*;
 import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
-import com.augmate.sdk.scanner.bluetooth.BluetoothScannerConnector;
 import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
+import com.augmate.sdk.scanner.bluetooth.OutgoingConnector;
 import com.google.android.glass.media.Sounds;
 import com.google.android.glass.touchpad.GestureDetector;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 
 public class StructuredCycleCountActivity extends BaseActivity implements IBluetoothScannerEvents {
     ViewFlipper flipper;
     private GestureDetector mGestureDetector;
-    private BluetoothScannerConnector bluetoothScannerConnector = new BluetoothScannerConnector(this);
+    private OutgoingConnector bluetoothScannerConnector = new OutgoingConnector(this);
     public static final String BARCODE_STRING = "bcs";
     public static final int RESULT_TIMED_OUT = 10;
     public static final int RESULT_ERROR = 11;
