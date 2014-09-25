@@ -36,7 +36,7 @@ public class LocalFileAppender implements ILogAppender {
     public void append(LogLevel level, String formattedMsg) {
         String tag = getTag();
         String thread = Thread.currentThread().getName();
-        String formatted = deviceId + " | #" + sessionId + " | " + String.format("%-9s", thread) + " | " + What.frameAt(0).shortPath + "()";
+        String formatted = deviceId + " | #" + sessionId + " | " + String.format("%-10s", thread) + " | " + What.frameAt(0).shortPath + "()";
         String finalMsg = formatted + "; " + formattedMsg + "\n";
 
         try {

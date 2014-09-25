@@ -238,7 +238,7 @@ public class OutgoingService extends Service {
             this.registerReceiver(bluetoothAdapterReceiver, new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED));
             //this.registerReceiver(bluetoothAdapterReceiver, new IntentFilter(BluetoothDevice.ACTION_UUID));
             this.registerReceiver(bluetoothAdapterReceiver, new IntentFilter(BluetoothDevice.ACTION_PAIRING_REQUEST));
-            this.registerReceiver(bluetoothAdapterReceiver, new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED));
+            //this.registerReceiver(bluetoothAdapterReceiver, new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED));
         }
 
         if (bluetoothAdapter.isDiscovering()) {

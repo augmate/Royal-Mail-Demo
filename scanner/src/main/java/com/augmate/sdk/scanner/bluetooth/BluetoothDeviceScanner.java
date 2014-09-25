@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Parcelable;
 import com.augmate.sdk.logger.Log;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,10 +22,11 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
 
     // FIXME: get rid of mac-whitelist and replace with bluetooth class and name matching
     public static final List<String> WhitelistedDevices = Arrays.asList(
-            //"00:1C:97:90:8A:4F", // ES 301 handheld scanner
+            //"00:1C:97:90:8A:4F" // ES 301 handheld scanner
             //"38:89:DC:00:0C:91" // scanfob 2006: as-001
-            //"38:89:DC:00:00:C5" // scanfob 2006: as-007
-            "38:89:DC:00:00:A7" // scanfob 2006: as-006
+            "38:89:DC:00:00:C5" // scanfob 2006: as-007
+            //"38:89:DC:00:00:A7" // scanfob 2006: as-006
+            //"38:89:DC:00:00:C0" // scanfob 2006: as-005
     );
 
     public static boolean deviceIsWhitelisted(String deviceId) {
@@ -36,6 +38,17 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
         this.bluetoothAdapter = bluetoothAdapter;
     }
 
+    private boolean removeBond(BluetoothDevice device) {
+        try {
+            Method m = device.getClass().getMethod("removeBond", (Class[]) null);
+            m.invoke(device, (Object[]) null);
+            return true;
+        } catch (Exception e) {
+            Log.exception(e, "Failed removing bond on device");
+        }
+        return false;
+    }
+
     /**
      * Broadcasts ACTION_SCANNER_FOUND when a bonded scanner is found or when a new bond is created to a scanner
      * @param context
@@ -44,8 +57,20 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         final BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-        if(device.getBluetoothClass().getDeviceClass() != 0x114)
+        boolean foundScanner = false;
+
+        if(device.getBluetoothClass().getDeviceClass() == 0x1f00 && device.getType() == 1 && device.getName() != null && device.getName().startsWith("Wireless Scan")) {
+            // ES 301 handheld scanner format
+            foundScanner = true;
+        }
+
+        if(device.getBluetoothClass().getDeviceClass() == 0x114 && device.getType() == 1 && device.getName() != null && device.getName().startsWith("Scanfob")) {
+            foundScanner = true;
+        }
+
+        if(!foundScanner) {
             return;
+        }
 
         switch (intent.getAction()) {
             case BluetoothDevice.ACTION_FOUND:
@@ -59,8 +84,9 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
                     bluetoothAdapter.cancelDiscovery();
 
                     if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
-                        Log.debug("Device is paired. Broadcasting device find.");
-                        service.sendBroadcast(new Intent(ServiceEvents.ACTION_SCANNER_FOUND).putExtra(ServiceEvents.EXTRA_BARCODE_SCANNER_DEVICE, device));
+                        Log.debug("Device is already paired. Re-pairing..");
+                        removeBond(device);
+                        //service.sendBroadcast(new Intent(ServiceEvents.ACTION_SCANNER_FOUND).putExtra(ServiceEvents.EXTRA_BARCODE_SCANNER_DEVICE, device));
                     } else if (device.getBondState() == BluetoothDevice.BOND_BONDING) {
                         Log.debug("Device in pairing-state. Waiting on it.");
                     } else {
@@ -74,19 +100,19 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
             case BluetoothDevice.ACTION_BOND_STATE_CHANGED:
                 int prevBondState = intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, -1);
                 int bondState = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, -1);
-                Log.debug("Device %s bond state changed from %d to %d", device.getAddress(), prevBondState, bondState);
+                //Log.debug("Device %s bond state changed from %d to %d", device.getAddress(), prevBondState, bondState);
 
                 switch (bondState) {
                     case BluetoothDevice.BOND_NONE:
-                        Log.debug("Device unpairing successful. Starting pairing..");
+                        Log.debug("Device %s unpairing successful. Starting pairing..", device.getAddress());
                         boolean beganPairing = device.createBond();
                         Log.debug("  createBond() returned = " + beganPairing);
                         break;
                     case BluetoothDevice.BOND_BONDING:
-                        Log.debug("Device is being paired");
+                        Log.debug("Device %s is being paired", device.getAddress());
                         break;
                     case BluetoothDevice.BOND_BONDED:
-                        Log.debug("Device pairing successful. Broadcasting device find.");
+                        Log.debug("Device %s pairing successful. Broadcasting device find.", device.getAddress());
 
                         BluetoothDevice remoteDevice = bluetoothAdapter.getRemoteDevice(device.getAddress());
 
@@ -99,10 +125,18 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
             // device service scan. useful for learning about devices.
             case BluetoothDevice.ACTION_UUID:
                 Parcelable[] uuidExtra = intent.getParcelableArrayExtra(BluetoothDevice.EXTRA_UUID);
-                Log.debug("Found UUID:");
+                Log.debug("Received Service UUIDs:");
                 for (Parcelable anUuidExtra : uuidExtra) {
                     Log.debug("  Service: " + anUuidExtra.toString());
                 }
+
+                Log.debug("Broadcasting device find: %s", device.getAddress());
+
+                BluetoothDevice remoteDevice = bluetoothAdapter.getRemoteDevice(device.getAddress());
+
+                service.sendBroadcast(new Intent(ServiceEvents.ACTION_SCANNER_FOUND)
+                        .putExtra(ServiceEvents.EXTRA_BARCODE_SCANNER_DEVICE, remoteDevice));
+
                 break;
 
             case BluetoothDevice.ACTION_PAIRING_REQUEST:
@@ -112,7 +146,7 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
                 break;
 
             case BluetoothDevice.ACTION_ACL_CONNECTED:
-                Log.debug("Device connection established to %s", device.getAddress());
+                //Log.debug("Device connection established to %s", device.getAddress());
                 break;
         }
     }
