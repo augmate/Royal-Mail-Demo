@@ -16,20 +16,21 @@ import java.util.List;
  * attempts to locate a barcode scanner or another white-listed device in discovery mode
  */
 public class BluetoothDeviceScanner extends BroadcastReceiver {
-    private BluetoothComplexService service;
+    private OutgoingService service;
     private BluetoothAdapter bluetoothAdapter;
 
     // FIXME: get rid of mac-whitelist and replace with bluetooth class and name matching
     public static final List<String> WhitelistedDevices = Arrays.asList(
             //"00:1C:97:90:8A:4F", // ES 301 handheld scanner
-            "38:89:DC:00:0C:91" // scanfob 2006
+            //"38:89:DC:00:0C:91" // scanfob 2006: as-001
+            "38:89:DC:00:00:C5" // scanfob 2006: as-007
     );
 
     public static boolean deviceIsWhitelisted(String deviceId) {
         return WhitelistedDevices.contains(deviceId);
     }
 
-    BluetoothDeviceScanner(BluetoothComplexService service, BluetoothAdapter bluetoothAdapter) {
+    BluetoothDeviceScanner(OutgoingService service, BluetoothAdapter bluetoothAdapter) {
         this.service = service;
         this.bluetoothAdapter = bluetoothAdapter;
     }
@@ -58,7 +59,7 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
 
                     if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
                         Log.debug("Device is paired. Broadcasting device find.");
-                        service.sendBroadcast(new Intent(service.ACTION_SCANNER_FOUND).putExtra(service.EXTRA_BARCODE_SCANNER_DEVICE, device));
+                        service.sendBroadcast(new Intent(ServiceEvents.ACTION_SCANNER_FOUND).putExtra(ServiceEvents.EXTRA_BARCODE_SCANNER_DEVICE, device));
                     } else if (device.getBondState() == BluetoothDevice.BOND_BONDING) {
                         Log.debug("Device in pairing-state. Waiting on it.");
                     } else {
@@ -85,8 +86,8 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
                         break;
                     case BluetoothDevice.BOND_BONDED:
                         Log.debug("Device pairing successful. Broadcasting device find.");
-                        service.sendBroadcast(new Intent(service.ACTION_SCANNER_FOUND)
-                                .putExtra(service.EXTRA_BARCODE_SCANNER_DEVICE, device));
+                        service.sendBroadcast(new Intent(ServiceEvents.ACTION_SCANNER_FOUND)
+                                .putExtra(ServiceEvents.EXTRA_BARCODE_SCANNER_DEVICE, device));
                         break;
                 }
                 break;

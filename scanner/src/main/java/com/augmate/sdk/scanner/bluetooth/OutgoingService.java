@@ -22,19 +22,10 @@ import java.util.UUID;
 /**
  * This one does too much. Handles pairing and connecting to devices.
  */
-public class BluetoothComplexService extends Service {
-
-    public static final String ACTION_BARCODE_SCANNED = "com.augmate.sdk.scanner.bluetooth.action.SCANNED";
-    public static final String ACTION_SCANNER_FOUND = "com.augmate.sdk.scanner.bluetooth.action.BARCODE_SCANNER_FOUND";
-    public static final String ACTION_SCANNER_CONNECTED = "com.augmate.sdk.scanner.bluetooth.action.BARCODE_SCANNER_CONNECTED";
-    public static final String ACTION_SCANNER_CONNECTING = "com.augmate.sdk.scanner.bluetooth.action.BARCODE_SCANNER_CONNECTING";
-    public static final String ACTION_SCANNER_DISCONNECTED = "com.augmate.sdk.scanner.bluetooth.action.BARCODE_SCANNER_DISCONNECTED";
-
-    public static final String EXTRA_BARCODE_STRING = "com.augmate.sdk.scanner.bluetooth.extra.BARCODE_STRING";
-    public static final String EXTRA_BARCODE_SCANNER_DEVICE = "com.augmate.sdk.scanner.bluetooth.extra.BARCODE_SCANNER";
+public class OutgoingService extends Service {
 
     private BluetoothDeviceScanner bluetoothAdapterReceiver;
-    private BluetoothBarcodeConnection barcodeStreamer;
+    private OutgoingConnection barcodeStreamer;
     private BluetoothAdapter bluetoothAdapter;
 
     /**
@@ -46,21 +37,21 @@ public class BluetoothComplexService extends Service {
             switch (intent.getAction()) {
 
                 // from BluetoothDeviceScanner
-                case ACTION_SCANNER_FOUND: {
-                    BluetoothDevice device = intent.getParcelableExtra(EXTRA_BARCODE_SCANNER_DEVICE);
+                case ServiceEvents.ACTION_SCANNER_FOUND: {
+                    BluetoothDevice device = intent.getParcelableExtra(ServiceEvents.EXTRA_BARCODE_SCANNER_DEVICE);
                     Log.debug("Trying discovered device..");
                     //tryHardToConnectToDevice(device);
                     attemptDeviceConnection(device);
                 } break;
 
                 // from BluetoothBarcodeConnection
-                case ACTION_SCANNER_CONNECTED:
+                case ServiceEvents.ACTION_SCANNER_CONNECTED:
                     Log.debug("Barcode scanner connection established.");
                     break;
 
                 // from BluetoothBarcodeConnection
-                case ACTION_SCANNER_DISCONNECTED: {
-                    BluetoothDevice device = intent.getParcelableExtra(EXTRA_BARCODE_SCANNER_DEVICE);
+                case ServiceEvents.ACTION_SCANNER_DISCONNECTED: {
+                    BluetoothDevice device = intent.getParcelableExtra(ServiceEvents.EXTRA_BARCODE_SCANNER_DEVICE);
                     Log.debug("Barcode scanner connection lost.");
                     blacklistedDevices.add(device.getAddress());
                     disconnectFromScanner();
@@ -75,9 +66,9 @@ public class BluetoothComplexService extends Service {
     public void onCreate() {
         Log.debug("Starting bluetooth barcode-scanner service.");
 
-        registerReceiver(barcodeScannerReceiver, new IntentFilter(ACTION_SCANNER_FOUND));
-        registerReceiver(barcodeScannerReceiver, new IntentFilter(ACTION_SCANNER_CONNECTED));
-        registerReceiver(barcodeScannerReceiver, new IntentFilter(ACTION_SCANNER_DISCONNECTED));
+        registerReceiver(barcodeScannerReceiver, new IntentFilter(ServiceEvents.ACTION_SCANNER_FOUND));
+        registerReceiver(barcodeScannerReceiver, new IntentFilter(ServiceEvents.ACTION_SCANNER_CONNECTED));
+        registerReceiver(barcodeScannerReceiver, new IntentFilter(ServiceEvents.ACTION_SCANNER_DISCONNECTED));
 
         // TODO: enable bluetooth adapter if disabled
         bluetoothAdapter = ((BluetoothManager) this.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
@@ -112,7 +103,7 @@ public class BluetoothComplexService extends Service {
             return false;
         }
 
-        UUID bestService = BluetoothBarcodeConnection.findBestService(device.getUuids());
+        UUID bestService = OutgoingConnection.findBestService(device.getUuids());
         if(bestService != null) {
             connectToScanner(device, bestService);
             return true;
@@ -183,16 +174,6 @@ public class BluetoothComplexService extends Service {
         // could even have been started by another application
         stopDiscovery();
 
-        for (BluetoothDevice device : bluetoothAdapter.getBondedDevices()) {
-            removeBond(device);
-        }
-
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Log.exception(e, "Interrupted while napping");
-        }
-
         // ties down ui-thread brute-forcing a device
 //        BluetoothDevice device = bluetoothAdapter.getRemoteDevice("38:89:DC:00:0C:91");
 //        tryHardToConnectToDevice(device);
@@ -243,8 +224,8 @@ public class BluetoothComplexService extends Service {
     }
 
     private void connectToScanner(BluetoothDevice device, UUID service) {
-        //sendBroadcast(new Intent(BluetoothSimpleService.ACTION_SCANNER_CONNECTING).putExtra(BluetoothBarcodeScannerService.EXTRA_BARCODE_SCANNER_DEVICE, device));
-        new Thread(barcodeStreamer = new BluetoothBarcodeConnection(device, service, getBaseContext()), "bt-scanner").start();
+        sendBroadcast(new Intent(ServiceEvents.ACTION_SCANNER_CONNECTING).putExtra(ServiceEvents.EXTRA_BARCODE_SCANNER_DEVICE, device));
+        new Thread(barcodeStreamer = new OutgoingConnection(device, service, getBaseContext()), "bt-scanner").start();
     }
 
     private void startDiscovery() {
@@ -301,8 +282,8 @@ public class BluetoothComplexService extends Service {
     }
 
     public class ScannerBinder extends Binder {
-        public BluetoothComplexService getService() {
-            return BluetoothComplexService.this;
+        public OutgoingService getService() {
+            return OutgoingService.this;
         }
     }
 }

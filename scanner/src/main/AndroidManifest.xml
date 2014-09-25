@@ -10,7 +10,7 @@
         android:required="true" />
 
     <application>
-        <service android:name=".bluetooth.BluetoothComplexService" />
-        <service android:name=".bluetooth.BluetoothSimpleService" />
+        <service android:name=".bluetooth.OutgoingService" />
+        <service android:name=".bluetooth.IncomingService" />
     </application>
 </manifest>

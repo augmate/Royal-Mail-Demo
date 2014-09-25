@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  *      Scanfob (opn-2006) = 114 = BluetoothClass.Device.COMPUTER_PALM_SIZE_PC_PDA
  */
 
-class ListeningConnection implements Runnable {
+class IncomingConnection implements Runnable {
     public static final UUID UUID_SPP = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     private CountDownLatch threadExitSignal = new CountDownLatch(1);
@@ -35,7 +35,7 @@ class ListeningConnection implements Runnable {
 
     private boolean alive = true;
 
-    public ListeningConnection(Context parentContext) {
+    public IncomingConnection(Context parentContext) {
         this.parentContext = parentContext;
     }
 
@@ -74,7 +74,7 @@ class ListeningConnection implements Runnable {
                 Log.exception(e, "Caught exception while napping");
             }
 
-            parentContext.sendBroadcast(new Intent(BluetoothSimpleService.ACTION_SCANNER_DISCONNECTED));
+            parentContext.sendBroadcast(new Intent(ServiceEvents.ACTION_SCANNER_DISCONNECTED));
         }
 
         Log.debug("Bluetooth barcode listener thread exiting.");
@@ -99,7 +99,7 @@ class ListeningConnection implements Runnable {
                 return true;
             }
 
-            UUID bestService = BluetoothBarcodeConnection.findBestService(remoteServiceUuids);
+            UUID bestService = OutgoingConnection.findBestService(remoteServiceUuids);
             if(bestService != null) {
                 BluetoothSocket socket;
 
@@ -132,8 +132,8 @@ class ListeningConnection implements Runnable {
         Log.debug("Accepted connection from '%s' @ %s", remoteDevice.getName(), remoteDevice.getAddress());
 
         // broadcast new connection state
-        parentContext.sendBroadcast(new Intent(BluetoothSimpleService.ACTION_SCANNER_CONNECTED)
-                .putExtra(BluetoothSimpleService.EXTRA_BARCODE_SCANNER_DEVICE, remoteDevice));
+        parentContext.sendBroadcast(new Intent(ServiceEvents.ACTION_SCANNER_CONNECTED)
+                .putExtra(ServiceEvents.EXTRA_BARCODE_SCANNER_DEVICE, remoteDevice));
 
         InputStream inputStream = socket.getInputStream();
 
@@ -196,8 +196,8 @@ class ListeningConnection implements Runnable {
 
             // broadcast scanned code
             parentContext.sendBroadcast(
-                    new Intent(BluetoothSimpleService.ACTION_BARCODE_SCANNED)
-                            .putExtra(BluetoothSimpleService.EXTRA_BARCODE_STRING, substring)
+                    new Intent(ServiceEvents.ACTION_BARCODE_SCANNED)
+                            .putExtra(ServiceEvents.EXTRA_BARCODE_STRING, substring)
             );
         }
     }
