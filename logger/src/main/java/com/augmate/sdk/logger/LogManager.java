@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.provider.Settings;
 import com.augmate.sdk.logger.Local.LocalAppender;
+import com.augmate.sdk.logger.Local.LocalFileAppender;
 import com.augmate.sdk.logger.Logentries.LogentriesAppender;
 
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class LogManager {
             String sessionId = Long.toString(Math.abs(java.util.UUID.randomUUID().getLeastSignificantBits()), 36).substring(0, 6);
 
             logAppenderList.add(new LocalAppender(sessionId, deviceId));
+            logAppenderList.add(new LocalFileAppender(sessionId, deviceId));
             logAppenderList.add(new LogentriesAppender(sessionId, deviceId, "8f4167f8-bcd7-47b4-a1e1-8a6afbb0e8d9"));
 
             // start broadcasting thread
