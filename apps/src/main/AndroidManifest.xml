@@ -55,7 +55,7 @@
             />
 
         <activity
-            android:name=".counter.CycleCountActivity"
+            android:name=".counter.StructuredCycleCountActivity"
             android:immersive="true"
             />
 

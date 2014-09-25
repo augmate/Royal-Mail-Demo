@@ -1,0 +1,60 @@
+<RelativeLayout
+    style="@style/MatchParent.AppBackground"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+            style="@style/MatchParent">
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/barcode"/>
+        <TextView
+                android:id="@+id/barcodeScannerStatus"
+                android:layout_margin="10dp"
+                android:layout_alignParentBottom="true"
+                android:text="State of bluetooth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+</RelativeLayout>
+    <!--<ViewFlipper-->
+        <!--android:id="@+id/flipper"-->
+        <!--style="@style/MatchParent"-->
+        <!--android:padding="@dimen/glass_card_margin">-->
+
+        <!--&lt;!&ndash; LET'S CYCLE COUNT &ndash;&gt;-->
+        <!--<RelativeLayout-->
+            <!--style="@style/MatchParent">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/lets_cycle_count"-->
+                <!--style="@style/WrapContent.SecondaryTextView.RightAligned"-->
+                <!--android:text="@string/lets_cycle_count"/>-->
+
+
+        <!--</RelativeLayout>-->
+
+        <!--&lt;!&ndash; COUNT ITEMS PROMPT&ndash;&gt;-->
+        <!--<RelativeLayout-->
+            <!--style="@style/MatchParent">-->
+            <!--<ImageView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:id="@+id/imageView"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:src="@drawable/barcode"/>-->
+            <!--<TextView-->
+                <!--android:id="@+id/barcodeScannerStatus"-->
+                <!--android:layout_margin="10dp"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:text="State of bluetooth"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"/>-->
+        <!--</RelativeLayout>-->
+    <!--</ViewFlipper>-->
+

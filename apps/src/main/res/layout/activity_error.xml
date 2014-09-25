@@ -1,41 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/MatchParent.AppBackground"
     android:paddingLeft="@dimen/glass_card_margin"
     android:paddingRight="@dimen/glass_card_margin">
 
-    <FrameLayout
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_weight=".56"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" android:layout_alignParentStart="false" android:id="@+id/linearLayout1"
+        android:orientation="vertical" android:layout_alignParentEnd="false" android:textAlignment="center"
+        android:gravity="center_horizontal">
+        <TextView
+                style="@style/WrapContent.SecondaryTextView"
+                android:text="@string/message_try_again"
+                android:id="@+id/messageLine2"/>
         <ImageView
             style="@style/WrapContent"
             android:id="@+id/imageView"
             android:layout_gravity="center"
             android:src="@drawable/errorx"/>
-    </FrameLayout>
-
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_weight=".44"
-        android:layout_height="match_parent">
-        <LinearLayout
-            style="@style/WrapContent"
-            android:layout_centerVertical="true"
-            android:orientation="vertical"
-            android:id="@+id/linearLayout">
-            <TextView
+        <TextView
                 style="@style/WrapContent.SecondaryTextView"
                 android:text="@string/error_scan"
-                android:id="@+id/messageLine1"
-                />
+                android:id="@+id/messageLine1"/>
+    </LinearLayout>
 
-            <TextView
-                style="@style/WrapContent.SecondaryTextView"
-                android:text="@string/message_try_again"
-                android:id="@+id/messageLine2"/>
-        </LinearLayout>
-    </RelativeLayout>
-</LinearLayout>
+
+</RelativeLayout>

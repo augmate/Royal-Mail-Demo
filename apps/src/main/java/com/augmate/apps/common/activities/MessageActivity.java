@@ -2,6 +2,7 @@ package com.augmate.apps.common.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -64,7 +65,7 @@ public class MessageActivity extends BaseActivity {
                 message2.setVisibility(View.GONE);
             }
             if (imageView != null){
-                imageView.setImageResource(R.drawable.verify_check);
+                imageView.setImageResource(R.drawable.barcodeconfirm187);
             }
             getHandler().postDelayed(new Runnable() {
                 @Override
