@@ -28,6 +28,8 @@ public class LocalFileAppender implements ILogAppender {
         } catch (FileNotFoundException e) {
             Log.e(getTag(), e.getMessage());
         }
+
+        cleanUpOldLogs(augmateDir);
     }
 
     @Override
@@ -62,8 +64,19 @@ public class LocalFileAppender implements ILogAppender {
         }
     }
 
+    private void cleanUpOldLogs(File logDir) {
+        long weekAgo = new Date().getTime() - 604800000;
+
+        for(File file: logDir.listFiles()){
+            if(file.getName().endsWith(".log") && file.lastModified() < weekAgo){
+                file.delete();
+            }
+        }
+    }
+
     private String getTag() {
-        return new SimpleDateFormat("MM-dd HH:mm:ss.SSS ").format(new Date()) + (What.frameAt(0).packageName.contains("com.augmate.sdk") ? "AugmateSDK" : "AugmateApp");
+        return new SimpleDateFormat("MM-dd HH:mm:ss.SSS ").format(new Date()) +
+                (What.frameAt(0).packageName.contains("com.augmate.sdk") ? "AugmateSDK" : "AugmateApp");
     }
 
     private String getNewLogName() {
