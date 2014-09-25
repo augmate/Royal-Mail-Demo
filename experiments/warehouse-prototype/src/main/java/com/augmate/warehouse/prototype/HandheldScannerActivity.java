@@ -9,7 +9,7 @@ import android.os.Handler;
 import android.view.KeyEvent;
 import android.widget.TextView;
 import com.augmate.sdk.logger.Log;
-import com.augmate.sdk.scanner.bluetooth.BluetoothScannerConnector;
+import com.augmate.sdk.scanner.bluetooth.IncomingConnector;
 import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
 import com.google.android.glass.media.Sounds;
 import org.joda.time.DateTime;
@@ -20,7 +20,7 @@ import org.joda.time.format.DateTimeFormat;
  */
 public class HandheldScannerActivity extends Activity implements IBluetoothScannerEvents {
 
-    private BluetoothScannerConnector bluetoothScannerConnector = new BluetoothScannerConnector(this);
+    private IncomingConnector incomingConnector = new IncomingConnector(this);
     public static final String BARCODE_STRING = "bcs";
     public static final int RESULT_TIMED_OUT = 10;
     public static final int RESULT_ERROR = 11;
@@ -33,7 +33,7 @@ public class HandheldScannerActivity extends Activity implements IBluetoothScann
                 (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER
                         || event.getKeyCode() == KeyEvent.KEYCODE_MENU)) {
             Log.debug("User requested scanner reconnect.");
-            bluetoothScannerConnector.reconnect();
+            incomingConnector.reconnect();
             return true;
         }
 
@@ -44,7 +44,7 @@ public class HandheldScannerActivity extends Activity implements IBluetoothScann
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner_handheld);
-        bluetoothScannerConnector.start();
+        incomingConnector.start();
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -61,7 +61,7 @@ public class HandheldScannerActivity extends Activity implements IBluetoothScann
         super.onDestroy();
         Log.debug("Unbinding from scanner service.");
 
-        bluetoothScannerConnector.stop();
+        incomingConnector.stop();
     }
 
 

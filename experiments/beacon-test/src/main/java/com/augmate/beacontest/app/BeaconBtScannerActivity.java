@@ -14,7 +14,7 @@ import com.augmate.sdk.beacons.BeaconInfo;
 import com.augmate.sdk.beacons.BeaconRegion;
 import com.augmate.sdk.beacons.RegionProcessor;
 import com.augmate.sdk.logger.Log;
-import com.augmate.sdk.scanner.bluetooth.BluetoothScannerConnector;
+import com.augmate.sdk.scanner.bluetooth.IncomingConnector;
 import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BeaconBtScannerActivity extends Activity implements IBluetoothScannerEvents {
-    private BluetoothScannerConnector bluetoothScannerConnector = new BluetoothScannerConnector(this);
+    private IncomingConnector incomingConnector = new IncomingConnector(this);
     private BeaconDistance beaconDistanceMeasurer = new BeaconDistance();
 
     // captures keys before UI elements can steal them :)
@@ -35,7 +35,7 @@ public class BeaconBtScannerActivity extends Activity implements IBluetoothScann
                         || event.getKeyCode() == KeyEvent.KEYCODE_MENU)) {
             Log.debug("User requested scanner reconnect.");
             beaconDistanceMeasurer.stopListening();
-            bluetoothScannerConnector.reconnect();
+            incomingConnector.reconnect();
 
             return true;
         }
@@ -54,7 +54,7 @@ public class BeaconBtScannerActivity extends Activity implements IBluetoothScann
         // prep beacon ranger but don't start it until we have a scanner bonded and connected.
         // ranging seems to interfere with ordinary bluetooth connections :(
         beaconDistanceMeasurer.configureFromContext(this);
-        bluetoothScannerConnector.start();
+        incomingConnector.start();
     }
 
     @Override
@@ -63,7 +63,7 @@ public class BeaconBtScannerActivity extends Activity implements IBluetoothScann
         Log.debug("Unbinding from scanner service.");
 
         beaconDistanceMeasurer.stopListening();
-        bluetoothScannerConnector.stop();
+        incomingConnector.stop();
     }
 
     @Override

@@ -8,7 +8,7 @@ import com.augmate.apps.R;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
-import com.augmate.sdk.scanner.bluetooth.BluetoothScannerConnector;
+import com.augmate.sdk.scanner.bluetooth.IncomingConnector;
 import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class NonRetailTouchBtActivity extends BaseActivity implements IBluetoothScannerEvents {
     private NutsApiService nutsApi = new RestAdapter.Builder().setEndpoint("http://nuts.googlex.augmate.com:6969/").build().create(NutsApiService.class);
-    private BluetoothScannerConnector bluetoothScannerConnector = new BluetoothScannerConnector(this);
+    private IncomingConnector incomingConnector = new IncomingConnector(this);
 
     private ArrayList<String> recordedBarcodes = new ArrayList<>();
     private ArrayList<String> submittedBarcodes = new ArrayList<>();
@@ -29,13 +29,13 @@ public class NonRetailTouchBtActivity extends BaseActivity implements IBluetooth
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_non_retail_touch_bt);
-        bluetoothScannerConnector.start();
+        incomingConnector.start();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        bluetoothScannerConnector.stop();
+        incomingConnector.stop();
     }
 
     /**

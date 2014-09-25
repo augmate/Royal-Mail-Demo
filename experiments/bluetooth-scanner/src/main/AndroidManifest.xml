@@ -25,6 +25,36 @@
                 android:resource="@xml/voice_trigger_benchmark" />
         </activity>
 
+        <activity
+            android:immersive="true"
+            android:name=".PairActivity"
+            android:label="Scanner Pairing">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/voice_trigger_pairing" />
+        </activity>
+
+        <activity
+            android:immersive="true"
+            android:name=".UnpairActivity"
+            android:label="Scanner Unpairing">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/voice_trigger_unpairing" />
+        </activity>
+
     </application>
 
 </manifest>
