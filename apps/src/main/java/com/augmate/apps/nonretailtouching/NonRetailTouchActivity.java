@@ -47,6 +47,8 @@ public class NonRetailTouchActivity extends BaseActivity implements IBluetoothSc
             nrtCounter.setTextColor(0xFFFFFF00);
 
             queueBarcodeCommit(result);
+        }else{
+            SoundHelper.disallow(getBaseContext());
         }
     }
 
