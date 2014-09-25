@@ -6,6 +6,8 @@ import com.augmate.sdk.logger.LogLevel;
 import com.augmate.sdk.logger.What;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class LocalFileAppender implements ILogAppender {
 
@@ -17,11 +19,14 @@ public class LocalFileAppender implements ILogAppender {
         this.sessionId = sessionId;
         this.deviceId = deviceId;
 
+        File augmateDir = new File("sdcard/augmate");
+
+        augmateDir.mkdir();
+
         try {
-            logFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("sdcard/log.file"), true)));
+            logFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(augmateDir, getNewLogName()), true)));
         } catch (FileNotFoundException e) {
             Log.e(getTag(), e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -59,10 +64,6 @@ public class LocalFileAppender implements ILogAppender {
         }
     }
 
-    private String getTag() {
-        return What.frameAt(0).packageName.contains("com.augmate.sdk") ? "AugmateSDK" : "AugmateApp";
-    }
-
     @Override
     public void flush() {
         try {
@@ -79,5 +80,13 @@ public class LocalFileAppender implements ILogAppender {
         } catch (IOException e) {
             Log.e(getTag(), e.getMessage());
         }
+    }
+
+    private String getTag() {
+        return What.frameAt(0).packageName.contains("com.augmate.sdk") ? "AugmateSDK" : "AugmateApp";
+    }
+
+    private String getNewLogName() {
+        return new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".log";
     }
 }
