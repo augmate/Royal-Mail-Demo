@@ -66,9 +66,6 @@ public class NonRetailTouchActivity extends BaseActivity implements IBluetoothSc
 
         submittedBarcodes.add(barcode);
 
-        NrtScannerFragment nrtScannerFragment = (NrtScannerFragment) getFragmentManager().findFragmentById(R.id.scanner);
-        nrtScannerFragment.onSuccess();
-
         SoundHelper.success(getBaseContext());
 
         nutsApi.touchNonRetailPiece(barcode, new Callback<Response>() {
@@ -107,6 +104,8 @@ public class NonRetailTouchActivity extends BaseActivity implements IBluetoothSc
             submittedBarcodes.clear();
 
             SoundHelper.dismiss(getBaseContext());
+
+            ((TextView) findViewById(R.id.scan_content_view)).setText(R.string.waiting_for_scan);
 
             TextView nrtCounter = (TextView) findViewById(R.id.nrt_counter);
             nrtCounter.setText("0");

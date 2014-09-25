@@ -49,4 +49,5 @@
     <string name="exit_icon">■</string>
     <string name="exit_prompt">Exiting Augmate</string>
     <string name="scan_shelf_to_report_count">scan shelf to report count</string>
+    <string name="waiting_for_scan">Waiting for scan...</string>
 </resources>

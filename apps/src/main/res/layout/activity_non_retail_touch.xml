@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/pad_edge"
-            android:text="Waiting for scan..."
+            android:text="@string/waiting_for_scan"
             android:textSize="@dimen/small_text_size"
             />
 
