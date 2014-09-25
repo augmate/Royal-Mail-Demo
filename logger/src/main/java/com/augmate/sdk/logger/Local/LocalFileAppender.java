@@ -38,27 +38,7 @@ public class LocalFileAppender implements ILogAppender {
         String finalMsg = formatted + "; " + formattedMsg + "\n";
 
         try {
-            switch (level) {
-                case Performance:
-                    logFile.append(tag + " " + finalMsg);
-                    break;
-                case Debug:
-                    logFile.append(tag + " " + finalMsg);
-                    break;
-                case Analytics:
-                    logFile.append(tag + " " + finalMsg);
-                    break;
-                case Info:
-                    logFile.append(tag + " " + finalMsg);
-                    break;
-                case Warning:
-                    logFile.append(tag + " " + finalMsg);
-                    break;
-                case Error:
-                    logFile.append(tag + " " + finalMsg);
-                    break;
-            }
-
+            logFile.append(tag + " " + level.toString().toUpperCase() + " " + finalMsg);
         } catch (IOException e) {
             Log.e(getTag(), e.getMessage());
         }
