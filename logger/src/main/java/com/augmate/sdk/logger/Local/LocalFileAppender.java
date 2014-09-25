@@ -83,7 +83,7 @@ public class LocalFileAppender implements ILogAppender {
     }
 
     private String getTag() {
-        return What.frameAt(0).packageName.contains("com.augmate.sdk") ? "AugmateSDK" : "AugmateApp";
+        return new SimpleDateFormat("MM-dd HH:mm:ss.SSS ").format(new Date()) + (What.frameAt(0).packageName.contains("com.augmate.sdk") ? "AugmateSDK" : "AugmateApp");
     }
 
     private String getNewLogName() {
