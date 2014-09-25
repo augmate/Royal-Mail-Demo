@@ -4,6 +4,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 
+import com.augmate.sdk.logger.Log;
 import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;
 
@@ -30,27 +31,33 @@ public class TouchResponseListener implements
     }
 
     private void gestureOperation(Gesture gesture) {
-        float pivot = 0f;
-        float newEndX = 1f, newEndY = 1f;
-        switch (gesture) {
-            case TAP:
-            case SWIPE_LEFT:
-                newEndX = newEndY = scaleUp;
-                pivot = touchView.getHeight() / 2;
-                break;
-            case SWIPE_RIGHT:
-                newEndX = newEndY = scaleDown;
-                pivot = touchView.getHeight() / 2;
-                break;
+        try {
+            float pivot = 0f;
+            float newEndX = 1f, newEndY = 1f;
+            switch (gesture) {
+                case TAP:
+                    break;
+                case SWIPE_LEFT:
+                    newEndX = newEndY = scaleUp;
+                    pivot = touchView.getHeight() / 2;
+                    break;
+                case SWIPE_RIGHT:
+                    newEndX = newEndY = scaleDown;
+                    pivot = touchView.getHeight() / 2;
+                    break;
+            }
+            final Animation animation = new ScaleAnimation(endX, newEndX,
+                    endY, newEndY,
+                    touchView.getWidth(), pivot);
+            endX = newEndX;
+            endY = newEndY;
+            animation.setFillAfter(true);
+            animation.setDuration(FlowUtils.SCALE_TIME / 2);
+            touchView.startAnimation(animation);
         }
-        final Animation animation = new ScaleAnimation(endX, newEndX,
-                endY, newEndY,
-                touchView.getWidth(), pivot);
-        endX = newEndX;
-        endY = newEndY;
-        animation.setFillAfter(true);
-        animation.setDuration(FlowUtils.SCALE_TIME / 2);
-        touchView.startAnimation(animation);
+        catch(NullPointerException e) {
+            Log.debug("The View is suspected to be null");
+        }
     }
 
     @Override

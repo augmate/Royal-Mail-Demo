@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 import com.augmate.apps.R;
@@ -34,6 +35,7 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_structured_cyclecount);
 
@@ -44,13 +46,14 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
 
         cm = ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE));
 
-        TouchResponseListener responseListener = new TouchResponseListener(findViewById(R.id.touch));
-        mGestureDetector = new GestureDetector(this)
-                .setBaseListener(responseListener)
-                .setScrollListener(responseListener)
-                .setFingerListener(responseListener);
-        flipper = ((ViewFlipper) findViewById(R.id.flipper));
-        SharedPreferences prefs = getSharedPreferences(getString(R.string.settings_prefs),MODE_PRIVATE);
+//        TouchResponseListener responseListener = new TouchResponseListener(findViewById(R.id.touch));
+//        mGestureDetector = new GestureDetector(this)
+//                .setBaseListener(responseListener)
+//                .setScrollListener(responseListener)
+//                .setFingerListener(responseListener);
+//        flipper = ((ViewFlipper) findViewById(R.id.flipper));
+
+        //SharedPreferences prefs = getSharedPreferences(getString(R.string.settings_prefs),MODE_PRIVATE);
         //boolean animationsOn = prefs.getBoolean(getString(R.string.pref_animation_toggle),true);
 //        boolean animationsOn = true;
 //        flipper.setFlipInterval(FlowUtils.VIEWFLIPPER_TRANSITION_TIMEOUT_LONG);
@@ -71,12 +74,12 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
 
 
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                processBarcodeScanning("bin_3", false,true,false);
-            }
-        }, 10000);
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                processBarcodeScanning("bin_3", false,true,false);
+//            }
+//        }, 10000);
 
         bluetoothScannerConnector.start();
         bluetoothScannerConnector.reconnect();
@@ -90,6 +93,19 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        bluetoothScannerConnector.start();
+        bluetoothScannerConnector.reconnect();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        bluetoothScannerConnector.stop();
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putBoolean("LoadAnimation", false);
         super.onSaveInstanceState(outState);
@@ -97,7 +113,7 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
 
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
-        mGestureDetector.onMotionEvent(event);
+        //mGestureDetector.onMotionEvent(event);
         return super.onGenericMotionEvent(event);
     }
 
@@ -105,7 +121,7 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
     @Override
     public void handlePromptReturn() {
         if (handlePromptReturn) {
-            rescan();
+            //rescan();
         }
         handlePromptReturn = true;
     }
@@ -141,7 +157,7 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
             if (networkInfo != null && networkInfo.isConnected()) {
                 SoundHelper.tap(this);
-                startScanner();
+                //startScanner();
             } else {
                 SoundHelper.error(this);
                 showError(ErrorPrompt.NETWORK_ERROR);
@@ -154,13 +170,17 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
 
     @Override
     public void onBtScannerResult(String barcode) {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Log.debug("Got scanning result: [%s]", barcode);
         Intent resultIntent = new Intent();
         resultIntent.putExtra(BARCODE_STRING, barcode);
         setResult(RESULT_OK, resultIntent);
         playSoundEffect(Sounds.SUCCESS);
+        if (barcode.contains("bin_"))
+            processBarcodeScanning(barcode, false,true,false);
+        else
+            processBarcodeScanning(barcode, false,false,false);
         //finish();
-        processBarcodeScanning(barcode, false,true,false);
     }
 
     private AudioManager mAudioManager;
@@ -193,4 +213,18 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
         //((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
         //beaconDistanceMeasurer.stopListening();
     }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN &&
+                (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER
+                        || event.getKeyCode() == KeyEvent.KEYCODE_MENU)) {
+            Log.debug("User requested scanner reconnect.");
+            bluetoothScannerConnector.reconnect();
+            return true;
+        }
+
+        return super.dispatchKeyEvent(event);
+    }
+
 }

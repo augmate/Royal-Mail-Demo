@@ -71,12 +71,14 @@ public class MessageActivity extends BaseActivity {
                 @Override
                 public void run() {
                     try {
+                        if (mNextClass != null) {
                         Class<?> nextClass = Class.forName(mNextClass);
-                        Intent intent = new Intent(MessageActivity.this, nextClass);
-                        if (data != null) {
-                            intent.putExtra(DATA, data);
+                            Intent intent = new Intent(MessageActivity.this, nextClass);
+                            if (data != null) {
+                                intent.putExtra(DATA, data);
+                            }
+                            startActivity(intent);
                         }
-                        startActivity(intent);
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }

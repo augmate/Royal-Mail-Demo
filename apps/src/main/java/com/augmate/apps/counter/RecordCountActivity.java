@@ -244,7 +244,7 @@ public class RecordCountActivity extends VoiceActivity {
     private void showCountConfirmed() {
         BinManager.getSharedInstance().saveBin(bin);
         SoundHelper.success(this);
-        showConfirmation(getString(R.string.count_confirmed),null,null);
+        showConfirmation(getString(R.string.count_confirmed),null,null); //StructuredCycleCountActivity.class
         finish();
     }
 
