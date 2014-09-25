@@ -7,10 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.ParcelUuid;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import com.augmate.sdk.logger.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -123,7 +125,7 @@ class OutgoingConnection implements Runnable {
 
         try {
             while ((read = stream.read(buffer)) >= 0) {
-                onReadScannerData(read, buffer);
+                onNewData(read, buffer);
             }
         } catch (IOException exception) {
             //Log.expected_exception(exception, "Barcode streamer interrupted. (by shutdown request?)");
@@ -137,24 +139,55 @@ class OutgoingConnection implements Runnable {
      * @param read   number of bytes
      * @param buffer byte buffer
      */
-    private void onReadScannerData(int read, byte[] buffer) {
+    private void onNewData(int read, byte[] buffer) {
         String newData = new String(buffer, 0, read);
         accumulationBuffer += newData;
-        //Log.debug("received from scanner: [%s] (%d bytes)", newData, read);
 
-        // normalize line-endings between various scanners
+        tryParsingAccumulationBuffer();
+    }
+
+    private void tryParsingAccumulationBuffer() {
+
+        // normalize line-endings
         accumulationBuffer = accumulationBuffer.replace("\r\n", "\n");
         accumulationBuffer = accumulationBuffer.replace("\r", "\n"); // scanfob likes to use \r
 
-        if (accumulationBuffer.contains("\n")) {
-            String barcode = accumulationBuffer.substring(0, accumulationBuffer.indexOf("\n"));
-            accumulationBuffer = accumulationBuffer.substring(accumulationBuffer.indexOf("\n")).trim();
-            Log.debug("Scanned barcode: [%s]", barcode);
+        // wait until we have a terminator
+        int indexOfEOL = accumulationBuffer.indexOf("\n");
+        if(indexOfEOL == -1)
+            return;
+
+        // grab substring without normalized terminator
+        String substring = accumulationBuffer.substring(0, indexOfEOL);
+
+        // advance buffer in case of partials
+        accumulationBuffer = accumulationBuffer.substring(indexOfEOL+1);
+
+        /**
+         * typical formats
+         * scanfob 2006
+         *   default: prefix=STX, suffix=CR
+         *                   0x02, 0x0A
+         *   strangely their CR is actually \n, but it can sometimes be \r
+         */
+
+        ArrayList<String> bytes = new ArrayList<>();
+        for (int i = 0; i < indexOfEOL; i++) {
+            bytes.add(String.format("%X", (byte) substring.charAt(i)));
+        }
+        Log.debug("Raw input: [%s] (%d bytes)", TextUtils.join(",", bytes), indexOfEOL);
+
+        // try to parse stream
+
+        // Scanfob STX+CR
+        if (substring.charAt(0) == 0x02) {
+            substring = substring.substring(1);
+            Log.debug("Decoded Scanfob STX+CR format: [%s]", substring);
 
             // broadcast scanned code
             parentContext.sendBroadcast(
                     new Intent(ServiceEvents.ACTION_BARCODE_SCANNED)
-                            .putExtra(ServiceEvents.EXTRA_BARCODE_STRING, barcode)
+                            .putExtra(ServiceEvents.EXTRA_BARCODE_STRING, substring)
             );
         }
     }
