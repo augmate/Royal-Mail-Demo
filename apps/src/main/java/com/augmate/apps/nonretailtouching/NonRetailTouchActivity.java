@@ -1,5 +1,6 @@
 package com.augmate.apps.nonretailtouching;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.WindowManager;
@@ -129,15 +130,27 @@ public class NonRetailTouchActivity extends BaseActivity implements IBluetoothSc
     @Override
     public void onBtScannerConnecting() {
         Log.debug("NRT - BT Scanner Connecting...");
+
+        TextView btCnxStatus = (TextView) findViewById(R.id.bt_cnx_state);
+        btCnxStatus.setText("Connecting...");
+        btCnxStatus.setTextColor(Color.YELLOW);
     }
 
     @Override
     public void onBtScannerConnected() {
         Log.debug("NRT - BT Scanner Connected!");
+
+        TextView btCnxStatus = (TextView) findViewById(R.id.bt_cnx_state);
+        btCnxStatus.setText("Connected");
+        btCnxStatus.setTextColor(Color.GREEN);
     }
 
     @Override
     public void onBtScannerDisconnected() {
         Log.debug("NRT - BT Scanner Disconnected!");
+
+        TextView btCnxStatus = (TextView) findViewById(R.id.bt_cnx_state);
+        btCnxStatus.setText("Disconnected");
+        btCnxStatus.setTextColor(Color.RED);
     }
 }
