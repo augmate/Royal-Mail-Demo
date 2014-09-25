@@ -17,7 +17,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:padding="30dp"
-            android:src="@drawable/barcode115"/>
+            android:src="@drawable/barcode115"
+            />
 
         <TextView
             style="@style/WrapContent.MultiTextView"
@@ -26,8 +27,8 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/scan_shelf_to_report_count"
-            android:textAllCaps="true"/>
-
+            android:textAllCaps="true"
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -42,9 +43,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/pad_edge"
-            android:textSize="@dimen/small_text_size"
             android:text="No Device"
             android:textColor="@color/grey"
+            android:textSize="@dimen/small_text_size"
             />
 
         <TextView
@@ -66,5 +67,4 @@
             android:textSize="@dimen/small_text_size"
             />
     </LinearLayout>
-
 </LinearLayout>
