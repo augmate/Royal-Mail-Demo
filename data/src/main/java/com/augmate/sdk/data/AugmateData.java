@@ -20,8 +20,8 @@ public class AugmateData<T extends ParseObject>{
         synchronized (this) {
             if (AugmateData.initialized == false) {
                 Parse.enableLocalDatastore(context);
-                Parse.initialize(context, "dXdrCRra51kK5zV2LT7fxT3Q1dnYOM79AmxXvguP", "6On5YIMRg6VAH7w7Svy6WnYmt2fYqBU5qSU0OQEE");
                 ParseObject.registerSubclass(PackageCarLoad.class);
+                Parse.initialize(context, "dXdrCRra51kK5zV2LT7fxT3Q1dnYOM79AmxXvguP", "6On5YIMRg6VAH7w7Svy6WnYmt2fYqBU5qSU0OQEE");
                 AugmateData.initialized = true;
             }
         }
