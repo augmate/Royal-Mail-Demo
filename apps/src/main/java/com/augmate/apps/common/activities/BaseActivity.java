@@ -135,6 +135,7 @@ public class BaseActivity extends Activity {
     }
 
     public void showError(ErrorPrompt prompt) {
+        Log.debug("Launching error with message %s", prompt.getString());
         Intent intent = new Intent(this, MessageActivity.class);
         intent.putExtra(MessageActivity.ERROR, true);
         intent.putExtra(MessageActivity.MESSAGE, prompt.getString());

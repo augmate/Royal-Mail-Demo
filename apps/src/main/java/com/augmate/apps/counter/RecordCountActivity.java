@@ -18,6 +18,7 @@ import com.augmate.apps.common.FontHelper;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.activities.MessageActivity;
 import com.augmate.apps.voice.VoiceActivity;
+import com.augmate.sdk.logger.Log;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -134,12 +135,17 @@ public class RecordCountActivity extends VoiceActivity {
 
     public void stopRecording(boolean isError, int errorCode) {
         if (isError) {
+            Log.debug("voice error detected");
+            Log.debug("state is " + currentState.name().toString());
+
             if (currentState == RecordState.LISTENING) {
                 enterTextState();
             } else {
                 confirmTextState(bin.getCount());
             }
+
             SoundHelper.error(this);
+
             switch (errorCode) {
                 case SpeechRecognizer.ERROR_AUDIO:
                     wasNetworkIssue = false;
@@ -164,7 +170,10 @@ public class RecordCountActivity extends VoiceActivity {
                     showError(ErrorPrompt.SOUND_ERROR);
                     break;
             }
+            Log.debug("error code " + errorCode);
+            Log.debug("was network error? %b" , wasNetworkIssue);
         } else {
+            Log.debug("without error, state is " + currentState.name().toString());
             if (currentState == RecordState.LISTENING) {
                 startRecordingAnimation();
             } else {
