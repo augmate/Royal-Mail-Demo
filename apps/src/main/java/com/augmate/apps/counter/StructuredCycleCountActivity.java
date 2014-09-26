@@ -10,7 +10,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.ViewFlipper;
 import com.augmate.apps.R;
 import com.augmate.apps.common.ErrorPrompt;
 import com.augmate.apps.common.FontHelper;
@@ -21,15 +20,11 @@ import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
 import com.augmate.sdk.scanner.bluetooth.OutgoingConnector;
 import com.google.android.glass.media.Sounds;
-import com.google.android.glass.touchpad.GestureDetector;
 
 public class StructuredCycleCountActivity extends BaseActivity implements IBluetoothScannerEvents {
-    ViewFlipper flipper;
-    private GestureDetector mGestureDetector;
+
     private OutgoingConnector bluetoothScannerConnector = new OutgoingConnector(this);
     public static final String BARCODE_STRING = "bcs";
-    public static final int RESULT_TIMED_OUT = 10;
-    public static final int RESULT_ERROR = 11;
     public boolean btListening = true;
 
     ConnectivityManager cm;
@@ -44,41 +39,6 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
         FontHelper.updateFontForBrightness((TextView) findViewById(R.id.barcodeScannerStatus));
 
         cm = ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE));
-
-//        TouchResponseListener responseListener = new TouchResponseListener(findViewById(R.id.touch));
-//        mGestureDetector = new GestureDetector(this)
-//                .setBaseListener(responseListener)
-//                .setScrollListener(responseListener)
-//                .setFingerListener(responseListener);
-//        flipper = ((ViewFlipper) findViewById(R.id.flipper));
-
-        //SharedPreferences prefs = getSharedPreferences(getString(R.string.settings_prefs),MODE_PRIVATE);
-        //boolean animationsOn = prefs.getBoolean(getString(R.string.pref_animation_toggle),true);
-//        boolean animationsOn = true;
-//        flipper.setFlipInterval(FlowUtils.VIEWFLIPPER_TRANSITION_TIMEOUT_LONG);
-//        if (animationsOn) {
-//            flipper.setInAnimation(this, android.R.anim.slide_in_left);
-//            flipper.setOutAnimation(this, android.R.anim.slide_out_right);
-//            flipper.getInAnimation().setAnimationListener(getAnimationListener(flipper));
-//        } else {
-//            flipper.setInAnimation(this, R.anim.no_slide_anim);
-//            flipper.setOutAnimation(this, R.anim.no_slide_anim);
-//            flipper.getInAnimation().setAnimationListener(getAnimationListener(flipper));
-//        }
-//        if (savedInstanceState == null || savedInstanceState.getBoolean("LoadAnimation",true)) {
-//            flipper.setAutoStart(true);
-//        } else {
-//            flipper.setDisplayedChild(2);
-//        }
-
-
-
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                processBarcodeScanning("bin_3", false,true,false);
-//            }
-//        }, 10000);
 
         btListening = true;
         bluetoothScannerConnector.start();
@@ -111,17 +71,7 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
 
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
-        //mGestureDetector.onMotionEvent(event);
         return super.onGenericMotionEvent(event);
-    }
-
-    private boolean handlePromptReturn = true;
-    @Override
-    public void handlePromptReturn() {
-        if (handlePromptReturn) {
-            //rescan();
-        }
-        handlePromptReturn = true;
     }
 
     @Override
@@ -155,11 +105,9 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
             if (networkInfo != null && networkInfo.isConnected()) {
                 SoundHelper.tap(this);
-                //startScanner();
             } else {
                 SoundHelper.error(this);
                 showError(ErrorPrompt.NETWORK_ERROR);
-                handlePromptReturn = false;
             }
             return true;
         }
