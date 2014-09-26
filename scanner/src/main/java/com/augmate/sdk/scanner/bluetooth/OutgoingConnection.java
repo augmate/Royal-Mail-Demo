@@ -177,12 +177,24 @@ class OutgoingConnection implements Runnable {
         }
         Log.debug("Raw input: [%s] (%d bytes)", TextUtils.join(",", bytes), indexOfEOL);
 
+        if(substring.length() < 3)
+            return;
+
         // try to parse stream
 
         // Scanfob STX+CR
         if (substring.charAt(0) == 0x02) {
             substring = substring.substring(1);
             Log.debug("Decoded Scanfob STX+CR format: [%s]", substring);
+
+            // broadcast scanned code
+            parentContext.sendBroadcast(
+                    new Intent(ServiceEvents.ACTION_BARCODE_SCANNED)
+                            .putExtra(ServiceEvents.EXTRA_BARCODE_STRING, substring)
+            );
+        } else {
+            // ECOM?
+            Log.debug("Decoded Ecom (unknown format): [%s]", substring);
 
             // broadcast scanned code
             parentContext.sendBroadcast(

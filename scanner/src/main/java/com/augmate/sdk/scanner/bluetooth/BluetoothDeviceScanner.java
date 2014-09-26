@@ -24,9 +24,9 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
     public static final List<String> WhitelistedDevices = Arrays.asList(
             //"00:1C:97:90:8A:4F" // ES 301 handheld scanner
             //"38:89:DC:00:0C:91" // scanfob 2006: as-001
-            "38:89:DC:00:00:C5" // scanfob 2006: as-007
+            //"38:89:DC:00:00:C5" // scanfob 2006: as-007
             //"38:89:DC:00:00:A7" // scanfob 2006: as-006
-            //"38:89:DC:00:00:C0" // scanfob 2006: as-005
+            "38:89:DC:00:00:C0" // scanfob 2006: as-005
     );
 
     public static boolean deviceIsWhitelisted(String deviceId) {
@@ -84,9 +84,8 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
                     bluetoothAdapter.cancelDiscovery();
 
                     if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
-                        Log.debug("Device is already paired. Re-pairing..");
-                        removeBond(device);
-                        //service.sendBroadcast(new Intent(ServiceEvents.ACTION_SCANNER_FOUND).putExtra(ServiceEvents.EXTRA_BARCODE_SCANNER_DEVICE, device));
+                        Log.debug("Device is already paired. Broadcast device find.");
+                        service.sendBroadcast(new Intent(ServiceEvents.ACTION_SCANNER_FOUND).putExtra(ServiceEvents.EXTRA_BARCODE_SCANNER_DEVICE, device));
                     } else if (device.getBondState() == BluetoothDevice.BOND_BONDING) {
                         Log.debug("Device in pairing-state. Waiting on it.");
                     } else {
