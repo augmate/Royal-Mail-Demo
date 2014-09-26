@@ -24,10 +24,10 @@ public class BluetoothDeviceScanner extends BroadcastReceiver {
     public static final List<String> WhitelistedDevices = Arrays.asList(
             //"00:1C:97:90:8A:4F" // ES 301 handheld scanner
             //"38:89:DC:00:0C:91" // scanfob 2006: as-001
-            "38:89:DC:00:00:93" // scanfob 2006: as-003
+            //"38:89:DC:00:00:93" // scanfob 2006: as-003
             //"38:89:DC:00:00:C0" // scanfob 2006: as-005
-            //"38:89:DC:00:00:A7" // scanfob 2006: as-006
-            //"38:89:DC:00:00:C5" // scanfob 2006: as-007
+            "38:89:DC:00:00:A7" // scanfob 2006: as-006
+            //"38:89:DC:00:00:C5" // scanfob 2006: as-007˚
     );
 
     public static boolean deviceIsWhitelisted(String deviceId) {
