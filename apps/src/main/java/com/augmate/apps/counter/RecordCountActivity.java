@@ -28,9 +28,14 @@ import java.util.regex.Pattern;
  */
 public class RecordCountActivity extends VoiceActivity {
 
+    private int networkIssueCount = 0;
+
     private enum RecordState {
         LISTENING, CONFIRM
-    };
+    }
+
+    ;
+
     private RecordState currentState = RecordState.LISTENING;
     BinModel bin;
     ViewPropertyAnimator mAnimator;
@@ -46,9 +51,9 @@ public class RecordCountActivity extends VoiceActivity {
         setRecordingAnimation(true);
 
         FontHelper.updateFontForBrightness(
-                (TextView)findViewById(R.id.big_image_text)
-                ,(TextView)findViewById(R.id.yes_big_text)
-                ,(TextView)findViewById(R.id.no_big_text));
+                (TextView) findViewById(R.id.big_image_text)
+                , (TextView) findViewById(R.id.yes_big_text)
+                , (TextView) findViewById(R.id.no_big_text));
     }
 
     private void enterTextState() {
@@ -127,6 +132,13 @@ public class RecordCountActivity extends VoiceActivity {
     @Override
     public void handlePromptReturn() {
         if (wasNetworkIssue) {
+            networkIssueCount++;
+        } else {
+            networkIssueCount = 0;
+        }
+
+        Log.debug("network issue count: %s", networkIssueCount);
+        if (networkIssueCount > 2) {
             finish();
         } else {
             startRecording();
@@ -171,9 +183,9 @@ public class RecordCountActivity extends VoiceActivity {
                     break;
             }
             Log.debug("error code " + errorCode);
-            Log.debug("was network error? %b" , wasNetworkIssue);
+            Log.debug("was network error? %b", wasNetworkIssue);
         } else {
-            Log.debug("without error, state is " + currentState.name().toString());
+            Log.debug("stop recording, state is " + currentState.name().toString());
             if (currentState == RecordState.LISTENING) {
                 startRecordingAnimation();
             } else {
@@ -205,7 +217,7 @@ public class RecordCountActivity extends VoiceActivity {
             }
         } else if (currentState == RecordState.CONFIRM) {
             if (SoundHelper.isAffirmative(resultString)) {
-                fadeOutNonAnswer(findViewById(R.id.no_big_text),findViewById(R.id.yes_background),new Runnable(){
+                fadeOutNonAnswer(findViewById(R.id.no_big_text), findViewById(R.id.yes_background), new Runnable() {
                     @Override
                     public void run() {
                         showCountConfirmed();
@@ -213,7 +225,7 @@ public class RecordCountActivity extends VoiceActivity {
                 });
 
             } else {
-                fadeOutNonAnswer(findViewById(R.id.yes_big_text),findViewById(R.id.no_background), new Runnable(){
+                fadeOutNonAnswer(findViewById(R.id.yes_big_text), findViewById(R.id.no_background), new Runnable() {
                     @Override
                     public void run() {
                         resumeRecording();
@@ -232,7 +244,7 @@ public class RecordCountActivity extends VoiceActivity {
                 .withEndAction(new Runnable() {
                     @Override
                     public void run() {
-                        getHandler().postDelayed(run,FlowUtils.TRANSITION_TIMEOUT_SHORT);
+                        getHandler().postDelayed(run, FlowUtils.TRANSITION_TIMEOUT_SHORT);
                     }
                 })
                 .alpha(0.0f);
@@ -253,11 +265,11 @@ public class RecordCountActivity extends VoiceActivity {
     private void showCountConfirmed() {
         BinManager.getSharedInstance().saveBin(bin);
         SoundHelper.success(this);
-        showConfirmation(getString(R.string.count_confirmed),null,null); //StructuredCycleCountActivity.class
+        showConfirmation(getString(R.string.count_confirmed), null, null); //StructuredCycleCountActivity.class
         finish();
     }
 
-    public void setRecordingAnimation(boolean recording){
+    public void setRecordingAnimation(boolean recording) {
         View microphone = findViewById(R.id.big_image);
         if (microphone != null) {
             if (recording) {
