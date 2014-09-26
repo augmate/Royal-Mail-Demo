@@ -30,7 +30,7 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
     public static final String BARCODE_STRING = "bcs";
     public static final int RESULT_TIMED_OUT = 10;
     public static final int RESULT_ERROR = 11;
-
+    public boolean btListening = true;
 
     ConnectivityManager cm;
 
@@ -80,6 +80,7 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
 //            }
 //        }, 10000);
 
+        btListening = true;
         bluetoothScannerConnector.start();
     }
 
@@ -92,11 +93,13 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
 
     @Override
     protected void onResume() {
+        btListening = true;
         super.onResume();
     }
 
     @Override
     protected void onPause() {
+        btListening = false;
         super.onPause();
     }
 
@@ -165,15 +168,23 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
 
     @Override
     public void onBtScannerResult(String barcode) {
+        if (!btListening) {
+            return;
+        }
+
+        btListening = false;
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Log.debug("Got scanning result: [%s]", barcode);
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra(BARCODE_STRING, barcode);
-        setResult(RESULT_OK, resultIntent);
+
+        // TODO: do we need this?
+        setResult(RESULT_OK, new Intent().putExtra(BARCODE_STRING, barcode));
+
         playSoundEffect(Sounds.SUCCESS);
 
         // always pass the barcode
-        processBarcodeScanning(barcode, false,true,false);
+        // eventually.. start "get count" voice activity
+        processBarcodeScanning(barcode, false, true, false);
     }
 
     private AudioManager mAudioManager;
