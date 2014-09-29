@@ -48,13 +48,13 @@ public class UpsDataSyncActivity extends Activity {
 
                         progressBarView.setVisibility(View.INVISIBLE);
 
-                        if (exception != null) {
+                        if (exception == null) {
                             String successMsg = String.format("Downloaded %s entries", carLoadingDataStore.numberOfPackages());
                             downloadView.setText(successMsg);
                             Log.info(successMsg);
                         } else {
                             downloadView.setText(R.string.download_failed);
-
+                            Log.error(exception.getMessage());
                         }
                     }
                 });
