@@ -7,6 +7,11 @@
         android:orderInCategory="100"
         android:showAsAction="never"/>
     <item
+        android:id="@+id/car_sweep"
+        android:title="@string/action_car_sweep"
+        android:orderInCategory="100"
+        android:showAsAction="never"/>
+    <item
         android:id="@+id/car_loading"
         android:title="@string/action_car_loading"
         android:orderInCategory="100"

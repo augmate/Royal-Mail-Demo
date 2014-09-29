@@ -33,7 +33,6 @@ public class HandheldScannerActivity extends Activity implements IBluetoothScann
                 (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER
                         || event.getKeyCode() == KeyEvent.KEYCODE_MENU)) {
             Log.debug("User requested scanner reconnect.");
-            incomingConnector.reconnect();
             return true;
         }
 

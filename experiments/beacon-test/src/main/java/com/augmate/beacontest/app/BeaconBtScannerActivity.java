@@ -35,7 +35,6 @@ public class BeaconBtScannerActivity extends Activity implements IBluetoothScann
                         || event.getKeyCode() == KeyEvent.KEYCODE_MENU)) {
             Log.debug("User requested scanner reconnect.");
             beaconDistanceMeasurer.stopListening();
-            incomingConnector.reconnect();
 
             return true;
         }
