@@ -13,7 +13,7 @@
         android:name="com.augmate.apps.scanner.ScanFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/box_scan_fragment" />
+        tools:layout="@layout/fragment_box_scan" />
 
     <FrameLayout
         android:id="@+id/contentView"

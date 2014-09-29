@@ -48,7 +48,15 @@ public class PairActivity extends Activity {
 
     private void afterConfigurationRead(Intent data) {
         Log.debug("Configuration read");
-        startDevicePairing(data.getStringExtra("barcode"));
+        String barcode = data.getStringExtra("barcode");
+
+        if (barcode == null || !barcode.contains(":")) {
+            Log.debug("Read invalid mac address: [%s]. Restarting config read..", barcode);
+            // TODO: create custom configuration read screen with mac-address validation
+            startConfigurationRead();
+        } else {
+            startDevicePairing(barcode);
+        }
     }
 
 
@@ -59,7 +67,7 @@ public class PairActivity extends Activity {
 
 
     private void startDevicePairing(String barcode) {
-        Log.debug("Pairing with mac address: %s", barcode);
+        Log.debug("Pairing with mac address: [%s]", barcode);
         startActivityForResult(new Intent(this, DeviceBondingActivity.class).putExtra("address", barcode), REQUEST_CODE_BOND_DEVICE);
     }
 

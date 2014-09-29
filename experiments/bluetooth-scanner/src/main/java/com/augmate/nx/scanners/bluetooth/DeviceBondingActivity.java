@@ -121,9 +121,8 @@ public class DeviceBondingActivity extends Activity {
         setContentView(R.layout.activity_bond);
         Log.start(this);
 
-        Log.debug("Starting pairing sequence..");
-
         address = getIntent().getStringExtra("address");
+        Log.debug("Starting pairing sequence with %s", address);
 
         ((TextView) findViewById(R.id.scannerBondingStatus)).setText("Attempting to bond with " + address);
 

@@ -62,6 +62,22 @@
             android:name=".carloading.CarLoadingActivity"
             android:immersive="true"/>
         <activity
+            android:name=".carsweep.CarSweepActivity"
+            android:immersive="true"
+            android:label="Car Sweep" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/voice_trigger_carsweep"/>
+        </activity>
+
+
+        <activity
             android:name=".common.activities.ExitActivity"
             android:immersive="true"/>
         <activity

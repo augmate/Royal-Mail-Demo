@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.augmate.apps.carloading.CarLoadingActivity;
+import com.augmate.apps.carsweep.CarSweepActivity;
 import com.augmate.apps.common.FontHelper;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.UserUtils;
@@ -75,6 +76,14 @@ public class ApplicationsActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.car_sweep:
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        goToCarSweep();
+                    }
+                });
+                return true;
             case R.id.car_loading:
                 mHandler.post(new Runnable() {
                     @Override
@@ -149,6 +158,10 @@ public class ApplicationsActivity extends BaseActivity {
     private void goToTruckLoading() {
         Intent intent = new Intent(this, CarLoadingActivity.class);
         startActivity(intent);
+    }
+
+    private void goToCarSweep() {
+        startActivity(new Intent(this, CarSweepActivity.class));
     }
 
     private void goToNonRetailTouching() {

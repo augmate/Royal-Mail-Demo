@@ -14,6 +14,9 @@ import org.joda.time.format.DateTimeFormat;
 
 import java.lang.reflect.Method;
 
+/**
+ * Unpair all bonded devices
+ */
 public class UnpairActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
