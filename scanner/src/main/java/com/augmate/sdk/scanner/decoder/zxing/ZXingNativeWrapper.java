@@ -21,7 +21,7 @@ public class ZXingNativeWrapper implements IBarcodeScannerWrapper {
 
         String result = NativeUtils.zxingNativeDecode(data, width, height);
 
-        if(result != null) {
+        if(result != null && !result.equals("")) {
             // confidence values [0,1]
             job.result.confidence = 1;
             job.result.value = result;
