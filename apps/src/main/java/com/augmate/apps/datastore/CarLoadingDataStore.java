@@ -6,6 +6,8 @@ import com.augmate.sdk.data.AugmateData;
 import com.augmate.sdk.data.PackageCarLoad;
 
 public class CarLoadingDataStore {
+    public static final String TRACKING_NUMBER_KEY = "TrackingNumber";
+
     private final AugmateData<PackageCarLoad> augmateData;
 
     public CarLoadingDataStore(Context context) {
@@ -13,7 +15,7 @@ public class CarLoadingDataStore {
     }
 
     public PackageCarLoad findLoadForTrackingNumber(String trackingNumber) {
-        PackageCarLoad packageCarLoad = augmateData.find(PackageCarLoad.class, "TrackingNumber", trackingNumber);
+        PackageCarLoad packageCarLoad = augmateData.find(PackageCarLoad.class, TRACKING_NUMBER_KEY, trackingNumber);
 
         Log.i(getClass().getName(), packageCarLoad.getLoadPosition());
         Log.i(getClass().getName(), packageCarLoad.getTrackingNumber());
@@ -21,7 +23,7 @@ public class CarLoadingDataStore {
         return packageCarLoad;
     }
 
-    public void refreshCarLoadData(){
-        augmateData.refreshPackageLoadData();
+    public void pullToLocalCache(){
+        augmateData.pullToLocalCache(PackageCarLoad.class);
     }
 }

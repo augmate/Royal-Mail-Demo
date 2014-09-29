@@ -24,7 +24,7 @@ public class AugmateApplication extends android.app.Application {
         Log.debug("Application started");
         // if using the scandit scanner, configure it here
         DecoderManager.ScanditConfiguration = Configuration.createFromContext(getBaseContext());
-        new CarLoadingDataStore(this).refreshCarLoadData();
+        new CarLoadingDataStore(this).pullToLocalCache();
     }
 
     // never called in production
