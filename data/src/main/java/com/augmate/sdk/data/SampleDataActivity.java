@@ -29,8 +29,6 @@ public class SampleDataActivity extends Activity {
         String readData = augmateData.read("ArrayList");
 
         Log.d(getClass().getName(), "Does write data equal read data (should be true)? " + expected.equals(readData));
-
-        augmateData.refreshPackageLoadData();
     }
 
     static private class SampleAugmateData {

@@ -13,7 +13,6 @@ import java.util.List;
 public class AugmateData<T extends ParseObject>{
 
     public static final String PARSE_KEY_PAYLOAD = "payload";
-    public static final String CAR_LOADING_PACKAGE_LOAD = "CarLoadingPackageLoad";
     private static boolean initialized = false;
 
     public AugmateData(Context context) {
@@ -27,6 +26,7 @@ public class AugmateData<T extends ParseObject>{
         }
     }
 
+    // TODO: update to use T instead of strings
     public void save(String className, Object obj) {
         ParseObject testObject = new ParseObject(className);
         String objJson = new Gson().toJson(obj);
@@ -36,6 +36,7 @@ public class AugmateData<T extends ParseObject>{
         Log.d(this.getClass().getName(), "Saving data: " + objJson);
     }
 
+    // TODO: update to use T instead of strings
     public String read(String className) {
         ParseObject object = null;
 
@@ -52,11 +53,11 @@ public class AugmateData<T extends ParseObject>{
         return objJson;
     }
 
-    public void refreshPackageLoadData() {
-        List<ParseObject> packageLoads = null;
+    public void pullToLocalCache(Class<T> clazz) {
+        List<T> packageLoads = null;
 
         try {
-            packageLoads = new ParseQuery<>(CAR_LOADING_PACKAGE_LOAD).find();
+            packageLoads = new ParseQuery<>(clazz).find();
         } catch (ParseException e) {
             Log.e(this.getClass().getName(), e.toString());
         }
