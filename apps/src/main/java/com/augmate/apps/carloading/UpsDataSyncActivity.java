@@ -44,14 +44,18 @@ public class UpsDataSyncActivity extends Activity {
 
                 carLoadingDataStore.pullToLocalCache(new SaveCallback() {
                     @Override
-                    public void done(ParseException e) {
+                    public void done(ParseException exception) {
+
                         progressBarView.setVisibility(View.INVISIBLE);
 
-                        String successMsg = String.format("Downloaded %s entries", carLoadingDataStore.numberOfPackages());
+                        if (exception != null) {
+                            String successMsg = String.format("Downloaded %s entries", carLoadingDataStore.numberOfPackages());
+                            downloadView.setText(successMsg);
+                            Log.info(successMsg);
+                        } else {
+                            downloadView.setText(R.string.download_failed);
 
-                        downloadView.setText(successMsg);
-
-                        Log.info(successMsg);
+                        }
                     }
                 });
 
