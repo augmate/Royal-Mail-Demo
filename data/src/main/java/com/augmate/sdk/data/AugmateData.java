@@ -76,4 +76,16 @@ public class AugmateData<T extends ParseObject>{
 
         return foundPackage;
     }
+
+    public int count(Class<T> clazz) {
+        int count = -1;
+
+        try {
+            count = ParseQuery.getQuery(clazz).fromLocalDatastore().count();
+        } catch (ParseException e) {
+            Log.e(this.getClass().getName(), e.toString());
+        }
+
+        return count;
+    }
 }
