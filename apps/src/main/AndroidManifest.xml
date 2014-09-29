@@ -92,11 +92,25 @@
             android:name=".common.activities.MessageActivity"
             android:immersive="true"
             />
+
         <activity
             android:name=".BrightnessActivity"
             android:immersive="true"
             android:theme="@style/BrightnessActivity"
             />
+
+        <activity
+            android:name=".carloading.UpsDataSyncActivity"
+            android:immersive="true"
+            android:label="@string/ups_data_sync_app" >
+            <intent-filter>
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/voice_trigger_ups_data_sync"/>
+        </activity>
 
     </application>
 

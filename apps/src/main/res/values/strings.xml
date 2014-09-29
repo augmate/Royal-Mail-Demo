@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Augmate Glassware</string>
+    <string name="ups_data_sync_app">UPS Data Sync</string>
 
     <string name="action_location_history">Location History</string>
     <string name="action_adjust_brightness">Adjust Brightness</string>
