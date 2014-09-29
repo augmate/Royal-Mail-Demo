@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,7 +15,6 @@ import com.augmate.sdk.beacons.RegionProcessor;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
 import com.augmate.sdk.scanner.bluetooth.IncomingConnector;
-import com.augmate.sdk.scanner.bluetooth.OutgoingConnector;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
@@ -25,24 +23,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BenchmarkActivity extends Activity implements IBluetoothScannerEvents {
-    private OutgoingConnector connector = new OutgoingConnector(this);
     private BeaconDistance beaconDistanceMeasurer = new BeaconDistance();
-
-    // captures keys before UI elements can steal them :)
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN &&
-                (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER
-                        || event.getKeyCode() == KeyEvent.KEYCODE_MENU)) {
-            Log.debug("User requested scanner reconnect.");
-            beaconDistanceMeasurer.stopListening();
-            connector.reconnect();
-
-            return true;
-        }
-
-        return super.dispatchKeyEvent(event);
-    }
+    private IncomingConnector connector = new IncomingConnector(this);
+    private int packageCountTruck1 = 0;
+    private int packageCountTruck2 = 0;
 
     // NOTE: bindService/unbindService can be moved to onResume/onPause to disconnect from the scanner on app sleep
     @Override
@@ -66,9 +50,6 @@ public class BenchmarkActivity extends Activity implements IBluetoothScannerEven
         beaconDistanceMeasurer.stopListening();
         connector.stop();
     }
-
-    private int packageCountTruck1 = 0;
-    private int packageCountTruck2 = 0;
 
     @Override
     public void onBtScannerResult(String barcode) {
@@ -116,7 +97,7 @@ public class BenchmarkActivity extends Activity implements IBluetoothScannerEven
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("Scanner Connected");
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFF00FF00);
         ((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
-        //beaconDistanceMeasurer.startListening();
+        beaconDistanceMeasurer.startListening();
     }
 
     @Override
@@ -124,6 +105,6 @@ public class BenchmarkActivity extends Activity implements IBluetoothScannerEven
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("No Scanner");
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFFFF0000);
         ((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
-        //beaconDistanceMeasurer.stopListening();
+        beaconDistanceMeasurer.stopListening();
     }
 }

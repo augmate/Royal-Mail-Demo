@@ -22,7 +22,7 @@ public class UnpairActivity extends Activity {
         setContentView(R.layout.activity_pairing);
         Log.start(this);
 
-        ((TextView) findViewById(R.id.barcodeScannerResults)).setText(
+        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText(
                 String.format("Unpairing Devices..")
         );
     }
@@ -32,6 +32,7 @@ public class UnpairActivity extends Activity {
         super.onResume();
 
         BluetoothAdapter bluetoothAdapter = ((BluetoothManager) this.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+        int numOfBondedDevices = bluetoothAdapter.getBondedDevices().size();
         for (BluetoothDevice device : bluetoothAdapter.getBondedDevices()) {
             removeBond(device);
         }
@@ -39,8 +40,8 @@ public class UnpairActivity extends Activity {
         // at this point the devices haven't finished unpairing
         // we would have to listen and handle messages to get confirmation that the unpairing completed
         // but we can assume for now and give it a second
-        ((TextView) findViewById(R.id.barcodeScannerResults)).setText(
-                String.format("Unpairing initiated\nat %s", DateTime.now().toString(DateTimeFormat.mediumDateTime()))
+        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText(
+                String.format("Unpairing %d devices\nat %s", numOfBondedDevices, DateTime.now().toString(DateTimeFormat.mediumDateTime()))
         );
     }
 

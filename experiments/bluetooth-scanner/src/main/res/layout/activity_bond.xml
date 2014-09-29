@@ -4,12 +4,12 @@
              android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/barcodeScannerStatus"
+        android:id="@+id/scannerBondingStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Scanner Configuration"
-        android:textSize="30dp"
+        android:text="Attempting to bond with scanner-mac-address"
+        android:textSize="20dp"
         android:scrollbars="vertical"
-        android:textColor="#FFFFFFFF"/>
+        android:textColor="#f00"/>
 
 </FrameLayout>

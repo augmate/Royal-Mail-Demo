@@ -1,78 +1,75 @@
 package com.augmate.nx.scanners.bluetooth;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.widget.TextView;
 import com.augmate.sdk.logger.Log;
-import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
-import com.augmate.sdk.scanner.bluetooth.OutgoingConnector;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 
-public class PairActivity extends Activity implements IBluetoothScannerEvents {
-    private OutgoingConnector connector = new OutgoingConnector(this);
+public class PairActivity extends Activity {
+    public static final int RESULT_CODE_READ_CONFIGURATION = 5001;
+    public static final int REQUEST_CODE_BOND_DEVICE = 5002;
 
-    // captures keys before UI elements can steal them :)
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN &&
-                (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER
-                        || event.getKeyCode() == KeyEvent.KEYCODE_MENU)) {
-            Log.debug("User requested scanner reconnect.");
-            connector.reconnect();
-            return true;
-        }
-
-        return super.dispatchKeyEvent(event);
-    }
-
-    // NOTE: bindService/unbindService can be moved to onResume/onPause to disconnect from the scanner on app sleep
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pairing);
         Log.start(this);
-
-        // prep beacon ranger but don't start it until we have a scanner bonded and connected.
-        // ranging seems to interfere with ordinary bluetooth connections :(
-        connector.start();
+        startConfigurationRead();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.debug("Unbinding from scanner service.");
-        connector.stop();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case RESULT_CODE_READ_CONFIGURATION:
+                if (resultCode == RESULT_OK) {
+                    afterConfigurationRead(data);
+                } else {
+                    afterConfigurationReadCanceled();
+                }
+                break;
+
+            case REQUEST_CODE_BOND_DEVICE:
+                if (resultCode == RESULT_OK) {
+                    afterDevicePaired();
+                } else {
+                    afterDevicePairingCanceled();
+                }
+                break;
+        }
     }
 
-    @Override
-    public void onBtScannerResult(String barcode) {
-        ((TextView) findViewById(R.id.barcodeScannerResults)).setText(
-                String.format("Scanned barcode: [%s]\nat %s", barcode, DateTime.now().toString(DateTimeFormat.mediumDateTime()))
-        );
+    private void startConfigurationRead() {
+        // read barcode with mac-address of device we want to pair
+        startActivityForResult(new Intent(this, ConfigReadingActivity.class), RESULT_CODE_READ_CONFIGURATION);
     }
 
-    @Override
-    public void onBtScannerConnecting() {
-        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("Scanner Connecting");
-        ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFFFFFF00);
-        ((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
+    private void afterConfigurationRead(Intent data) {
+        Log.debug("Configuration read");
+        startDevicePairing(data.getStringExtra("barcode"));
     }
 
-    @Override
-    public void onBtScannerConnected() {
-        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("Scanner Connected");
-        ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFF00FF00);
-        ((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
+
+    private void afterConfigurationReadCanceled() {
+        Log.debug("Configuration read canceled");
+        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("Scanner Configuration Canceled");
     }
 
-    @Override
-    public void onBtScannerDisconnected() {
-        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("No Scanner");
-        ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFFFF0000);
-        ((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
+
+    private void startDevicePairing(String barcode) {
+        Log.debug("Pairing with mac address: %s", barcode);
+        startActivityForResult(new Intent(this, DeviceBondingActivity.class).putExtra("address", barcode), REQUEST_CODE_BOND_DEVICE);
+    }
+
+    private void afterDevicePaired() {
+        Log.debug("Pairing completed");
+        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("Scanner Configured");
+    }
+
+    private void afterDevicePairingCanceled() {
+        Log.debug("Pairing canceled");
+        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("Scanner Configuration Canceled");
     }
 }

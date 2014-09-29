@@ -28,7 +28,7 @@
         <activity
             android:immersive="true"
             android:name=".PairActivity"
-            android:label="Scanner Pairing">
+            android:label="Configure Scanner">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -41,9 +41,15 @@
         </activity>
 
         <activity
+            android:name=".ConfigReadingActivity" />
+
+        <activity
+            android:name=".DeviceBondingActivity" />
+
+        <activity
             android:immersive="true"
             android:name=".UnpairActivity"
-            android:label="Scanner Unpairing">
+            android:label="Forget Scanner">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
