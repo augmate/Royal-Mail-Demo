@@ -50,7 +50,7 @@ public class AugmateData<T extends ParseObject>{
         return objJson;
     }
 
-    public void pullToLocalCache(Class<T> clazz, SaveCallback callback) {
+    public void pullToCache(Class<T> clazz, SaveCallback callback) {
         List<T> packageLoads = null;
 
         try {
@@ -87,5 +87,9 @@ public class AugmateData<T extends ParseObject>{
         }
 
         return count;
+    }
+
+    public void clearCache() {
+        ParseQuery.clearAllCachedResults();
     }
 }
