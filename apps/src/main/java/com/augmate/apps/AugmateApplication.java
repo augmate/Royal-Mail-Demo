@@ -1,7 +1,6 @@
 package com.augmate.apps;
 
 import android.content.Context;
-import com.augmate.apps.datastore.CarLoadingDataStore;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.DecoderManager;
 import com.augmate.sdk.scanner.decoder.scandit.Configuration;
@@ -24,7 +23,6 @@ public class AugmateApplication extends android.app.Application {
         Log.debug("Application started");
         // if using the scandit scanner, configure it here
         DecoderManager.ScanditConfiguration = Configuration.createFromContext(getBaseContext());
-        new CarLoadingDataStore(this).pullToLocalCache();
     }
 
     // never called in production

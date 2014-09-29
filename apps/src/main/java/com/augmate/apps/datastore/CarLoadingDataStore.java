@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import com.augmate.sdk.data.AugmateData;
 import com.augmate.sdk.data.PackageCarLoad;
+import com.parse.SaveCallback;
 
 public class CarLoadingDataStore {
     public static final String TRACKING_NUMBER_KEY = "TrackingNumber";
@@ -23,7 +24,7 @@ public class CarLoadingDataStore {
         return packageCarLoad;
     }
 
-    public void pullToLocalCache(){
-        augmateData.pullToLocalCache(PackageCarLoad.class);
+    public void pullToLocalCache(SaveCallback callback){
+        augmateData.pullToLocalCache(PackageCarLoad.class, callback);
     }
 }
