@@ -43,4 +43,6 @@
     <string name="scan_shelf_to_report_count">scan shelf to report count</string>
     <string name="waiting_for_scan">Waiting for scan...</string>
     <string name="title_activity_test_ups_data_sync">TestUpsDataSyncActivity</string>
+    <string name="no_wifi_bt_cnx_found">No WiFi or BT connection found</string>
+    <string name="preparing_download_ups_sync">Preparing to download...</string>
 </resources>

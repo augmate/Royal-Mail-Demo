@@ -3,6 +3,8 @@ package com.augmate.apps.carloading;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.augmate.apps.R;
 import com.augmate.apps.datastore.CarLoadingDataStore;
@@ -11,43 +13,49 @@ import com.augmate.sdk.logger.Log;
 import com.parse.ParseException;
 import com.parse.SaveCallback;
 
-public class UpsDataSyncActivity extends Activity{
+public class UpsDataSyncActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ups_data_sync_activity);
 
-        final TextView view = (TextView) findViewById(R.id.internet_cnx_state);
+        final TextView cnxView = (TextView) findViewById(R.id.internet_cnx_state);
 
-        if(new InternetChecker().isConnected(this)){
+        if (new InternetChecker().isConnected(this)) {
             Log.info("Connected to the internet");
-            view.setText("Connected to the internet");
-        }else{
-            Log.info("Disconnected from the internet");
-            view.setText("Disconnected from the internet");
+            startUpsDataDownload();
+        } else {
+            cnxView.setVisibility(View.VISIBLE);
         }
+    }
 
+    private void startUpsDataDownload() {
+        final ProgressBar progressBarView = (ProgressBar) findViewById(R.id.sync_progress_bar);
         final TextView downloadView = (TextView) findViewById(R.id.download_state);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-
+                progressBarView.setVisibility(View.VISIBLE);
                 downloadView.setText("Download started...");
                 Log.info("Download started");
 
-                new CarLoadingDataStore(UpsDataSyncActivity.this).pullToLocalCache(new SaveCallback() {
+                final CarLoadingDataStore carLoadingDataStore = new CarLoadingDataStore(UpsDataSyncActivity.this);
+
+                carLoadingDataStore.pullToLocalCache(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
+                        progressBarView.setVisibility(View.INVISIBLE);
 
-                        downloadView.setText("Download complete");
-                        Log.info("Download complete");
+                        String successMsg = String.format("Downloaded %s entries", carLoadingDataStore.numberOfPackages());
+
+                        downloadView.setText(successMsg);
+
+                        Log.info(successMsg);
                     }
                 });
 
             }
         }, 5000);
-
-
     }
 }
