@@ -3,10 +3,7 @@ package com.augmate.sdk.data;
 import android.content.Context;
 import android.util.Log;
 import com.google.gson.Gson;
-import com.parse.Parse;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
+import com.parse.*;
 
 import java.util.List;
 
@@ -53,7 +50,7 @@ public class AugmateData<T extends ParseObject>{
         return objJson;
     }
 
-    public void pullToLocalCache(Class<T> clazz) {
+    public void pullToLocalCache(Class<T> clazz, SaveCallback callback) {
         List<T> packageLoads = null;
 
         try {
@@ -62,11 +59,7 @@ public class AugmateData<T extends ParseObject>{
             Log.e(this.getClass().getName(), e.toString());
         }
 
-        try {
-            ParseObject.pinAll(packageLoads);
-        } catch (ParseException e) {
-            Log.e(this.getClass().getName(), e.toString());
-        }
+        ParseObject.pinAllInBackground(packageLoads, callback);
     }
 
     public T find(Class<T> clazz, String key, String value){
