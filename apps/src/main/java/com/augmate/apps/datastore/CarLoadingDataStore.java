@@ -24,8 +24,9 @@ public class CarLoadingDataStore {
         return packageCarLoad;
     }
 
-    public void pullToLocalCache(SaveCallback callback){
-        augmateData.pullToLocalCache(PackageCarLoad.class, callback);
+    public void pullToCache(SaveCallback callback){
+        augmateData.clearCache();
+        augmateData.pullToCache(PackageCarLoad.class, callback);
     }
 
     public int numberOfPackages() {

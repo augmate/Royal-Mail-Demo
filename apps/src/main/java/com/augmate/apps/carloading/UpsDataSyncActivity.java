@@ -42,7 +42,7 @@ public class UpsDataSyncActivity extends Activity {
 
                 final CarLoadingDataStore carLoadingDataStore = new CarLoadingDataStore(UpsDataSyncActivity.this);
 
-                carLoadingDataStore.pullToLocalCache(new SaveCallback() {
+                carLoadingDataStore.pullToCache(new SaveCallback() {
                     @Override
                     public void done(ParseException exception) {
 
