@@ -31,29 +31,6 @@ public class SampleDataActivity extends Activity {
         Log.d(getClass().getName(), "Does write data equal read data (should be true)? " + expected.equals(readData));
 
         augmateData.refreshPackageLoadData();
-
-        PackageCarLoad packageCarLoad = new CarLoadingDataStore().findLoadForTrackingNumber("1Z0031340358655382");
-
-        augmateData.find(PackageCarLoad.class, PackageCarLoad.TRACKING_NUMBER_CLASS, "1Z0031340358655382");
-
-        Log.d(getClass().getName(), "(Should be 109) Load position: " + packageCarLoad.getLoadPosition());
-    }
-
-    private class CarLoadingDataStore {
-        private final AugmateData<PackageCarLoad> augmateData;
-
-        public CarLoadingDataStore() {
-            augmateData = new AugmateData<>(SampleDataActivity.this);
-        }
-
-        public PackageCarLoad findLoadForTrackingNumber(String trackingNumber) {
-            PackageCarLoad packageCarLoad = augmateData.find(PackageCarLoad.class, "TrackingNumber", trackingNumber);
-
-            Log.i(getClass().getName(), packageCarLoad.getLoadPosition());
-            Log.i(getClass().getName(), packageCarLoad.getTrackingNumber());
-
-            return packageCarLoad;
-        }
     }
 
     static private class SampleAugmateData {
