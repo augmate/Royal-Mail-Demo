@@ -26,11 +26,6 @@ public class AugmateApplication extends android.app.Application {
         DecoderManager.ScanditConfiguration = Configuration.createFromContext(getBaseContext());
         new CarLoadingDataStore(this).refreshCarLoadData();
     }
-//
-//    @Override
-//    protected void attachBaseContext(Context newBase) {
-//        super.attachBaseContext(new CalligraphyContextWrapper(newBase));
-//    }
 
     // never called in production
     @Override
