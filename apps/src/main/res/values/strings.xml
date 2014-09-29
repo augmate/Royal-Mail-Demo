@@ -6,7 +6,7 @@
     <string name="action_adjust_brightness">Adjust Brightness</string>
     <string name="action_cycle_count">Cycle count</string>
     <string name="action_toggle_animations">Toggle Animations</string>
-    <string name="action_truck_loading">Truck Loading</string>
+    <string name="action_car_loading">CarLoading</string>
     <string name="action_non_retail_touch">Non Retail Touch</string>
 
     <string name="pref_animation_toggle">ANIMATION_TOGGLE</string>
@@ -42,7 +42,7 @@
     <string name="tap_scan_bin">Tap to Scan\nBin Barcode</string>
     <string name="augmate">AUGMATE</string>
 
-    <string name="lets_load_trucks">Let\'s load trucks</string>
+    <string name="lets_load_packages">Let\'s load packages</string>
     <string name="tap_to_scan_package">Tap to Scan\nPackage</string>
     <string name="package_verified">Package Verified</string>
 

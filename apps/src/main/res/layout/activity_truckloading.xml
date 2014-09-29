@@ -13,7 +13,7 @@
         <TextView
             android:id="@+id/lets_load_trucks"
             style="@style/WrapContent.SecondaryTextView.RightAligned"
-            android:text="@string/lets_load_trucks" />
+            android:text="@string/lets_load_packages" />
     </RelativeLayout>
 
     <!-- TAP TO SCAN ID PAGE -->

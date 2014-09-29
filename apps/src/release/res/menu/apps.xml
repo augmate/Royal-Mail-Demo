@@ -7,8 +7,8 @@
         android:orderInCategory="100"
         android:showAsAction="never"/>
     <item
-        android:id="@+id/truck_loading"
-        android:title="@string/action_truck_loading"
+        android:id="@+id/car_loading"
+        android:title="@string/action_car_loading"
         android:orderInCategory="100"
         android:showAsAction="never"/>
     <item

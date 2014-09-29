@@ -8,14 +8,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.augmate.apps.carloading.CarLoadingActivity;
 import com.augmate.apps.common.FontHelper;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.UserUtils;
 import com.augmate.apps.common.activities.BaseActivity;
-import com.augmate.apps.counter.CycleCountActivity;
 import com.augmate.apps.counter.StructuredCycleCountActivity;
 import com.augmate.apps.nonretailtouching.NonRetailTouchActivity;
-import com.augmate.apps.truckloading.TruckLoadingActivity;
 import com.google.android.glass.view.WindowUtils;
 
 public class ApplicationsActivity extends BaseActivity {
@@ -76,7 +75,7 @@ public class ApplicationsActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.truck_loading:
+            case R.id.car_loading:
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -148,7 +147,7 @@ public class ApplicationsActivity extends BaseActivity {
     }
 
     private void goToTruckLoading() {
-        Intent intent = new Intent(this, TruckLoadingActivity.class);
+        Intent intent = new Intent(this, CarLoadingActivity.class);
         startActivity(intent);
     }
 

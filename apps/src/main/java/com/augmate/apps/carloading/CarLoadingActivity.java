@@ -1,4 +1,4 @@
-package com.augmate.apps.truckloading;
+package com.augmate.apps.carloading;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,10 +16,7 @@ import com.augmate.apps.common.TouchResponseListener;
 import com.augmate.apps.common.activities.BaseActivity;
 import com.google.android.glass.touchpad.GestureDetector;
 
-/**
- * Created by cesaraguilar on 9/4/14.
- */
-public class TruckLoadingActivity extends BaseActivity {
+public class CarLoadingActivity extends BaseActivity {
 
     ViewFlipper flipper;
     private GestureDetector mGestureDetector;
