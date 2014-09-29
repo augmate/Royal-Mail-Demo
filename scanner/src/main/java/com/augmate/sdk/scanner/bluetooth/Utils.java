@@ -14,7 +14,7 @@ public class Utils {
      * @param pin four character/digit string
      * @return byte array or null on error
      */
-    static byte[] convertPinToBytes(String pin) {
+    public static byte[] convertPinToBytes(String pin) {
         if (pin == null) {
             return null;
         }

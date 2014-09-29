@@ -1,64 +1,49 @@
 package com.augmate.sdk.scanner.bluetooth;
 
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.os.ParcelUuid;
 import android.os.Parcelable;
-import android.text.TextUtils;
 import com.augmate.sdk.logger.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
  * UUIDs:
- *  00001124-0000-1000-8000-00805f9b34fb = HID (doesn't seem to work)
- *  00001101-0000-1000-8000-00805f9b34fb = SPP (works on android, but scanner must be in discoverable/connectable mode)
- *  00000000-0000-1000-8000-00805f9b34fb = ???
+ * 00001124-0000-1000-8000-00805f9b34fb = HID (doesn't seem to work)
+ * 00001101-0000-1000-8000-00805f9b34fb = SPP (works on android, but scanner must be in discoverable/connectable mode)
+ * 00000000-0000-1000-8000-00805f9b34fb = ???
  *
- *  BluetoothClasses:
- *      Scanfob (opn-2006) = 114 = BluetoothClass.Device.COMPUTER_PALM_SIZE_PC_PDA
+ * BluetoothClasses:
+ * Scanfob (opn-2006) = 114 = BluetoothClass.Device.COMPUTER_PALM_SIZE_PC_PDA
  */
 
 class OutgoingConnection implements Runnable {
-    private String accumulationBuffer = "";
+    public static final UUID UUID_SPP = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"); // definitely works
+    public static final UUID UUID_HID = UUID.fromString("00001124-0000-1000-8000-00805f9b34fb");
     private BluetoothDevice device;
     private BluetoothSocket socket;
     private UUID service;
     private Context parentContext;
     private CountDownLatch threadExitSignal = new CountDownLatch(1);
 
-    public static final UUID UUID_SPP = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"); // definitely works
-    public static final UUID UUID_HID = UUID.fromString("00001124-0000-1000-8000-00805f9b34fb");
-    private BluetoothSocket listeningSocket;
-    private BluetoothServerSocket listeningServer;
+    // parses data comming in from a scanner and broadcasts the result
+    private BarcodeStreamParser scannerParser = new BarcodeStreamParser(new BarcodeStreamParser.ResultHandler() {
+        @Override
+        public void onBarcodeDecoded(String barcode) {
+            parentContext.sendBroadcast(
+                    new Intent(ServiceEvents.ACTION_BARCODE_SCANNED)
+                            .putExtra(ServiceEvents.EXTRA_BARCODE_STRING, barcode)
+            );
 
-    public static UUID findBestService(ParcelUuid[] uuids) {
-        for (Parcelable parceableUuid : uuids) {
-            UUID uuid = UUID.fromString(parceableUuid.toString());
-
-            if(UUID_SPP.compareTo(uuid) == 0) {
-                Log.debug("  found SPP service: %s", uuid.toString());
-                return uuid;
-            }
-
-            if(UUID_HID.compareTo(uuid) == 0) {
-                Log.debug("  found HID service: %s", uuid.toString());
-                return uuid;
-            }
-
-            //Log.debug("  unknown service: %s", uuid.toString());
         }
-
-        return null;
-    }
+    });
 
     public OutgoingConnection(BluetoothDevice device, UUID service, Context parentContext) {
         this.parentContext = parentContext;
@@ -66,20 +51,26 @@ class OutgoingConnection implements Runnable {
         this.device = device;
     }
 
-    static byte[] hexStringToByteArray(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                    + Character.digit(s.charAt(i+1), 16));
+    public static UUID findBestService(ParcelUuid[] uuids) {
+        for (Parcelable parceableUuid : uuids) {
+            UUID uuid = UUID.fromString(parceableUuid.toString());
+
+            if (UUID_SPP.compareTo(uuid) == 0) {
+                Log.debug("  found SPP service: %s", uuid.toString());
+                return uuid;
+            }
+
+            if (UUID_HID.compareTo(uuid) == 0) {
+                Log.debug("  found HID service: %s", uuid.toString());
+                return uuid;
+            }
         }
-        return data;
+
+        return null;
     }
 
     @Override
     public void run() {
-
-
         Log.debug("Connecting to: %s + %s", device.getAddress(), service.toString());
 
         InputStream stream = null;
@@ -125,7 +116,7 @@ class OutgoingConnection implements Runnable {
 
         try {
             while ((read = stream.read(buffer)) >= 0) {
-                onNewData(read, buffer);
+                scannerParser.onNewData(read, buffer);
             }
         } catch (IOException exception) {
             //Log.expected_exception(exception, "Barcode streamer interrupted. (by shutdown request?)");
@@ -134,97 +125,9 @@ class OutgoingConnection implements Runnable {
     }
 
     /**
-     * accumulate data, split by line-terminator, extract complete-lines as a barcode payload
-     *
-     * @param read   number of bytes
-     * @param buffer byte buffer
-     */
-    private void onNewData(int read, byte[] buffer) {
-        String newData = new String(buffer, 0, read);
-        accumulationBuffer += newData;
-
-        tryParsingAccumulationBuffer();
-    }
-
-    private void tryParsingAccumulationBuffer() {
-
-        // normalize line-endings
-        accumulationBuffer = accumulationBuffer.replace("\r\n", "\n");
-        accumulationBuffer = accumulationBuffer.replace("\r", "\n"); // scanfob likes to use \r
-
-        // wait until we have a terminator
-        int indexOfEOL = accumulationBuffer.indexOf("\n");
-        if(indexOfEOL == -1)
-            return;
-
-        // grab substring without normalized terminator
-        String substring = accumulationBuffer.substring(0, indexOfEOL);
-
-        // advance buffer in case of partials
-        accumulationBuffer = accumulationBuffer.substring(indexOfEOL+1);
-
-        /**
-         * typical formats
-         * scanfob 2006
-         *   default: prefix=STX, suffix=CR
-         *                   0x02, 0x0A
-         *   strangely their CR is actually \n, but it can sometimes be \r
-         */
-
-        ArrayList<String> bytes = new ArrayList<>();
-        for (int i = 0; i < indexOfEOL; i++) {
-            bytes.add(String.format("%X", (byte) substring.charAt(i)));
-        }
-        Log.debug("Raw input: [%s] (%d bytes)", TextUtils.join(",", bytes), indexOfEOL);
-
-        if(substring.length() < 3)
-            return;
-
-        // try to parse stream
-
-        // Scanfob STX+CR
-        if (substring.charAt(0) == 0x02) {
-            substring = substring.substring(1);
-            Log.debug("Decoded Scanfob STX+CR format: [%s]", substring);
-
-            // broadcast scanned code
-            parentContext.sendBroadcast(
-                    new Intent(ServiceEvents.ACTION_BARCODE_SCANNED)
-                            .putExtra(ServiceEvents.EXTRA_BARCODE_STRING, substring)
-            );
-        } else {
-            // ECOM?
-            Log.debug("Decoded Ecom (unknown format): [%s]", substring);
-
-            // broadcast scanned code
-            parentContext.sendBroadcast(
-                    new Intent(ServiceEvents.ACTION_BARCODE_SCANNED)
-                            .putExtra(ServiceEvents.EXTRA_BARCODE_STRING, substring)
-            );
-        }
-    }
-
-    /**
      * can be called from any thread
      */
     public void shutdown() {
-
-        if(listeningServer != null) {
-            try {
-                listeningServer.close();
-            } catch (IOException e) {
-                Log.exception(e, "Caught while shutting down listening server");
-            }
-        }
-
-        if(listeningSocket != null) {
-            try {
-                listeningSocket.close();
-            } catch (IOException e) {
-                Log.exception(e, "Caught while shutting down listening socket");
-            }
-        }
-
         if (socket != null) {
             try {
                 socket.close();

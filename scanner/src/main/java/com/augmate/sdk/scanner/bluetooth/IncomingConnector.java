@@ -67,10 +67,6 @@ public class IncomingConnector {
         }
     };
 
-    public void reconnect() {
-
-    }
-
     /**
      * Async service bind request
      * Results will be published using the IBluetoothScannerConnection interface

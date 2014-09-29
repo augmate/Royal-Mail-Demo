@@ -47,7 +47,6 @@ public class IncomingService extends Service {
     public void onCreate() {
         Log.debug("Starting bluetooth barcode-scanner service.");
 
-        registerReceiver(barcodeScannerReceiver, new IntentFilter(ServiceEvents.ACTION_SCANNER_FOUND));
         registerReceiver(barcodeScannerReceiver, new IntentFilter(ServiceEvents.ACTION_SCANNER_CONNECTED));
         registerReceiver(barcodeScannerReceiver, new IntentFilter(ServiceEvents.ACTION_SCANNER_DISCONNECTED));
 

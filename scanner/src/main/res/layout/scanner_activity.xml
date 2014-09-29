@@ -4,16 +4,16 @@
     android:layout_height="match_parent"
     tools:context="${packageName}.${activityClass}">
 
-    <TextView
-        android:text="Scanner Viz v2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <fragment
         android:id="@+id/scanner_visualization"
         android:name="com.augmate.sdk.scanner.ScannerFragmentBase"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/scanner_viz_fragment" />
+        tools:layout="@layout/fragment_default_scanner" />
+
+    <TextView
+            android:text="Default Scanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
 </FrameLayout>
