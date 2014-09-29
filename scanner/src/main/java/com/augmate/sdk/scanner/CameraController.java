@@ -1,6 +1,7 @@
 package com.augmate.sdk.scanner;
 
 import android.graphics.ImageFormat;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Build;
 import android.view.SurfaceHolder;
@@ -19,18 +20,14 @@ class CameraController {
      * Configures camera around a rendering context
      * Ensures optimal configuration for capturing barcodes
      *
+     * @param surfaceHolder
      * @param width
      * @param height
-     * @param surfaceHolder
+     * @param surfaceTexture
      */
-    public void beginFrameCapture(SurfaceHolder surfaceHolder, Camera.PreviewCallback callback, int width, int height) {
-        assert (surfaceHolder != null);
+    public void beginFrameCapture(SurfaceHolder surfaceHolder, Camera.PreviewCallback callback, int width, int height, SurfaceTexture surfaceTexture) {
         assert (camera == null);
-
         int numOfCameras = Camera.getNumberOfCameras();
-        Log.debug("There are %d cameras available", numOfCameras);
-
-        assert (numOfCameras > 0);
 
         int bestCameraIdx = 0;
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
@@ -42,7 +39,7 @@ class CameraController {
             }
         }
 
-        Timer cameraTimer = Log.startTimer("Opening camera took %d msec");
+        Timer cameraTimer = Log.startTimer("Opening camera");
 
         // try to open the first available camera
         try {
@@ -55,7 +52,14 @@ class CameraController {
                     Log.debug("Camera had an error: %d", i);
                 }
             });
-            camera.setPreviewDisplay(surfaceHolder);
+
+            if(surfaceTexture != null) {
+                Log.debug("Set camera render to texture");
+                camera.setPreviewTexture(surfaceTexture);
+            } else {
+                Log.debug("Set camera render to surface");
+                camera.setPreviewDisplay(surfaceHolder);
+            }
         } catch (IOException e) {
             Log.exception(e, "Failed to open camera interface");
         }
@@ -73,8 +77,11 @@ class CameraController {
 
         lastCaptureBufferIdx = 0;
         frameCaptureBuffers = new byte[2][width * height * 3]; // two frame buffers
-        camera.addCallbackBuffer(frameCaptureBuffers[lastCaptureBufferIdx]); // start with the first buffer
-        camera.setPreviewCallbackWithBuffer(callback);
+        if(callback != null) {
+            camera.addCallbackBuffer(frameCaptureBuffers[lastCaptureBufferIdx]); // start with the first buffer
+            camera.setPreviewCallbackWithBuffer(callback);
+            Log.debug("Assigned camera callback frame buffers");
+        }
 
         try {
             camera.startPreview();
@@ -85,9 +92,10 @@ class CameraController {
         }
 
         // zooming is back on Glass after XE16!
-        camera.startSmoothZoom(14);
+        int zoom = 19;
+        camera.startSmoothZoom(zoom);
 
-        Log.debug("Started camera frame-grabbing.");
+        Log.debug("Started camera frame-grabbing w/ zoom %d", zoom);
     }
 
     /**
@@ -118,13 +126,13 @@ class CameraController {
 
         Log.debug("Hardware build: " + Build.PRODUCT + " / " + Build.DEVICE + " / " + Build.MODEL + " / " + Build.BRAND);
 
-        Log.debug("Current camera params: " + params.flatten());
+        //Log.debug("Current camera params: " + params.flatten());
 
         String deviceManufacturerName = params.get("exif-make");
         if (deviceManufacturerName == null)
             deviceManufacturerName = "Unknown";
 
-        Log.debug("  deviceManufacturerName = [" + deviceManufacturerName + "]");
+        //Log.debug("  deviceManufacturerName = [" + deviceManufacturerName + "]");
 
         switch (deviceManufacturerName) {
             case "Vuzix":

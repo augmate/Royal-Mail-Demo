@@ -25,16 +25,13 @@ android {
         versionName '1.0'
 
         ndk {
+            // we now have ZXing shared libs to link for both x86 and arm-v7a :)
             String scannerDir = file('.').absolutePath
-
-            moduleName "native-scanner"
-            ldLibs "log -lzxing_android_x86_release -L" + scannerDir + "/libs/lib/x86/"
+            ldLibs "log -lzxing" + " -L" + scannerDir + "/libs/lib/armeabi-v7a/" + " -L" + scannerDir + "/libs/lib/x86/"
             cFlags "-fexceptions -I" + scannerDir + "/includes/"
+            moduleName "native-scanner"
             stl "gnustl_shared"
-            abiFilter "x86"
-
-            // TODO: play with optimization flags
-            //cFlags "-march=armv7-a -mfloat-abi=softfp -mfpu=neon"
+            abiFilters "x86", "armeabi-v7a"
         }
     }
 
@@ -93,7 +90,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':augmate-sdk:logger')
     compile 'com.android.support:support-v4:19.+'
-
     androidTestCompile 'com.google.android:android:4.1.1.4'
     androidTestCompile 'org.robolectric:robolectric:2.3'
     androidTestCompile 'org.assertj:assertj-core:1.6.1'

@@ -33,12 +33,41 @@ JNIEXPORT void JNICALL Java_com_augmate_sdk_scanner_NativeUtils_binarizeToIntBuf
     (*env)->ReleaseIntArrayElements(env, dstArray, dst, 0);
 }
 
-JNIEXPORT void JNICALL Java_com_augmate_sdk_scanner_NativeUtils_zxingNativeDecode
+JNIEXPORT jstring JNICALL Java_com_augmate_sdk_scanner_NativeUtils_zxingNativeDecode
   (JNIEnv *env, jclass unused, jbyteArray srcArray, jint width, jint height)
 {
     jbyte* src = (*env)->GetByteArrayElements(env, srcArray, NULL);
+    char resultBuffer[256];
+    memset(resultBuffer, 0, 256);
 
-    zxingNativeDecode(src, width, height);
+    zxingNativeDecode(src, width, height, resultBuffer);
+
+    jstring string = (*env)->NewStringUTF(env, resultBuffer);
+    (*env)->ReleaseByteArrayElements(env, srcArray, src, JNI_ABORT);
+    return string;
+}
+
+JNIEXPORT void JNICALL Java_com_augmate_sdk_scanner_NativeUtils_globalHistogramBinarizeToIntBuffer
+  (JNIEnv *env, jclass unused, jbyteArray srcArray, jintArray dstArray, jint width, jint height)
+{
+    jbyte* src = (*env)->GetByteArrayElements(env, srcArray, NULL);
+    jint* dst = (*env)->GetIntArrayElements(env, dstArray, NULL);
+
+    binarizerGlobalHistogramByteToPackedIntArray(src, dst, width, height);
 
     (*env)->ReleaseByteArrayElements(env, srcArray, src, JNI_ABORT);
+    (*env)->ReleaseIntArrayElements(env, dstArray, dst, 0);
+}
+
+JNIEXPORT jint JNICALL Java_com_augmate_sdk_scanner_NativeUtils_estimateBlackPoint
+  (JNIEnv *env, jclass unused, jintArray srcArray, jint count)
+{
+    jint blackPointValue = 0;
+    jint* src = (*env)->GetIntArrayElements(env, srcArray, NULL);
+
+    blackPointValue = estimateBlackPointExport(src, count);
+
+    (*env)->ReleaseIntArrayElements(env, srcArray, src, JNI_ABORT);
+
+    return blackPointValue;
 }

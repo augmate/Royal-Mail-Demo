@@ -1,21 +1,22 @@
 package com.augmate.sdk.scanner;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.decoder.DecodingJob;
 
 public abstract class ScannerFragmentBase extends Fragment implements SurfaceHolder.Callback, Camera.PreviewCallback {
-    private FramebufferSettings frameBufferSettings = new FramebufferSettings(1280, 720);
+    private CameraSettings frameBufferSettings = new CameraSettings(1280, 720);
     private CameraController cameraController = new CameraController();
     private boolean isProcessingCapturedFrames;
-    private OnScannerResultListener mListener;
+    private IScannerResultListener mListener;
     private boolean readyForNextFrame = true;
     private ScannerVisualDebugger dbgVisualizer;
     private DecoderThread decoderThread;
@@ -29,7 +30,7 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
      * @param scannerVisualDebugger ScannerVisualDebugger is optional
      */
     public void setupScannerActivity(SurfaceView surfaceView, ScannerVisualDebugger scannerVisualDebugger) {
-        Log.debug("Configuring scanner fragment.");
+        //Log.debug("Scanner fragment configured.");
 
         this.surfaceView = surfaceView;
         this.dbgVisualizer = scannerVisualDebugger;
@@ -38,50 +39,56 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
     @Override
     public void onResume() {
         super.onResume();
-        Log.debug("Resuming");
 
         if (surfaceView == null) {
             Log.error("surfaceView is null. Must setupScannerActivity() with a valid SurfaceView in onCreateView().");
             return;
         }
 
+        isProcessingCapturedFrames = true;
+
+        // ensure we have a callback
         SurfaceHolder holder = surfaceView.getHolder();
         holder.removeCallback(this);
         holder.addCallback(this);
-        isProcessingCapturedFrames = true;
+    }
 
+    // when activity wakes up it runs through a resume/pause/resume cycle, making this unnecessarily complex
+    // we don't need to support resume/pause for our current applications anyway, so killing this.
+//
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        Log.debug("Pausing..");
+//
+//        isProcessingCapturedFrames = false;
+//        SurfaceHolder holder = surfaceView.getHolder();
+//        holder.removeCallback(this);
+//
+//        // stop camera frame-grab immediately, let go of preview-surface, and release camera
+//        cameraController.endFrameCapture();
+//    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (IScannerResultListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnScannerResultListener");
+        }
+
+        // decoding thread lives so long as the fragment is attached to an activity
+        // when paused, we simply don't send anything to it, and the thread idles, taking up no real resources
         startDecodingThread();
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        Log.debug("Paused");
-        isProcessingCapturedFrames = false;
-
-        // stop camera frame-grab immediately, let go of preview-surface, and release camera
-        cameraController.endFrameCapture();
-
-        // stop decoding thread
-        shutdownDecodingThread();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        Log.debug("Attached");
-        super.onAttach(activity);
-        try {
-            mListener = (OnScannerResultListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnScannerResultListener");
-        }
-    }
-
-    @Override
     public void onDetach() {
-        Log.debug("Detached");
         super.onDetach();
         mListener = null;
+
+        shutdownDecodingThread();
     }
 
     private void startDecodingThread() {
@@ -118,14 +125,13 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        Log.debug("Surface has been created");
-        Log.debug("  Surface has size of %d x %d", surfaceHolder.getSurfaceFrame().width(), surfaceHolder.getSurfaceFrame().height());
+        //Log.debug("Surface has been created");
+        //Log.debug("  Surface has size of %d x %d", surfaceHolder.getSurfaceFrame().width(), surfaceHolder.getSurfaceFrame().height());
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i2, int i3) {
-        Log.debug("Surface has changed");
-        Log.debug("  Surface has size of %d x %d", surfaceHolder.getSurfaceFrame().width(), surfaceHolder.getSurfaceFrame().height());
+        Log.debug("Surface has changed; size = %d x %d", surfaceHolder.getSurfaceFrame().width(), surfaceHolder.getSurfaceFrame().height());
 
         // configure debugging render-target
         if (dbgVisualizer != null)
@@ -133,7 +139,7 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
 
         // configure camera frame-grabbing
         cameraController.endFrameCapture();
-        cameraController.beginFrameCapture(surfaceHolder, this, frameBufferSettings.width, frameBufferSettings.height);
+        cameraController.beginFrameCapture(surfaceHolder, this, frameBufferSettings.width, frameBufferSettings.height, null);
     }
 
     @Override
@@ -173,11 +179,11 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
     }
 
     private void onJobCompleted(DecodingJob job) {
-        Log.debug("Job stats: skipped frames=%d, binarization=%d msec, total=%d msec", framesSkipped, job.binarizationDuration(), job.totalDuration());
+        //Log.debug("Job stats: skipped frames=%d, binarization=%d msec, total=%d msec", framesSkipped, job.binarizationDuration(), job.totalDuration());
 
         if (job.result != null && job.result.confidence > 0) {
             Point[] pts = job.result.corners;
-            Log.info("  Result={%s} with confidence=%.2f", job.result.value, job.result.confidence);
+            //Log.info("  Result={%s} with confidence=%.2f", job.result.value, job.result.confidence);
 
             if (dbgVisualizer != null) {
                 dbgVisualizer.setPoints(pts);
@@ -197,24 +203,6 @@ public abstract class ScannerFragmentBase extends Fragment implements SurfaceHol
 
         // TODO: try pushing next frame (if we got one) from here
         // may reduce delays by length of one frame (ie 50ms at 20fps)
-    }
-
-    /**
-     * Provides barcode decoding results to a parent Activity (on its own thread)
-     * Must be implemented by parent Activity
-     */
-    public interface OnScannerResultListener {
-        public void onBarcodeScanSuccess(String result);
-    }
-
-    private class FramebufferSettings {
-        public final int width;
-        public final int height;
-
-        private FramebufferSettings(int width, int height) {
-            this.width = width;
-            this.height = height;
-        }
     }
 
     /**

@@ -22,6 +22,6 @@ public class Timer {
      */
     public void stop() {
         span = SystemClock.elapsedRealtime() - start;
-        Log.debug(str, span);
+        Log.debug(str + " = %d msec", span);
     }
 }
