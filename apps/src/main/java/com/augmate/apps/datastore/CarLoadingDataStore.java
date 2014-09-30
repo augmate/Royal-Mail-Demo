@@ -4,6 +4,7 @@ import android.content.Context;
 import com.augmate.sdk.data.AugmateData;
 import com.augmate.sdk.data.PackageCarLoad;
 import com.augmate.sdk.logger.Log;
+import com.parse.DeleteCallback;
 import com.parse.SaveCallback;
 
 public class CarLoadingDataStore {
@@ -31,8 +32,8 @@ public class CarLoadingDataStore {
         augmateData.pullToCache(PackageCarLoad.class, PackageCarLoad.LOAD_POSITION_KEY, carLoad, callback);
     }
 
-    public void wipeLocalCache(){
-        augmateData.clearCache(PackageCarLoad.class);
+    public void wipeLocalCache(DeleteCallback callback){
+        augmateData.clearCache(PackageCarLoad.class, callback);
     }
     public int numberOfPackages() {
         return augmateData.count(PackageCarLoad.class);

@@ -64,10 +64,10 @@
         <activity
             android:name=".carsweep.CarSweepActivity"
             android:immersive="true"
-            android:label="Car Sweep" >
+            android:label="Car Sweep">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
                 <action android:name="com.google.android.glass.action.VOICE_TRIGGER"/>
             </intent-filter>
 
@@ -75,13 +75,11 @@
                 android:name="com.google.android.glass.VoiceTrigger"
                 android:resource="@xml/voice_trigger_carsweep"/>
         </activity>
-
         <activity android:name=".carsweep.IdentifyVehicleActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
-
         <activity
             android:name=".common.activities.ExitActivity"
             android:immersive="true"/>
@@ -106,23 +104,28 @@
             android:theme="@style/BrightnessActivity"/>
         <activity
             android:name=".carloading.UpsDataSyncActivity"
-            android:immersive="true"
-            android:label="@string/ups_data_sync_app">
+            android:immersive="true">
             <intent-filter>
-                <action android:name="com.google.android.glass.action.VOICE_TRIGGER"/>
+                <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
-
-            <meta-data
-                android:name="com.google.android.glass.VoiceTrigger"
-                android:resource="@xml/voice_trigger_ups_data_sync"/>
         </activity>
         <activity
             android:name=".carloading.TestUpsDataSyncActivity"
             android:label="@string/title_activity_test_ups_data_sync">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".carsweep.ClearUpsCacheActivity"
+            android:label="@string/title_activity_clear_ups_cache">
+            <intent-filter>
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER"/>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/voice_trigger_ups_clear_cache"/>
         </activity>
     </application>
 

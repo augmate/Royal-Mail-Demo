@@ -12,7 +12,6 @@ public class SampleDataActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         SampleAugmateData obj1 = new SampleAugmateData("obj1 in array", 999);
         SampleAugmateData obj2 = new SampleAugmateData("obj2 in array", 99);

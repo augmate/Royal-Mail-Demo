@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">Augmate Glassware</string>
-    <string name="ups_data_sync_app">UPS Data Sync</string>
     <string name="action_location_history">Location History</string>
     <string name="action_adjust_brightness">Adjust Brightness</string>
     <string name="action_cycle_count">Cycle count</string>
@@ -47,4 +46,8 @@
     <string name="no_wifi_bt_cnx_found">No WiFi or BT connection found</string>
     <string name="preparing_download_ups_sync">Preparing to download...</string>
     <string name="download_failed">Download failed</string>
+    <string name="title_activity_clear_ups_cache">ClearUpsCacheActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="ups_clear_cache">UPS Clear Cache</string>
+    <string name="ups_clear_cache_pending">Clearing UPS data cache...</string>
 </resources>

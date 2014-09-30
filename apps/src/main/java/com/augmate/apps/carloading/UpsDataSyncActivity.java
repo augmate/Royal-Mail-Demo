@@ -57,7 +57,6 @@ public class UpsDataSyncActivity extends Activity {
         Log.info("Download started");
 
         for (final String load : carLoads) {
-
             carLoadingDataStore.downloadCarLoadDataToCache(load, new SaveCallback() {
                 @Override
                 public void done(ParseException exception) {
@@ -69,7 +68,6 @@ public class UpsDataSyncActivity extends Activity {
                     }
                 }
             });
-
         }
     }
 

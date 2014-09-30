@@ -7,7 +7,7 @@ import com.parse.*;
 
 import java.util.List;
 
-public class AugmateData<T extends ParseObject>{
+public class AugmateData<T extends ParseObject> {
 
     public static final String PARSE_KEY_PAYLOAD = "payload";
     private static boolean initialized = false;
@@ -67,7 +67,7 @@ public class AugmateData<T extends ParseObject>{
         ParseObject.pinAllInBackground(objs, callback);
     }
 
-    public T cacheFind(Class<T> clazz, String key, String value){
+    public T cacheFind(Class<T> clazz, String key, String value) {
         T foundObj = null;
 
         try {
@@ -83,7 +83,7 @@ public class AugmateData<T extends ParseObject>{
         return foundObj;
     }
 
-    public List<T> cacheFind(Class<T> clazz){
+    public List<T> cacheFind(Class<T> clazz) {
         List<T> foundObjs = null;
 
         try {
@@ -112,15 +112,11 @@ public class AugmateData<T extends ParseObject>{
         return count;
     }
 
-    public void clearCache(Class<T> clazz) {
-        try {
-            List<T> cacheObjs = cacheFind(clazz);
+    public void clearCache(Class<T> clazz, DeleteCallback callback) {
+        List<T> cacheObjs = cacheFind(clazz);
 
-            Log.info("Removing all %s elements from cache (%d elements)", clazz.getName(), cacheObjs.size());
+        Log.info("Removing all %s elements from cache (%d elements)", clazz.getName(), cacheObjs.size());
 
-            ParseObject.unpinAll(cacheObjs);
-        } catch (ParseException e) {
-            Log.error(e.getMessage());
-        }
+        ParseObject.unpinAllInBackground(cacheObjs, callback);
     }
 }

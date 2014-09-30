@@ -1,0 +1,15 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                tools:context="com.augmate.apps.carsweep.ClearUpsCacheActivity">
+
+    <TextView
+        android:id="@+id/ups_clear_cache"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ups_clear_cache_pending"
+        android:textSize="@dimen/default_text_size"/>
+
+</RelativeLayout>
