@@ -130,7 +130,7 @@ public class NonRetailTouchActivity extends BaseActivity implements IBluetoothSc
     }
 
     @Override
-    public void onBtScannerConnecting() {
+    public void onBtScannerSearching() {
         Log.debug("NRT - BT Scanner Connecting...");
 
         TextView btCnxStatus = (TextView) findViewById(R.id.bt_cnx_state);

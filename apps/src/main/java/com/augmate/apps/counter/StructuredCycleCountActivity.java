@@ -21,12 +21,12 @@ import com.augmate.apps.common.UserUtils;
 import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
-import com.augmate.sdk.scanner.bluetooth.OutgoingConnector;
+import com.augmate.sdk.scanner.bluetooth.IncomingConnector;
 import com.google.android.glass.media.Sounds;
 
 public class StructuredCycleCountActivity extends BaseActivity implements IBluetoothScannerEvents {
 
-    private OutgoingConnector bluetoothScannerConnector = new OutgoingConnector(this);
+    private IncomingConnector bluetoothScannerConnector = new IncomingConnector(this);
     public static final String BARCODE_STRING = "bcs";
     public boolean btListening = true;
 
@@ -150,9 +150,9 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
     }
 
     @Override
-    public void onBtScannerConnecting() {
+    public void onBtScannerSearching() {
         startLoader(true);
-        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("Scanner Connecting");
+        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("Searching for Scanner...");
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFFFFFF00);
         //((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
     }
@@ -169,7 +169,7 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
     @Override
     public void onBtScannerDisconnected() {
         startLoader(false);
-        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("No Scanner");
+        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("No Scanner Detected");
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFFFF0000);
         //((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
         //beaconDistanceMeasurer.stopListening();
@@ -181,7 +181,7 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
                 (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER
                         || event.getKeyCode() == KeyEvent.KEYCODE_MENU)) {
             Log.debug("User requested scanner reconnect.");
-            bluetoothScannerConnector.reconnect();
+            //bluetoothScannerConnector.reconnect();
             return true;
         }
 

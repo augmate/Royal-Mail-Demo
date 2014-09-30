@@ -109,7 +109,7 @@ public class HandheldScannerActivity extends Activity implements IBluetoothScann
 
 
     @Override
-    public void onBtScannerConnecting() {
+    public void onBtScannerSearching() {
         barcodeScannerStatus.setText("Scanner Connecting");
         barcodeScannerStatus.setTextColor(0xFFFFFF00);
         barcodeScannerResults.setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));

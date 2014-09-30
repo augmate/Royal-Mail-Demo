@@ -67,7 +67,7 @@ public class CarSweepActivity extends Activity implements IBluetoothScannerEvent
     }
 
     @Override
-    public void onBtScannerConnecting() {
+    public void onBtScannerSearching() {
     }
 
     @Override

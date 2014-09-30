@@ -75,7 +75,7 @@ public class IncomingConnector {
     public void start() {
         Log.debug("Binding activity to scanner service..");
         activity.bindService(new Intent(activity, IncomingService.class), connection, Context.BIND_AUTO_CREATE);
-
+        callbackReceiver.onBtScannerSearching();
         // register for scanner notifications
         activity.registerReceiver(receiver, new IntentFilter(ServiceEvents.ACTION_BARCODE_SCANNED)); // barcode scanned
         activity.registerReceiver(receiver, new IntentFilter(ServiceEvents.ACTION_SCANNER_CONNECTED)); // barcode-scanner connected

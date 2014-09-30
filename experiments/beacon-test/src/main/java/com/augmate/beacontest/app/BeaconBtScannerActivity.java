@@ -117,7 +117,7 @@ public class BeaconBtScannerActivity extends Activity implements IBluetoothScann
     }
 
     @Override
-    public void onBtScannerConnecting() {
+    public void onBtScannerSearching() {
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("Scanner Connecting");
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFFFFFF00);
         ((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
