@@ -17,6 +17,8 @@ import java.util.List;
 
 public class UpsDataSyncActivity extends Activity {
 
+    public final static String EXTRA_CAR_LOAD = "EXTRA_CAR_LOAD";
+
     private List<String> carLoads = new ArrayList<>();
     private List<String> loadsDone = new ArrayList<>();
 
@@ -28,7 +30,9 @@ public class UpsDataSyncActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ups_data_sync_activity);
 
-        carLoads.add("109");
+        String carLoad = getIntent().getStringExtra(EXTRA_CAR_LOAD);
+
+        carLoads.add(carLoad);
 
         progressBarView = (ProgressBar) findViewById(R.id.sync_progress_bar);
         downloadView = (TextView) findViewById(R.id.download_state);
@@ -47,7 +51,6 @@ public class UpsDataSyncActivity extends Activity {
 
     private void startUpsDataDownload() {
 
-
         final CarLoadingDataStore carLoadingDataStore = new CarLoadingDataStore(UpsDataSyncActivity.this);
 
         carLoadingDataStore.wipeLocalCache();
@@ -57,6 +60,7 @@ public class UpsDataSyncActivity extends Activity {
         Log.info("Download started");
 
         for (final String load : carLoads) {
+
             carLoadingDataStore.downloadCarLoadDataToCache(load, new SaveCallback() {
                 @Override
                 public void done(ParseException exception) {
@@ -68,11 +72,12 @@ public class UpsDataSyncActivity extends Activity {
                     }
                 }
             });
+
         }
     }
 
+    //Thread safe due to SaveCallback being called on main thread.
     private void loadFinished(String load) {
-        // uh-oh not thread safe
         loadsDone.add(load);
 
         if (loadsDone.size() == carLoads.size()) {

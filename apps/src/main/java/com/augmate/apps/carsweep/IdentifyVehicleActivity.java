@@ -1,9 +1,11 @@
 package com.augmate.apps.carsweep;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
 import com.augmate.apps.R;
+import com.augmate.apps.carloading.UpsDataSyncActivity;
 import com.augmate.sdk.beacons.BeaconInfo;
 import com.augmate.sdk.beacons.BeaconRegion;
 import com.augmate.sdk.beacons.BeaconRegionDetector;
@@ -18,7 +20,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class IdentifyVehicle extends Activity {
+public class IdentifyVehicleActivity extends Activity {
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
     private BeaconRegionDetector beaconDistanceMeasurer = new BeaconRegionDetector();
     private String currentCarId;
@@ -37,22 +39,33 @@ public class IdentifyVehicle extends Activity {
 
     private void testNearestRegion() {
         List<BeaconInfo> latestBeaconDistances = beaconDistanceMeasurer.getLatestBeaconDistances();
+
+        Log.info("Found %d beacons nearby", latestBeaconDistances.size());
+
+        for(BeaconInfo beaconInfo : latestBeaconDistances){
+            Log.info("-> Beacon name=%s minor/id=%s region=%s", beaconInfo.beaconName, beaconInfo.minor, beaconInfo.regionId);
+        }
+
         RegionProcessor regionProcessor = new RegionProcessor(new ArrayList<>(Arrays.asList(
-                new BeaconRegion(6).setRegionId(1),
-                new BeaconRegion(49623).setRegionId(2)
+                new BeaconRegion(4).setRegionId(1),
+                new BeaconRegion(3).setRegionId(2)
         )));
         int nearestCarId = regionProcessor.getNearestRegionId(latestBeaconDistances);
 
         Log.debug("nearest car id: %d", nearestCarId);
 
         if(nearestCarId != -1) {
-            goToDataDownload();
+            goToDataDownload(String.valueOf(nearestCarId));
         }
     }
 
-    private void goToDataDownload() {
+    private void goToDataDownload(String carLoad) {
         stopRegionTesting();
-//        startActivity();
+
+        Intent intent = new Intent(this, UpsDataSyncActivity.class).
+                putExtra(UpsDataSyncActivity.EXTRA_CAR_LOAD, carLoad);
+        startActivity(intent);
+        finish();
     }
 
     private void startRegionTesting() {
