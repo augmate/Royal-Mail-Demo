@@ -50,10 +50,7 @@ public class UpsDataSyncActivity extends Activity {
     }
 
     private void startUpsDataDownload() {
-
         final CarLoadingDataStore carLoadingDataStore = new CarLoadingDataStore(UpsDataSyncActivity.this);
-
-        carLoadingDataStore.wipeLocalCache();
 
         downloadView.setText("Download started...");
         progressBarView.setVisibility(View.VISIBLE);
