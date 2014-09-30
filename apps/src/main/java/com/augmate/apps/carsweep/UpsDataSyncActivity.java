@@ -41,10 +41,17 @@ public class UpsDataSyncActivity extends RoboActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.ups_data_sync_activity);
+
         carLoadingDataStore = new CarLoadingDataStore(UpsDataSyncActivity.this);
 
         carLoads.add(carLoad);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         if (new InternetChecker().isConnected(this)) {
             Log.info("Connected to the internet");

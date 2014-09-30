@@ -13,6 +13,11 @@ public class ClearUpsCacheActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clear_ups_cache);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         final TextView view = (TextView) findViewById(R.id.ups_clear_cache);
 
