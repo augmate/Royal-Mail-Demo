@@ -103,7 +103,7 @@
             android:immersive="true"
             android:theme="@style/BrightnessActivity"/>
         <activity
-            android:name=".carloading.UpsDataSyncActivity"
+            android:name=".carsweep.UpsDataSyncActivity"
             android:immersive="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
 import com.augmate.apps.R;
-import com.augmate.apps.carloading.UpsDataSyncActivity;
 import com.augmate.sdk.beacons.BeaconInfo;
 import com.augmate.sdk.beacons.BeaconRegion;
 import com.augmate.sdk.beacons.BeaconRegionDetector;
