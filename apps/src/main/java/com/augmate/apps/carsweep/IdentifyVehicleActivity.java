@@ -20,6 +20,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class IdentifyVehicleActivity extends Activity {
+    public static final int REQUEST_CODE_DOWNLOAD_DATA = 0x001;
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
     private BeaconRegionDetector beaconDistanceMeasurer = new BeaconRegionDetector();
     private String currentCarId;
@@ -46,8 +47,8 @@ public class IdentifyVehicleActivity extends Activity {
         }
 
         RegionProcessor regionProcessor = new RegionProcessor(new ArrayList<>(Arrays.asList(
-                new BeaconRegion(4).setRegionId(1),
-                new BeaconRegion(3).setRegionId(2)
+                new BeaconRegion(109, 2, 5).setRegionId(109),
+                new BeaconRegion(3, 4, 9).setRegionId(112)
         )));
         int nearestCarId = regionProcessor.getNearestRegionId(latestBeaconDistances);
 
@@ -61,10 +62,19 @@ public class IdentifyVehicleActivity extends Activity {
     private void goToDataDownload(String carLoad) {
         stopRegionTesting();
 
-        Intent intent = new Intent(this, UpsDataSyncActivity.class).
-                putExtra(UpsDataSyncActivity.EXTRA_CAR_LOAD, carLoad);
-        startActivity(intent);
-        finish();
+        startActivityForResult(new Intent(this, UpsDataSyncActivity.class)
+                .putExtra(UpsDataSyncActivity.EXTRA_CAR_LOAD, carLoad), REQUEST_CODE_DOWNLOAD_DATA);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_CODE_DOWNLOAD_DATA) {
+            startActivity(new Intent(this, CarSweepActivity.class));
+            finish();
+            return;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void startRegionTesting() {

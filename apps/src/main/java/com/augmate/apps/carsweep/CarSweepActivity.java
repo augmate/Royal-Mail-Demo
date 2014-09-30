@@ -7,7 +7,6 @@ import android.view.KeyEvent;
 import android.view.WindowManager;
 import com.augmate.apps.R;
 import com.augmate.apps.common.SoundHelper;
-import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.apps.datastore.CarLoadingDataStore;
 import com.augmate.sdk.data.PackageCarLoad;
 import com.augmate.sdk.logger.Log;
@@ -24,8 +23,8 @@ public class CarSweepActivity extends Activity implements IBluetoothScannerEvent
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_sweep);
-        carLoadingDataStore = new CarLoadingDataStore(this);
 
+        carLoadingDataStore = new CarLoadingDataStore(this);
         scanner.start();
     }
 

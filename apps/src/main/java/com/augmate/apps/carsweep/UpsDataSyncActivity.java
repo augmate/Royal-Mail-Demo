@@ -21,10 +21,11 @@ import java.util.List;
 
 
 public class UpsDataSyncActivity extends RoboActivity {
+    public static final String EXTRA_CAR_LOAD = "EXTRA_CAR_LOAD";
 
     private List<String> carLoads = new ArrayList<>();
     private List<String> loadsDone = new ArrayList<>();
-    private CarLoadingDataStore carLoadingDataStore = new CarLoadingDataStore(UpsDataSyncActivity.this);
+    private CarLoadingDataStore carLoadingDataStore;
 
     @InjectView(R.id.sync_progress_bar)
     ProgressBar progressBarView;
@@ -35,13 +36,13 @@ public class UpsDataSyncActivity extends RoboActivity {
     @InjectView(R.id.internet_cnx_state)
     TextView cnxView;
 
-    @InjectExtra("EXTRA_CAR_LOAD" ) String carLoad;
-
+    @InjectExtra(EXTRA_CAR_LOAD) String carLoad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ups_data_sync_activity);
+        carLoadingDataStore = new CarLoadingDataStore(UpsDataSyncActivity.this);
 
         carLoads.add(carLoad);
 
