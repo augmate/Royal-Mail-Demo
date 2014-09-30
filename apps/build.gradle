@@ -57,6 +57,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':augmate-sdk:scanner')
+    compile project(':augmate-sdk:beacons')
     compile project(':augmate-sdk:logger')
     compile project(':augmate-sdk:data')
     compile 'uk.co.chrisjenx:calligraphy:1.1.+'
