@@ -76,6 +76,12 @@
                 android:resource="@xml/voice_trigger_carsweep"/>
         </activity>
 
+        <activity android:name=".carsweep.IdentifyVehicle">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".common.activities.ExitActivity"

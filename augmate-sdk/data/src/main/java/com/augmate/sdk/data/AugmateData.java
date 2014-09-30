@@ -56,51 +56,55 @@ public class AugmateData<T extends ParseObject>{
         try {
             objs = new ParseQuery<>(clazz)
                     .whereEqualTo(key, value)
+                    .setLimit(1000)
                     .find();
         } catch (ParseException e) {
             Log.error(e.toString());
         }
 
-        Log.debug("Caching %d elements under %s->%s", objs.size(), key, value);
+        Log.info("Caching data for %s->%s (%d elements)", key, value, objs.size());
 
         ParseObject.pinAllInBackground(objs, callback);
     }
 
-    public T find(Class<T> clazz, String key, String value){
-        T foundPackage = null;
+    public T cacheFind(Class<T> clazz, String key, String value){
+        T foundObj = null;
 
         try {
-            foundPackage = ParseQuery.getQuery(clazz)
+            foundObj = ParseQuery.getQuery(clazz)
                     .fromLocalDatastore()
                     .whereEqualTo(key, value)
+                    .setLimit(1000)
                     .getFirst();
         } catch (ParseException e) {
             Log.error(e.toString());
         }
 
-        return foundPackage;
+        return foundObj;
     }
 
-    public T remoteFind(Class<T> clazz, String key, String value){
-        T foundPackage = null;
+    public List<T> cacheFind(Class<T> clazz){
+        List<T> foundObjs = null;
 
         try {
-            foundPackage = ParseQuery.getQuery(clazz)
-                    .whereEqualTo(key, value)
-                    .getFirst();
+            foundObjs = ParseQuery.getQuery(clazz)
+                    .fromLocalDatastore()
+                    .setLimit(1000)
+                    .find();
         } catch (ParseException e) {
             Log.error(e.toString());
         }
 
-        return foundPackage;
+        return foundObjs;
     }
-
 
     public int count(Class<T> clazz) {
         int count = -1;
 
         try {
-            count = ParseQuery.getQuery(clazz).fromLocalDatastore().count();
+            count = ParseQuery.getQuery(clazz)
+                    .fromLocalDatastore()
+                    .count();
         } catch (ParseException e) {
             Log.error(e.toString());
         }
@@ -108,7 +112,15 @@ public class AugmateData<T extends ParseObject>{
         return count;
     }
 
-    public void clearCache() {
-        ParseQuery.clearAllCachedResults();
+    public void clearCache(Class<T> clazz) {
+        try {
+            List<T> cacheObjs = cacheFind(clazz);
+
+            Log.info("Removing all %s elements from cache (%d elements)", clazz.getName(), cacheObjs.size());
+
+            ParseObject.unpinAll(cacheObjs);
+        } catch (ParseException e) {
+            Log.error(e.getMessage());
+        }
     }
 }

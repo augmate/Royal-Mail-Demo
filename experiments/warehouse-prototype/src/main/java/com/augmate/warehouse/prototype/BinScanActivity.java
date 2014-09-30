@@ -4,16 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.widget.ViewFlipper;
-
 import com.google.android.glass.media.Sounds;
 import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;
+import roboguice.inject.InjectView;
 
 /**
  * @author James Davis (Fuzz)
  */
 public class BinScanActivity extends BaseActivity implements GestureDetector.BaseListener {
+
+    @InjectView(R.id.flipper)
     ViewFlipper flipper;
+
     private static int BIN_SCANNER_REQUEST = 11;
 
     @Override
@@ -22,7 +25,6 @@ public class BinScanActivity extends BaseActivity implements GestureDetector.Bas
         setContentView(R.layout.activity_bin_scan);
         getGestureDetector().setBaseListener(this);
 
-        flipper = ((ViewFlipper) findViewById(R.id.flipper));
         flipper.setInAnimation(this, android.R.anim.slide_in_left);
         flipper.setOutAnimation(this, android.R.anim.slide_out_right);
 

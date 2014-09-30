@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import roboguice.inject.InjectView;
 
 /**
  * @author James Davis (Fuzz)
@@ -19,14 +20,19 @@ public class MessageActivity extends BaseActivity {
     private String mNextClass = null;
     String data = "";
 
+    @InjectView(R.id.messageLine1)
+    TextView messageLine1;
+
+    @InjectView(R.id.messageLine2)
+    TextView messageLine2;
+
+    @InjectView(R.id.imageView)
+    ImageView imageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.error);
-
-        TextView message1 = ((TextView) findViewById(R.id.messageLine1));
-        TextView message2 = ((TextView) findViewById(R.id.messageLine2));
-        ImageView imageView = ((ImageView) findViewById(R.id.imageView));
         String message = "";
 
 
@@ -39,8 +45,8 @@ public class MessageActivity extends BaseActivity {
         }
 
         if (mError){
-            if (message1 != null){
-                message1.setText(message);
+            if (messageLine1 != null){
+                messageLine1.setText(message);
             }
             getHandler().postDelayed(new Runnable() {
                 @Override
@@ -49,11 +55,11 @@ public class MessageActivity extends BaseActivity {
                 }
             }, 1500);
         } else if (mNextClass != null && !mNextClass.isEmpty()){
-            if (message1 != null){
-                message1.setText(message);
+            if (messageLine1 != null){
+                messageLine1.setText(message);
             }
-            if (message2 != null){
-                message2.setVisibility(View.GONE);
+            if (messageLine2 != null){
+                messageLine2.setVisibility(View.GONE);
             }
             if (imageView != null){
                 imageView.setImageResource(R.drawable.success);

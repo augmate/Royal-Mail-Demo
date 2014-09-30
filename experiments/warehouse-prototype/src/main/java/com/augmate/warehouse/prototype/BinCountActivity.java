@@ -6,11 +6,10 @@ import android.speech.RecognizerIntent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.ViewFlipper;
-
 import com.google.android.glass.media.Sounds;
 import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;
+import roboguice.inject.InjectView;
 
 import java.util.List;
 
@@ -22,6 +21,13 @@ public class BinCountActivity extends BaseActivity implements GestureDetector.Ba
     int mBinNumber = 0;
     private static final int SPEECH_REQUEST = 15;
     private static final int CONFIRM_REQUEST = 16;
+
+    @InjectView(R.id.numberTextView)
+    TextView numTextView;
+
+    @InjectView(R.id.itemPrompt)
+    TextView promptTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +39,6 @@ public class BinCountActivity extends BaseActivity implements GestureDetector.Ba
             mBinId = extras.getString(MessageActivity.DATA, "");
         }
 
-        TextView numTextView = (TextView) findViewById(R.id.numberTextView);
         if (numTextView != null){
             numTextView.setVisibility(View.GONE);
         }
@@ -44,7 +49,6 @@ public class BinCountActivity extends BaseActivity implements GestureDetector.Ba
         boolean handled = false;
 
         if (gesture == Gesture.TAP){
-            TextView numTextView = (TextView) findViewById(R.id.numberTextView);
             if (numTextView != null){
                 if (numTextView.getVisibility() == View.VISIBLE){
                     Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -120,8 +124,7 @@ public class BinCountActivity extends BaseActivity implements GestureDetector.Ba
     }
 
     private void setNumberLayout(int number){
-        TextView numTextView = (TextView) findViewById(R.id.numberTextView);
-        TextView promptTextView = (TextView) findViewById(R.id.itemPrompt);
+
         if (numTextView != null){
             numTextView.setVisibility(View.VISIBLE);
             numTextView.setText(number + "?");
@@ -132,8 +135,7 @@ public class BinCountActivity extends BaseActivity implements GestureDetector.Ba
     }
 
     private void resetLayout(){
-        TextView numTextView = (TextView) findViewById(R.id.numberTextView);
-        TextView promptTextView = (TextView) findViewById(R.id.itemPrompt);
+
         if (numTextView != null){
             numTextView.setVisibility(View.GONE);
             numTextView.setText("");
