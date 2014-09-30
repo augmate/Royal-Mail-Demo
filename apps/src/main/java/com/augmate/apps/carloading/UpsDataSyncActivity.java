@@ -10,6 +10,8 @@ import com.augmate.apps.R;
 import com.augmate.apps.datastore.CarLoadingDataStore;
 import com.augmate.sdk.data.InternetChecker;
 import com.augmate.sdk.logger.Log;
+import com.parse.ParseException;
+import com.parse.SaveCallback;
 
 public class UpsDataSyncActivity extends Activity {
     @Override
@@ -41,6 +43,28 @@ public class UpsDataSyncActivity extends Activity {
                 Log.info("Download started");
 
                 final CarLoadingDataStore carLoadingDataStore = new CarLoadingDataStore(UpsDataSyncActivity.this);
+
+                carLoadingDataStore.downloadCarLoadDataToCache("109", new SaveCallback() {
+                    @Override
+                    public void done(ParseException exception) {
+                        if (exception == null) {
+                            Log.info("Done downloading car load data for 109");
+                        } else {
+                            Log.info("Could not download car load data for 109");
+                        }
+                    }
+                });
+
+                carLoadingDataStore.downloadCarLoadDataToCache("112", new SaveCallback() {
+                    @Override
+                    public void done(ParseException exception) {
+                        if (exception == null) {
+                            Log.info("Done downloading car load data for 112");
+                        } else {
+                            Log.info("Could not download car load data for 112");
+                        }
+                    }
+                });
 
                 carLoadingDataStore.findLoadForTrackingNumber("1Z0098730367847638");
                 carLoadingDataStore.findLoadForTrackingNumber("1Z2F57F00353700997");
