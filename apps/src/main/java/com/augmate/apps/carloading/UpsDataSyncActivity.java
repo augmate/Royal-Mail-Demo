@@ -10,8 +10,6 @@ import com.augmate.apps.R;
 import com.augmate.apps.datastore.CarLoadingDataStore;
 import com.augmate.sdk.data.InternetChecker;
 import com.augmate.sdk.logger.Log;
-import com.parse.ParseException;
-import com.parse.SaveCallback;
 
 public class UpsDataSyncActivity extends Activity {
     @Override
@@ -25,7 +23,9 @@ public class UpsDataSyncActivity extends Activity {
             Log.info("Connected to the internet");
             startUpsDataDownload();
         } else {
+            Log.info("Not connected to the internet!");
             cnxView.setVisibility(View.VISIBLE);
+            findViewById(R.id.download_state).setVisibility(View.INVISIBLE);
         }
     }
 
@@ -42,24 +42,15 @@ public class UpsDataSyncActivity extends Activity {
 
                 final CarLoadingDataStore carLoadingDataStore = new CarLoadingDataStore(UpsDataSyncActivity.this);
 
-                carLoadingDataStore.pullToCache(new SaveCallback() {
-                    @Override
-                    public void done(ParseException exception) {
+                carLoadingDataStore.findLoadForTrackingNumber("1Z0098730367847638");
+                carLoadingDataStore.findLoadForTrackingNumber("1Z2F57F00353700997");
+                carLoadingDataStore.findLoadForTrackingNumber("1Z2967380390168881");
+                carLoadingDataStore.findLoadForTrackingNumber("1Z1730820346813845");
 
-                        progressBarView.setVisibility(View.INVISIBLE);
-
-                        if (exception == null) {
-                            String successMsg = String.format("Downloaded %s entries", carLoadingDataStore.numberOfPackages());
-                            downloadView.setText(successMsg);
-                            Log.info(successMsg);
-                        } else {
-                            downloadView.setText(R.string.download_failed);
-                            Log.error(exception.getMessage());
-                        }
-                    }
-                });
-
+                progressBarView.setVisibility(View.INVISIBLE);
+                downloadView.setText("Download complete");
+                Log.info("UPS Download complete");
             }
-        }, 5000);
+        }, 1000);
     }
 }

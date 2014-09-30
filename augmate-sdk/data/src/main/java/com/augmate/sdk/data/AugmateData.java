@@ -1,7 +1,7 @@
 package com.augmate.sdk.data;
 
 import android.content.Context;
-import android.util.Log;
+import com.augmate.sdk.logger.Log;
 import com.google.gson.Gson;
 import com.parse.*;
 
@@ -30,7 +30,7 @@ public class AugmateData<T extends ParseObject>{
         testObject.put(PARSE_KEY_PAYLOAD, objJson);
         testObject.saveInBackground();
 
-        Log.d(this.getClass().getName(), "Saving data: " + objJson);
+        Log.debug("Saving data: " + objJson);
     }
 
     // TODO: update to use T instead of strings
@@ -40,26 +40,30 @@ public class AugmateData<T extends ParseObject>{
         try {
             object = new ParseQuery<>(className).orderByDescending("updatedAt").getFirst();
         } catch (ParseException e) {
-            Log.e(this.getClass().getName(), e.getMessage());
+            Log.error(e.getMessage());
         }
 
         String objJson = object.getString(PARSE_KEY_PAYLOAD);
 
-        Log.d(this.getClass().getName(), "Read data: " + objJson);
+        Log.debug("Read data: " + objJson);
 
         return objJson;
     }
 
-    public void pullToCache(Class<T> clazz, SaveCallback callback) {
-        List<T> packageLoads = null;
+    public void pullToCache(Class<T> clazz, String key, String value, SaveCallback callback) {
+        List<T> objs = null;
 
         try {
-            packageLoads = new ParseQuery<>(clazz).find();
+            objs = new ParseQuery<>(clazz)
+                    .whereEqualTo(key, value)
+                    .find();
         } catch (ParseException e) {
-            Log.e(this.getClass().getName(), e.toString());
+            Log.error(e.toString());
         }
 
-        ParseObject.pinAllInBackground(packageLoads, callback);
+        Log.debug("Caching %d elements under %s->%s", objs.size(), key, value);
+
+        ParseObject.pinAllInBackground(objs, callback);
     }
 
     public T find(Class<T> clazz, String key, String value){
@@ -71,11 +75,26 @@ public class AugmateData<T extends ParseObject>{
                     .whereEqualTo(key, value)
                     .getFirst();
         } catch (ParseException e) {
-            Log.e(this.getClass().getName(), e.toString());
+            Log.error(e.toString());
         }
 
         return foundPackage;
     }
+
+    public T remoteFind(Class<T> clazz, String key, String value){
+        T foundPackage = null;
+
+        try {
+            foundPackage = ParseQuery.getQuery(clazz)
+                    .whereEqualTo(key, value)
+                    .getFirst();
+        } catch (ParseException e) {
+            Log.error(e.toString());
+        }
+
+        return foundPackage;
+    }
+
 
     public int count(Class<T> clazz) {
         int count = -1;
@@ -83,7 +102,7 @@ public class AugmateData<T extends ParseObject>{
         try {
             count = ParseQuery.getQuery(clazz).fromLocalDatastore().count();
         } catch (ParseException e) {
-            Log.e(this.getClass().getName(), e.toString());
+            Log.error(e.toString());
         }
 
         return count;
