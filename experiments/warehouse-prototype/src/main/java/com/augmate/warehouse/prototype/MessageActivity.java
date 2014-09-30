@@ -23,10 +23,10 @@ public class MessageActivity extends BaseActivity {
     @InjectView(R.id.messageLine1)
     TextView messageLine1;
 
-    @InjectView(R.id.messageLine1)
+    @InjectView(R.id.messageLine2)
     TextView messageLine2;
 
-    @InjectView(R.id.messageLine1)
+    @InjectView(R.id.imageView)
     ImageView imageView;
 
     @Override
