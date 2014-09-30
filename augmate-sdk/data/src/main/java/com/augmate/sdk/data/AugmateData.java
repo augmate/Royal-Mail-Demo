@@ -50,11 +50,13 @@ public class AugmateData<T extends ParseObject>{
         return objJson;
     }
 
-    public void pullToCache(Class<T> clazz, SaveCallback callback) {
+    public void pullToCache(Class<T> clazz, String key, String value, SaveCallback callback) {
         List<T> packageLoads = null;
 
         try {
-            packageLoads = new ParseQuery<>(clazz).find();
+            packageLoads = new ParseQuery<>(clazz)
+                    .whereEqualTo(key, value)
+                    .find();
         } catch (ParseException e) {
             Log.e(this.getClass().getName(), e.toString());
         }
@@ -76,6 +78,21 @@ public class AugmateData<T extends ParseObject>{
 
         return foundPackage;
     }
+
+    public T remoteFind(Class<T> clazz, String key, String value){
+        T foundPackage = null;
+
+        try {
+            foundPackage = ParseQuery.getQuery(clazz)
+                    .whereEqualTo(key, value)
+                    .getFirst();
+        } catch (ParseException e) {
+            Log.e(this.getClass().getName(), e.toString());
+        }
+
+        return foundPackage;
+    }
+
 
     public int count(Class<T> clazz) {
         int count = -1;

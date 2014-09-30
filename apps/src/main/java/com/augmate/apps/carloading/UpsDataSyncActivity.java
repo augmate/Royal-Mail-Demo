@@ -10,8 +10,6 @@ import com.augmate.apps.R;
 import com.augmate.apps.datastore.CarLoadingDataStore;
 import com.augmate.sdk.data.InternetChecker;
 import com.augmate.sdk.logger.Log;
-import com.parse.ParseException;
-import com.parse.SaveCallback;
 
 public class UpsDataSyncActivity extends Activity {
     @Override
@@ -42,24 +40,11 @@ public class UpsDataSyncActivity extends Activity {
 
                 final CarLoadingDataStore carLoadingDataStore = new CarLoadingDataStore(UpsDataSyncActivity.this);
 
-                carLoadingDataStore.pullToCache(new SaveCallback() {
-                    @Override
-                    public void done(ParseException exception) {
-
-                        progressBarView.setVisibility(View.INVISIBLE);
-
-                        if (exception == null) {
-                            String successMsg = String.format("Downloaded %s entries", carLoadingDataStore.numberOfPackages());
-                            downloadView.setText(successMsg);
-                            Log.info(successMsg);
-                        } else {
-                            downloadView.setText(R.string.download_failed);
-                            Log.error(exception.getMessage());
-                        }
-                    }
-                });
-
+                carLoadingDataStore.findLoadForTrackingNumber("1Z0098730367847638");
+                carLoadingDataStore.findLoadForTrackingNumber("1Z2F57F00353700997");
+                carLoadingDataStore.findLoadForTrackingNumber("1Z2967380390168881");
+                carLoadingDataStore.findLoadForTrackingNumber("1Z1730820346813845");
             }
-        }, 5000);
+        }, 2000);
     }
 }
