@@ -1,16 +1,16 @@
 package com.augmate.warehouse.prototype;
 
-import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import com.google.android.glass.touchpad.GestureDetector;
+import roboguice.activity.RoboActivity;
 
 /**
  * @author James Davis (Fuzz)
  */
-public abstract class BaseActivity extends Activity {
+public abstract class BaseActivity extends RoboActivity {
     Handler mHandler = new Handler();
     GestureDetector mDetector;
     private AudioManager mAudioManager;

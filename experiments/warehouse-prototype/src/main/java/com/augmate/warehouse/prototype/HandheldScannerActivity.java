@@ -14,6 +14,7 @@ import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
 import com.google.android.glass.media.Sounds;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import roboguice.inject.InjectView;
 
 /**
  * @author James Davis (Fuzz)
@@ -100,26 +101,33 @@ public class HandheldScannerActivity extends Activity implements IBluetoothScann
         finish();
     }
 
+    @InjectView(R.id.barcodeScannerStatus)
+    TextView barcodeScannerStatus;
+
+    @InjectView(R.id.barcodeScannerResults)
+    TextView barcodeScannerResults;
+
+
     @Override
     public void onBtScannerConnecting() {
-        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("Scanner Connecting");
-        ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFFFFFF00);
-        ((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
+        barcodeScannerStatus.setText("Scanner Connecting");
+        barcodeScannerStatus.setTextColor(0xFFFFFF00);
+        barcodeScannerResults.setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
     }
 
     @Override
     public void onBtScannerConnected() {
-        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("Scanner Connected");
-        ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFF00FF00);
-        ((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
+        barcodeScannerStatus.setText("Scanner Connected");
+        barcodeScannerStatus.setTextColor(0xFF00FF00);
+        barcodeScannerResults.setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
         //beaconDistanceMeasurer.startListening();
     }
 
     @Override
     public void onBtScannerDisconnected() {
-        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("No Scanner");
-        ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFFFF0000);
-        ((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
+        barcodeScannerStatus.setText("No Scanner");
+        barcodeScannerStatus.setTextColor(0xFFFF0000);
+        barcodeScannerResults.setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
         //beaconDistanceMeasurer.stopListening();
     }
 }
