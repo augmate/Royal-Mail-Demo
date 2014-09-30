@@ -7,8 +7,6 @@ import com.augmate.sdk.logger.Log;
 import com.parse.SaveCallback;
 
 public class CarLoadingDataStore {
-    public static final String TRACKING_NUMBER_KEY = "TrackingNumber";
-
     private final AugmateData<PackageCarLoad> augmateData;
 
     public CarLoadingDataStore(Context context) {
@@ -16,7 +14,8 @@ public class CarLoadingDataStore {
     }
 
     public PackageCarLoad findLoadForTrackingNumber(String trackingNumber) {
-        PackageCarLoad packageCarLoad = augmateData.cacheFind(PackageCarLoad.class, TRACKING_NUMBER_KEY, trackingNumber);
+
+        PackageCarLoad packageCarLoad = augmateData.cacheFind(PackageCarLoad.class, PackageCarLoad.TRACKING_NUMBER_KEY, trackingNumber);
 
         if(packageCarLoad != null) {
             Log.info("load information for %s available in cache", packageCarLoad.getLoadPosition());
@@ -32,6 +31,9 @@ public class CarLoadingDataStore {
         augmateData.pullToCache(PackageCarLoad.class, PackageCarLoad.LOAD_POSITION_KEY, carLoad, callback);
     }
 
+    public void wipeLocalCache(){
+        augmateData.clearCache(PackageCarLoad.class);
+    }
     public int numberOfPackages() {
         return augmateData.count(PackageCarLoad.class);
     }

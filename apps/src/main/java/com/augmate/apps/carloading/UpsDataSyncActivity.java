@@ -2,7 +2,6 @@ package com.augmate.apps.carloading;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -13,11 +12,26 @@ import com.augmate.sdk.logger.Log;
 import com.parse.ParseException;
 import com.parse.SaveCallback;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UpsDataSyncActivity extends Activity {
+
+    private List<String> carLoads = new ArrayList<>();
+    private List<String> loadsDone = new ArrayList<>();
+
+    private ProgressBar progressBarView;
+    private TextView downloadView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ups_data_sync_activity);
+
+        carLoads.add("109");
+
+        progressBarView = (ProgressBar) findViewById(R.id.sync_progress_bar);
+        downloadView = (TextView) findViewById(R.id.download_state);
 
         final TextView cnxView = (TextView) findViewById(R.id.internet_cnx_state);
 
@@ -32,49 +46,45 @@ public class UpsDataSyncActivity extends Activity {
     }
 
     private void startUpsDataDownload() {
-        final ProgressBar progressBarView = (ProgressBar) findViewById(R.id.sync_progress_bar);
-        final TextView downloadView = (TextView) findViewById(R.id.download_state);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                progressBarView.setVisibility(View.VISIBLE);
-                downloadView.setText("Download started...");
-                Log.info("Download started");
 
-                final CarLoadingDataStore carLoadingDataStore = new CarLoadingDataStore(UpsDataSyncActivity.this);
+        final CarLoadingDataStore carLoadingDataStore = new CarLoadingDataStore(UpsDataSyncActivity.this);
 
-                carLoadingDataStore.downloadCarLoadDataToCache("109", new SaveCallback() {
-                    @Override
-                    public void done(ParseException exception) {
-                        if (exception == null) {
-                            Log.info("Done downloading car load data for 109");
-                        } else {
-                            Log.info("Could not download car load data for 109");
-                        }
+        carLoadingDataStore.wipeLocalCache();
+
+        downloadView.setText("Download started...");
+        progressBarView.setVisibility(View.VISIBLE);
+        Log.info("Download started");
+
+        for (final String load : carLoads) {
+            carLoadingDataStore.downloadCarLoadDataToCache(load, new SaveCallback() {
+                @Override
+                public void done(ParseException exception) {
+                    if (exception == null) {
+                        Log.info("Done downloading car load data for %s", load);
+                        loadFinished(load);
+                    } else {
+                        Log.info("Could not download car load data for %s", load);
                     }
-                });
+                }
+            });
+        }
+    }
 
-                carLoadingDataStore.downloadCarLoadDataToCache("112", new SaveCallback() {
-                    @Override
-                    public void done(ParseException exception) {
-                        if (exception == null) {
-                            Log.info("Done downloading car load data for 112");
-                        } else {
-                            Log.info("Could not download car load data for 112");
-                        }
-                    }
-                });
+    private void loadFinished(String load) {
+        // uh-oh not thread safe
+        loadsDone.add(load);
 
-                carLoadingDataStore.findLoadForTrackingNumber("1Z0098730367847638");
-                carLoadingDataStore.findLoadForTrackingNumber("1Z2F57F00353700997");
-                carLoadingDataStore.findLoadForTrackingNumber("1Z2967380390168881");
-                carLoadingDataStore.findLoadForTrackingNumber("1Z1730820346813845");
+        if (loadsDone.size() == carLoads.size()) {
+            progressBarView.setVisibility(View.INVISIBLE);
 
-                progressBarView.setVisibility(View.INVISIBLE);
-                downloadView.setText("Download complete");
-                Log.info("UPS Download complete");
+            String loadStr = "";
+            for (String l : loadsDone) {
+                loadStr = l + '\n';
             }
-        }, 1000);
+
+            downloadView.setText("Download complete for load \n\n" + loadStr );
+            Log.info("UPS Download complete");
+        }
     }
 }
