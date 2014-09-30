@@ -98,7 +98,7 @@ public class AugmateData<T extends ParseObject> {
         return foundObjs;
     }
 
-    public int count(Class<T> clazz) {
+    public int countCached(Class<T> clazz) {
         int count = -1;
 
         try {
@@ -118,5 +118,20 @@ public class AugmateData<T extends ParseObject> {
         Log.info("Removing all %s elements from cache (%d elements)", clazz.getName(), cacheObjs.size());
 
         ParseObject.unpinAllInBackground(cacheObjs, callback);
+    }
+
+    public int countCached(Class<T> clazz, String key, String value) {
+        int count = -1;
+
+        try {
+            count = ParseQuery.getQuery(clazz)
+                    .fromLocalDatastore()
+                    .whereEqualTo(key, value)
+                    .count();
+        } catch (ParseException e) {
+            Log.error(e.toString());
+        }
+
+        return count;
     }
 }

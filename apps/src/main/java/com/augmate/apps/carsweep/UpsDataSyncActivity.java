@@ -24,6 +24,7 @@ public class UpsDataSyncActivity extends Activity {
 
     private ProgressBar progressBarView;
     private TextView downloadView;
+    private CarLoadingDataStore carLoadingDataStore = new CarLoadingDataStore(UpsDataSyncActivity.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +51,6 @@ public class UpsDataSyncActivity extends Activity {
     }
 
     private void startUpsDataDownload() {
-        final CarLoadingDataStore carLoadingDataStore = new CarLoadingDataStore(UpsDataSyncActivity.this);
-
         downloadView.setText("Download started...");
         progressBarView.setVisibility(View.VISIBLE);
         Log.info("Download started");
@@ -81,7 +80,7 @@ public class UpsDataSyncActivity extends Activity {
 
             String loadStr = "";
             for (String l : loadsDone) {
-                loadStr = l + '\n';
+                loadStr += String.format("%s [%d]\n", l, carLoadingDataStore.numberOfPackages(l));
             }
 
             downloadView.setText("Download complete for load \n\n" + loadStr );

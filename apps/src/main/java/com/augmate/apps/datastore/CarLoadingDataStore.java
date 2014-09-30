@@ -36,6 +36,10 @@ public class CarLoadingDataStore {
         augmateData.clearCache(PackageCarLoad.class, callback);
     }
     public int numberOfPackages() {
-        return augmateData.count(PackageCarLoad.class);
+        return augmateData.countCached(PackageCarLoad.class);
+    }
+
+    public int numberOfPackages(String load) {
+        return augmateData.countCached(PackageCarLoad.class, PackageCarLoad.LOAD_POSITION_KEY, load);
     }
 }
