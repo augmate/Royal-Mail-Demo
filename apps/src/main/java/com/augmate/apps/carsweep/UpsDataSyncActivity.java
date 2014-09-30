@@ -2,6 +2,7 @@ package com.augmate.apps.carsweep;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -83,8 +84,20 @@ public class UpsDataSyncActivity extends Activity {
                 loadStr += String.format("%s [%d]\n", l, carLoadingDataStore.numberOfPackages(l));
             }
 
-            downloadView.setText("Download complete for load \n\n" + loadStr );
-            Log.info("UPS Download complete");
+            downloadView.setText("Download complete for load \n\n" + loadStr);
+
+            delayedFinish();
         }
+    }
+
+    private void delayedFinish() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.info("UPS Download complete");
+                setResult(Activity.RESULT_OK);
+                finish();
+            }
+        }, 1000);
     }
 }
