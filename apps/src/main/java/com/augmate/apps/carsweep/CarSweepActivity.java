@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 import com.augmate.apps.R;
-import com.augmate.apps.carloading.UpsDataSyncActivity;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.apps.datastore.CarLoadingDataStore;
