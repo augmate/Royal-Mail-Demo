@@ -8,9 +8,9 @@ import android.widget.TextView;
 import com.augmate.apps.R;
 import com.augmate.apps.datastore.CarLoadingDataStore;
 import com.augmate.sdk.data.InternetChecker;
+import com.augmate.sdk.data.callbacks.CacheCallback;
 import com.augmate.sdk.logger.Log;
 import com.parse.ParseException;
-import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,15 +57,16 @@ public class UpsDataSyncActivity extends Activity {
         Log.info("Download started");
 
         for (final String load : carLoads) {
-            carLoadingDataStore.downloadCarLoadDataToCache(load, new SaveCallback() {
+            carLoadingDataStore.downloadCarLoadDataToCache(load, new CacheCallback() {
                 @Override
-                public void done(ParseException exception) {
-                    if (exception == null) {
-                        Log.info("Done downloading car load data for %s", load);
-                        loadFinished(load);
-                    } else {
-                        Log.info("Could not download car load data for %s", load);
-                    }
+                public void success() {
+                    Log.info("Done downloading car load data for %s", load);
+                    loadFinished(load);
+                }
+
+                @Override
+                public void error(ParseException e) {
+                    Log.info("Could not download car load data for %s", load);
                 }
             });
         }
