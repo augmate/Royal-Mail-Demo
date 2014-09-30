@@ -23,7 +23,9 @@ public class UpsDataSyncActivity extends Activity {
             Log.info("Connected to the internet");
             startUpsDataDownload();
         } else {
+            Log.info("Not connected to the internet!");
             cnxView.setVisibility(View.VISIBLE);
+            findViewById(R.id.download_state).setVisibility(View.INVISIBLE);
         }
     }
 
@@ -44,7 +46,11 @@ public class UpsDataSyncActivity extends Activity {
                 carLoadingDataStore.findLoadForTrackingNumber("1Z2F57F00353700997");
                 carLoadingDataStore.findLoadForTrackingNumber("1Z2967380390168881");
                 carLoadingDataStore.findLoadForTrackingNumber("1Z1730820346813845");
+
+                progressBarView.setVisibility(View.INVISIBLE);
+                downloadView.setText("Download complete");
+                Log.info("UPS Download complete");
             }
-        }, 2000);
+        }, 1000);
     }
 }

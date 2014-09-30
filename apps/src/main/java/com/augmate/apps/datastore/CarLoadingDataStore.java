@@ -26,9 +26,16 @@ public class CarLoadingDataStore {
             pullToCache(PackageCarLoad.LOAD_POSITION_KEY, packageCarLoad.getLoadPosition(), new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
-                    Log.info("done pulling load data for %s to cache", loadPosition);
+                    if(e == null) {
+                        Log.info("done pulling load data for %s to cache", loadPosition);
+                    }else{
+                        Log.error("Caching failed!" + e.getMessage());
+                    }
                 }
             });
+
+        }else{
+            Log.info("load information for %s available in cache", packageCarLoad.getLoadPosition());
         }
 
         Log.debug("tracking number %s has load position %s", packageCarLoad.getTrackingNumber(), packageCarLoad.getLoadPosition());
@@ -37,7 +44,6 @@ public class CarLoadingDataStore {
     }
 
     public void pullToCache(String key, String value, SaveCallback callback){
-        augmateData.clearCache();
         augmateData.pullToCache(PackageCarLoad.class, key, value, callback);
     }
 
