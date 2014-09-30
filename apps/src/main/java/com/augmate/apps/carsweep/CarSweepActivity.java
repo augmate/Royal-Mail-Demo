@@ -1,27 +1,23 @@
 package com.augmate.apps.carsweep;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 import com.augmate.apps.R;
+import com.augmate.apps.carloading.UpsDataSyncActivity;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.activities.BaseActivity;
+import com.augmate.apps.datastore.CarLoadingDataStore;
+import com.augmate.sdk.data.PackageCarLoad;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
 import com.augmate.sdk.scanner.bluetooth.IncomingConnector;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class CarSweepActivity extends BaseActivity implements IBluetoothScannerEvents {
+public class CarSweepActivity extends Activity implements IBluetoothScannerEvents {
     private IncomingConnector scanner = new IncomingConnector(this);
-
-    class PackageDetails {
-        public String CarId;
-        public boolean Spotted = false;
-    }
-
-    private Map<String, PackageDetails> packageLoadout = new HashMap<>();
+    CarLoadingDataStore carLoadingDataStore;
     private String currentCarId;
 
     @Override
@@ -29,19 +25,15 @@ public class CarSweepActivity extends BaseActivity implements IBluetoothScannerE
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_sweep);
+        carLoadingDataStore = new CarLoadingDataStore(this);
 
         scanner.start();
     }
 
     private void processResultFromScan(String result) {
-        PackageDetails packageDetails = packageLoadout.get(result);
-        if(packageDetails == null) {
-            // barcode not recognized
-            Log.debug("Barcode doesn't belong to a known package");
-            return;
-        }
+        PackageCarLoad loadForTrackingNumber = carLoadingDataStore.findLoadForTrackingNumber(result);
 
-        if(packageDetails.CarId == currentCarId) {
+        if(loadForTrackingNumber != null) {
             // success - package is inside the same car we are
             Log.debug("Package in correct car");
             SoundHelper.success(getBaseContext());

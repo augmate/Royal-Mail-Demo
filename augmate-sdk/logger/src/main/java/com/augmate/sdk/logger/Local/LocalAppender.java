@@ -20,7 +20,7 @@ public class LocalAppender implements ILogAppender {
 
         String tag = callerFrame.packageName.contains("com.augmate.sdk") ? "AugmateSDK" : "AugmateApp";
         String thread = Thread.currentThread().getName();
-        String formatted = deviceId + " | #" + sessionId + " | " + String.format("%-9s", thread) + " | " + callerFrame.shortPath + "()";
+        String formatted = "#" + sessionId + " | " + String.format("%-9s", thread) + " | " + callerFrame.shortPath + "()";
         String finalMsg = formatted + "; " + formattedMsg;
 
         switch (level) {
