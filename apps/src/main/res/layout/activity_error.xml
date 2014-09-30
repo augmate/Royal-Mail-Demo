@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/MatchParent.AppBackground"
-    android:paddingLeft="@dimen/glass_card_margin"
-    android:paddingRight="@dimen/glass_card_margin">
-
-    <TextView
-            style="@style/WrapContent.SecondaryTextView"
-            android:text="@string/message_try_again"
-            android:layout_gravity="center"
-            android:id="@+id/messageLine2"
-            android:layout_above="@+id/imageView" android:layout_centerHorizontal="true"/>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        style="@style/MatchParent.AppBackground"
+        android:paddingLeft="@dimen/glass_card_margin"
+        android:paddingRight="@dimen/glass_card_margin"
+        android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="horizontal"
+        android:gravity="center_horizontal" android:weightSum="2">
     <ImageView
-        style="@style/WrapContent"
-        android:id="@+id/imageView"
-        android:layout_gravity="center"
-        android:src="@drawable/errorx"
-        android:layout_centerVertical="true" android:layout_centerHorizontal="true"/>
-    <TextView
-            style="@style/WrapContent.SecondaryTextView"
-            android:text="@string/error_scan"
+            style="@style/WrapContent"
+            android:id="@+id/imageView"
             android:layout_gravity="center"
-            android:id="@+id/messageLine1"
-            android:layout_below="@+id/imageView" android:layout_centerHorizontal="true"/>
-
-
-</RelativeLayout>
+            android:src="@drawable/errorx"
+            android:layout_centerVertical="true"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            >
+        <TextView
+                style="@style/WrapContent.SecondaryTextView"
+                android:text="@string/error_scan"
+                android:id="@+id/messageLine1"
+                android:layout_centerVertical="true" android:layout_alignParentEnd="true"
+                android:layout_gravity="center"/>
+        <TextView
+                style="@style/WrapContent.SecondaryTextView"
+                android:text="@string/message_try_again"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/messageLine2"
+                android:layout_below="@+id/messageLine1" android:layout_alignParentRight="true"/>
+    </LinearLayout>
+</LinearLayout>

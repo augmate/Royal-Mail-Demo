@@ -194,15 +194,9 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
             loading_icon.startAnimation(rotation);
         }
         else{
-            //loading_icon.setVisibility(ImageView.INVISIBLE);
-            //rotation.cancel();
-            //loading_icon.clearAnimation();
-
-
             loading_icon.clearAnimation();
             rotation.cancel();
             loading_icon.setVisibility(ImageView.INVISIBLE);
-
         }
 
     }
