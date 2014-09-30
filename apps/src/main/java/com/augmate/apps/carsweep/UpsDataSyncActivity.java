@@ -12,34 +12,38 @@ import com.augmate.sdk.data.InternetChecker;
 import com.augmate.sdk.data.callbacks.CacheCallback;
 import com.augmate.sdk.logger.Log;
 import com.parse.ParseException;
+import roboguice.activity.RoboActivity;
+import roboguice.inject.InjectExtra;
+import roboguice.inject.InjectView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpsDataSyncActivity extends Activity {
 
-    public final static String EXTRA_CAR_LOAD = "EXTRA_CAR_LOAD";
+public class UpsDataSyncActivity extends RoboActivity {
 
     private List<String> carLoads = new ArrayList<>();
     private List<String> loadsDone = new ArrayList<>();
-
-    private ProgressBar progressBarView;
-    private TextView downloadView;
     private CarLoadingDataStore carLoadingDataStore = new CarLoadingDataStore(UpsDataSyncActivity.this);
+
+    @InjectView(R.id.sync_progress_bar)
+    ProgressBar progressBarView;
+
+    @InjectView(R.id.download_state)
+    TextView downloadView;
+
+    @InjectView(R.id.internet_cnx_state)
+    TextView cnxView;
+
+    @InjectExtra("EXTRA_CAR_LOAD" ) String carLoad;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ups_data_sync_activity);
 
-        String carLoad = getIntent().getStringExtra(EXTRA_CAR_LOAD);
-
         carLoads.add(carLoad);
-
-        progressBarView = (ProgressBar) findViewById(R.id.sync_progress_bar);
-        downloadView = (TextView) findViewById(R.id.download_state);
-
-        final TextView cnxView = (TextView) findViewById(R.id.internet_cnx_state);
 
         if (new InternetChecker().isConnected(this)) {
             Log.info("Connected to the internet");
