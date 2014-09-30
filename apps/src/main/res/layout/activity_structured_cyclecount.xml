@@ -11,6 +11,14 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:src="@drawable/barcode"/>
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/loading_icon"
+                android:src="@drawable/loading"
+                android:adjustViewBounds="false" android:visibility="invisible" android:layout_gravity="right|center_vertical"
+                android:layout_toRightOf="@+id/barcodeScannerStatus"
+                android:layout_marginLeft="155dp" android:layout_alignTop="@+id/barcodeScannerStatus"/>
         <TextView
                 android:id="@+id/barcodeScannerStatus"
                 android:layout_margin="10dp"

@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.augmate.apps.R;
 import com.augmate.apps.common.ErrorPrompt;
@@ -28,6 +31,8 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
     public boolean btListening = true;
 
     ConnectivityManager cm;
+    private ImageView loading_icon;
+    private Animation rotation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +40,9 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_structured_cyclecount);
 
-
         FontHelper.updateFontForBrightness((TextView) findViewById(R.id.barcodeScannerStatus));
+        loading_icon = (ImageView) findViewById(R.id.loading_icon);
+        rotation = AnimationUtils.loadAnimation(this, R.anim.spin);
 
         cm = ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE));
 
@@ -145,6 +151,7 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
 
     @Override
     public void onBtScannerConnecting() {
+        startLoader(true);
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("Scanner Connecting");
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFFFFFF00);
         //((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
@@ -152,6 +159,7 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
 
     @Override
     public void onBtScannerConnected() {
+        startLoader(false);
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("Scanner Connected");
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFF00FF00);
         //((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
@@ -160,6 +168,7 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
 
     @Override
     public void onBtScannerDisconnected() {
+        startLoader(false);
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("No Scanner");
         ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFFFF0000);
         //((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
@@ -177,6 +186,25 @@ public class StructuredCycleCountActivity extends BaseActivity implements IBluet
         }
 
         return super.dispatchKeyEvent(event);
+    }
+
+    private void startLoader(boolean start){
+        if(start){
+            loading_icon.setVisibility(ImageView.VISIBLE);
+            loading_icon.startAnimation(rotation);
+        }
+        else{
+            //loading_icon.setVisibility(ImageView.INVISIBLE);
+            //rotation.cancel();
+            //loading_icon.clearAnimation();
+
+
+            loading_icon.clearAnimation();
+            rotation.cancel();
+            loading_icon.setVisibility(ImageView.INVISIBLE);
+
+        }
+
     }
 
 }

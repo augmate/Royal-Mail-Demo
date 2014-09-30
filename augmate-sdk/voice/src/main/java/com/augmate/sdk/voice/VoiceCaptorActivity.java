@@ -127,31 +127,31 @@ public class VoiceCaptorActivity extends Activity implements IAudioDoneCallback,
         pulse_ring.clearAnimation();
         gyroLock = false;
         switch (error) {
-            case 1:
+            case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
                 resultsText.setText("No network connection available");
                 break;
-            case 2:
+            case SpeechRecognizer.ERROR_NETWORK:
                 resultsText.setText("No network connection available");
                 break;
-            case 3:
+            case SpeechRecognizer.ERROR_AUDIO:
                 resultsText.setText("Audio Recording error");
                 break;
-            case 4:
+            case SpeechRecognizer.ERROR_SERVER:
                 resultsText.setText("Server error");
                 break;
-            case 5:
+            case SpeechRecognizer.ERROR_CLIENT:
                 resultsText.setText("Client error. Please try again or check your network connection.");
                 break;
-            case 6:
+            case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
                 resultsText.setText("I didn't catch that. Please try again.");
                 break;
-            case 7:
+            case SpeechRecognizer.ERROR_NO_MATCH:
                 resultsText.setText("No recognition result matched. Please try again.");
                 break;
-            case 8:
+            case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
                 resultsText.setText("Speech recognizer is busy. Please wait then try again.");
                 break;
-            case 9:
+            case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
                 resultsText.setText("Insufficient permissions. You do not have access to this device's audio recorder.");
                 break;
             default:
