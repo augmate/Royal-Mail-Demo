@@ -103,6 +103,6 @@ public class UpsDataSyncActivity extends RoboActivity {
                 setResult(Activity.RESULT_OK);
                 finish();
             }
-        }, 1000);
+        }, 2500);
     }
 }
