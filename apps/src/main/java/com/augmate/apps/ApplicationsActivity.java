@@ -7,7 +7,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-
 import com.augmate.apps.carloading.CarLoadingActivity;
 import com.augmate.apps.carsweep.CarSweepActivity;
 import com.augmate.apps.common.FontHelper;
@@ -17,21 +16,28 @@ import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.apps.counter.StructuredCycleCountActivity;
 import com.augmate.apps.nonretailtouching.NonRetailTouchActivity;
 import com.google.android.glass.view.WindowUtils;
+import roboguice.inject.InjectView;
 
 public class ApplicationsActivity extends BaseActivity {
 
     private boolean isAttached = false;
+
+    @InjectView(R.id.welcomeText)
+    TextView welcomeText;
+
+    @InjectView(R.id.tap_for_options)
+    TextView tap_for_options;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(WindowUtils.FEATURE_VOICE_COMMANDS);
         setContentView(R.layout.activity_applications);
-        TextView textView = (TextView) findViewById(R.id.welcomeText);
-        textView.setText(getString(R.string.welcome, UserUtils.getUser()));
 
-        FontHelper.updateFontForBrightness(
-                (TextView) findViewById(R.id.tap_for_options));
+        if(welcomeText!=null && tap_for_options!=null) {
+            welcomeText.setText(getString(R.string.welcome, UserUtils.getUser()));
+            FontHelper.updateFontForBrightness(tap_for_options);
+        }
     }
 
     @Override

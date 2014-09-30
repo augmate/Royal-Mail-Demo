@@ -18,13 +18,14 @@ import com.augmate.apps.scanner.ScannerActivity;
 import com.augmate.sdk.logger.Log;
 import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;
+import roboguice.activity.RoboActivity;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import java.io.Serializable;
 
 import static com.augmate.apps.common.FlowUtils.TRANSITION_TIMEOUT;
 
-public class BaseActivity extends Activity {
+public class BaseActivity extends RoboActivity {
     public static final int REQUEST_BARCODE_SCAN = 0x01;
     public static final int REQUEST_PROMPT = 0x02;
     public static final int EXIT_CODE = 123;
