@@ -1,4 +1,4 @@
-package com.augmate.nx.scanners.bluetooth;
+package com.augmate.sdk.scanner.bluetooth.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.TextView;
 import com.augmate.sdk.logger.Log;
+import com.augmate.sdk.scanner.R;
 
 public class PairActivity extends Activity {
     public static final int RESULT_CODE_READ_CONFIGURATION = 5001;

@@ -1,4 +1,4 @@
-package com.augmate.nx.scanners.bluetooth;
+package com.augmate.sdk.scanner.bluetooth.activities;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.view.WindowManager;
 import android.widget.TextView;
 import com.augmate.sdk.logger.Log;
+import com.augmate.sdk.scanner.R;
 import com.augmate.sdk.scanner.bluetooth.Utils;
 
 import java.lang.reflect.Method;

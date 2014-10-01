@@ -10,6 +10,25 @@
         android:glEsVersion="0x00020000"
         android:required="true" />
 
+    <activity
+        android:immersive="true"
+        android:name=".PairActivity"
+        android:label="Configure Scanner">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+            <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+        </intent-filter>
+
+        <meta-data
+            android:name="com.google.android.glass.VoiceTrigger"
+            android:resource="@xml/voice_trigger_pairing" />
+
+    </activity>
+    <activity android:name=".ConfigReadingActivity" />
+
+    <activity android:name=".DeviceBondingActivity" />
+
     <application>
         <service android:name=".bluetooth.OutgoingService" />
         <service android:name=".bluetooth.IncomingService" />

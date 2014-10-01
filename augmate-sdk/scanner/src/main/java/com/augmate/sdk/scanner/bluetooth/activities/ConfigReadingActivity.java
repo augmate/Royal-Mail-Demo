@@ -1,10 +1,11 @@
-package com.augmate.nx.scanners.bluetooth;
+package com.augmate.sdk.scanner.bluetooth.activities;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
 import com.augmate.sdk.scanner.IScannerResultListener;
+import com.augmate.sdk.scanner.R;
 
 public class ConfigReadingActivity extends Activity implements IScannerResultListener {
     @Override
