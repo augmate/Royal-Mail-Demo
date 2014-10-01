@@ -23,14 +23,14 @@ public class IdentifyVehicleActivity extends Activity {
     public static final int REQUEST_CODE_DOWNLOAD_DATA = 0x001;
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
     private BeaconRegionDetector beaconDistanceMeasurer = new BeaconRegionDetector();
-    private String currentCarId;
     private ScheduledFuture<?> scheduledRegionTest;
+    private String detectedCarLoadPosition = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_car_sweep);
+        setContentView(R.layout.activity_car_detection);
         Log.start(this);
 
         beaconDistanceMeasurer.configureFromContext(this);
@@ -39,23 +39,28 @@ public class IdentifyVehicleActivity extends Activity {
 
     private void testNearestRegion() {
         List<BeaconInfo> latestBeaconDistances = beaconDistanceMeasurer.getLatestBeaconDistances();
+        Log.debug("Found %d beacons nearby", latestBeaconDistances.size());
 
-        Log.info("Found %d beacons nearby", latestBeaconDistances.size());
+        if(latestBeaconDistances.size() == 0) {
+            return;
+        }
 
         for(BeaconInfo beaconInfo : latestBeaconDistances){
             Log.info("-> Beacon name=%s minor/id=%s region=%s", beaconInfo.beaconName, beaconInfo.minor, beaconInfo.regionId);
         }
 
         RegionProcessor regionProcessor = new RegionProcessor(new ArrayList<>(Arrays.asList(
-                new BeaconRegion(109, 2, 5).setRegionId(109),
-                new BeaconRegion(3, 4, 9).setRegionId(112)
+                new BeaconRegion(2, 5, 12).setRegionId(109),
+                new BeaconRegion(3, 9, 11).setRegionId(111)
         )));
-        int nearestCarId = regionProcessor.getNearestRegionId(latestBeaconDistances);
 
-        Log.debug("nearest car id: %d", nearestCarId);
+        int nearestCarId = regionProcessor.getNearestRegionId(latestBeaconDistances);
+        detectedCarLoadPosition = String.valueOf(nearestCarId);
+
+        Log.debug("Detected nearest car id: %s", detectedCarLoadPosition);
 
         if(nearestCarId != -1) {
-            goToDataDownload(String.valueOf(nearestCarId));
+            goToDataDownload(detectedCarLoadPosition);
         }
     }
 
@@ -68,8 +73,9 @@ public class IdentifyVehicleActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_CODE_DOWNLOAD_DATA) {
-            startActivity(new Intent(this, CarSweepActivity.class));
+        if (requestCode == REQUEST_CODE_DOWNLOAD_DATA) {
+            startActivity(new Intent(this, CarSweepActivity.class)
+                    .putExtra(CarSweepActivity.EXTRA_CAR_LOAD, detectedCarLoadPosition));
             finish();
             return;
         }

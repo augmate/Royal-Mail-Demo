@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.logger.What;
 
 import java.util.*;
@@ -21,10 +22,15 @@ public class BeaconRegionDetector implements BluetoothAdapter.LeScanCallback {
 
     public void startListening() {
         BluetoothAdapter bluetoothAdapter = ((BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
-        bluetoothAdapter.startLeScan(this);
+        if (!bluetoothAdapter.startLeScan(this)) {
+            Log.error("Failed to start BLE scanner.");
+        } else {
+            Log.debug("Started LE scanner");
+        }
     }
 
     public void stopListening() {
+        Log.debug("Stopping LE scanner..");
         BluetoothAdapter bluetoothAdapter = ((BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
         bluetoothAdapter.stopLeScan(this);
     }
@@ -141,11 +147,8 @@ public class BeaconRegionDetector implements BluetoothAdapter.LeScanCallback {
                 beaconInfo.measuredPower = estimoteBeaconInfo.measuredPower;
                 beaconInfo.beaconType = BeaconInfo.BeaconType.Estimote;
 
-                // FIXME: this probably shouldn't be done here
-                if (beaconInfo.minor == 2 || beaconInfo.minor == 4)
-                    beaconInfo.regionId = 1;
-                if (beaconInfo.minor == 3 || beaconInfo.minor == 5)
-                    beaconInfo.regionId = 2;
+                // FIXME: currently ignoring region-id, defining regions elsewhere
+                beaconInfo.regionId = beaconInfo.major;
             }
         }
 

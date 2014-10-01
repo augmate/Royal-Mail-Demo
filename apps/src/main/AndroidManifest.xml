@@ -61,10 +61,16 @@
         <activity
             android:name=".carloading.CarLoadingActivity"
             android:immersive="true"/>
+
+        <!-- barcode scanner and package counter -->
         <activity
-            android:name=".carsweep.CarSweepActivity"
-            android:immersive="true"
-            android:label="Car Sweep">
+            android:name=".carsweep.CarSweepActivity" />
+
+        <!-- entry-point into UPS car sweep application -->
+        <activity
+            android:name=".carsweep.IdentifyVehicleActivity"
+            android:label="Car Sweep"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -75,11 +81,7 @@
                 android:name="com.google.android.glass.VoiceTrigger"
                 android:resource="@xml/voice_trigger_carsweep"/>
         </activity>
-        <activity android:name=".carsweep.IdentifyVehicleActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
+
         <activity
             android:name=".common.activities.ExitActivity"
             android:immersive="true"/>

@@ -1,10 +1,11 @@
 package com.augmate.apps.carsweep;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 import com.augmate.apps.R;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.datastore.CarLoadingDataStore;
@@ -12,11 +13,26 @@ import com.augmate.sdk.data.PackageCarLoad;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
 import com.augmate.sdk.scanner.bluetooth.IncomingConnector;
+import roboguice.activity.RoboActivity;
+import roboguice.inject.InjectExtra;
 
-public class CarSweepActivity extends Activity implements IBluetoothScannerEvents {
+import java.util.ArrayList;
+import java.util.List;
+
+public class CarSweepActivity extends RoboActivity implements IBluetoothScannerEvents {
+    public static final int LOUD_TEXT_COLOR = 0xFFFF3300;
+    public static final int QUIET_TEXT_COLOR = 0xFF444444;
+
     private IncomingConnector scanner = new IncomingConnector(this);
     CarLoadingDataStore carLoadingDataStore;
-    private String currentCarId;
+
+    public static final String EXTRA_CAR_LOAD = "EXTRA_CAR_LOAD";
+
+    @InjectExtra(EXTRA_CAR_LOAD)
+    String carLoadPosition;
+
+    List<String> correctPackages = new ArrayList<>();
+    List<String> wrongPackages = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,20 +42,71 @@ public class CarSweepActivity extends Activity implements IBluetoothScannerEvent
 
         carLoadingDataStore = new CarLoadingDataStore(this);
         scanner.start();
+
+        // reset values to default
+        ((TextView) findViewById(R.id.correct_package_car_id)).setText(carLoadPosition);
+
+        findViewById(R.id.label_tap_to_dismiss).setVisibility(View.INVISIBLE);
+        findViewById(R.id.wrong_package_car_id).setVisibility(View.INVISIBLE);
+
+        ((TextView)findViewById(R.id.label_misplaced_header)).setTextColor(QUIET_TEXT_COLOR);
+        ((TextView)findViewById(R.id.wrong_package_counter)).setTextColor(QUIET_TEXT_COLOR);
+        ((TextView) findViewById(R.id.wrong_package_counter)).setText("0");
+
+        ((TextView) findViewById(R.id.correct_package_count)).setText("0");
     }
 
-    private void processResultFromScan(String result) {
-        PackageCarLoad loadForTrackingNumber = carLoadingDataStore.findLoadForTrackingNumber(result);
+    private void processResultFromScan(String packageId) {
+        PackageCarLoad loadForTrackingNumber = carLoadingDataStore.findLoadForTrackingNumber(packageId);
 
-        if(loadForTrackingNumber != null) {
-            // success - package is inside the same car we are
+        if(loadForTrackingNumber != null && loadForTrackingNumber.getLoadPosition().equals(carLoadPosition)) {
+            // success - package is inside the same car as us
             Log.debug("Package in correct car");
-            SoundHelper.success(getBaseContext());
+            onCorrectPackage(packageId);
         } else {
             // failure - package is not inside the correct car
             Log.debug("Package not in correct car");
-            SoundHelper.error(getBaseContext());
+            onMisplacedPackage(packageId);
         }
+    }
+
+    /**
+     * Update correct-package stats UI
+     * @param packageId
+     */
+    private void onCorrectPackage(String packageId) {
+        if (!correctPackages.contains(packageId)) {
+            correctPackages.add(packageId);
+        }
+
+        SoundHelper.success(getBaseContext());
+
+        // increment correct-package counter
+        ((TextView) findViewById(R.id.correct_package_count)).setText("" + correctPackages.size());
+    }
+
+    /**
+     * Update wrong-package stats UI
+     */
+    private void onMisplacedPackage(String packageId) {
+        if (!wrongPackages.contains(packageId)) {
+            wrongPackages.add(packageId);
+        }
+
+        SoundHelper.error(getBaseContext());
+
+        // apply active color-scheme to counter and header
+        ((TextView)findViewById(R.id.label_misplaced_header)).setTextColor(LOUD_TEXT_COLOR);
+        ((TextView)findViewById(R.id.wrong_package_counter)).setTextColor(LOUD_TEXT_COLOR);
+
+        // increment wrong-package counter
+        ((TextView) findViewById(R.id.wrong_package_counter)).setText("" + wrongPackages.size());
+
+        // show "tap to dismiss" label
+        findViewById(R.id.label_tap_to_dismiss).setVisibility(View.VISIBLE);
+
+        // show "wrong car" label
+        findViewById(R.id.wrong_package_car_id).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -51,13 +118,24 @@ public class CarSweepActivity extends Activity implements IBluetoothScannerEvent
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-            // reset app
-            Log.debug("User requested counter reset");
-            SoundHelper.dismiss(getBaseContext());
+            // dismiss wrong-package message if it's up
+            onTapToDismiss();
             return true;
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void onTapToDismiss() {
+        Log.debug("User tapped to dismiss wrong-package msg");
+
+        findViewById(R.id.label_tap_to_dismiss).setVisibility(View.INVISIBLE);
+        findViewById(R.id.wrong_package_car_id).setVisibility(View.INVISIBLE);
+
+        ((TextView)findViewById(R.id.label_misplaced_header)).setTextColor(QUIET_TEXT_COLOR);
+        ((TextView)findViewById(R.id.wrong_package_counter)).setTextColor(QUIET_TEXT_COLOR);
+
+        SoundHelper.dismiss(getBaseContext());
     }
 
     @Override

@@ -35,7 +35,7 @@ public class BarcodeStreamParser {
         // advance buffer in case of partials
         accumulationBuffer = accumulationBuffer.substring(indexOfEOL+1);
 
-        dumpRawBuffer(substring);
+        //dumpRawBuffer(substring);
 
         // if the substring contains a meaningful amount of data, try to parse it
         if(substring.length() > 3)
