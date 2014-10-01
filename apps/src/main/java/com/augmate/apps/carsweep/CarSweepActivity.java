@@ -8,12 +8,12 @@ import android.widget.TextView;
 import com.augmate.apps.R;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.datastore.CarLoadingDataStore;
-import com.augmate.sdk.data.PackageCarLoad;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
 import com.augmate.sdk.scanner.bluetooth.IncomingConnector;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectExtra;
+import roboguice.inject.InjectView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,27 @@ public class CarSweepActivity extends RoboActivity implements IBluetoothScannerE
     @InjectExtra(EXTRA_CAR_LOAD)
     String carLoadPosition;
 
+    @InjectView(R.id.correct_package_car_id)
+    TextView correct_package_car_id;
+
+    @InjectView(R.id.label_tap_to_dismiss)
+    TextView label_tap_to_dismiss;
+
+    @InjectView(R.id.wrong_package_car_id)
+    TextView wrong_package_car_id;
+
+    @InjectView(R.id.wrong_package_counter)
+    TextView wrong_package_counter;
+
+    @InjectView(R.id.wrong_package_counter)
+    TextView correct_package_count;
+
+    @InjectView(R.id.label_misplaced_header)
+    TextView label_misplaced_header;
+
+    @InjectView(R.id.scanner_connect_status)
+    TextView scanner_connect_status;
+
     List<String> correctPackages = new ArrayList<>();
     List<String> wrongPackages = new ArrayList<>();
 
@@ -43,15 +64,15 @@ public class CarSweepActivity extends RoboActivity implements IBluetoothScannerE
         scanner.start();
 
         // reset values to default
-        ((TextView) findViewById(R.id.correct_package_car_id)).setText(carLoadPosition);
+        correct_package_car_id.setText(carLoadPosition);
 
-        findViewById(R.id.label_tap_to_dismiss).setVisibility(View.INVISIBLE);
-        findViewById(R.id.wrong_package_car_id).setVisibility(View.INVISIBLE);
+        label_tap_to_dismiss.setVisibility(View.INVISIBLE);
+        wrong_package_car_id.setVisibility(View.INVISIBLE);
 
-        ((TextView) findViewById(R.id.label_misplaced_header)).setTextColor(QUIET_TEXT_COLOR);
-        ((TextView) findViewById(R.id.wrong_package_counter)).setTextColor(QUIET_TEXT_COLOR);
-        ((TextView) findViewById(R.id.wrong_package_counter)).setText("0");
-        ((TextView) findViewById(R.id.correct_package_count)).setText("0");
+        label_tap_to_dismiss.setTextColor(QUIET_TEXT_COLOR);
+        wrong_package_counter.setTextColor(QUIET_TEXT_COLOR);
+        wrong_package_counter.setText("0");
+        correct_package_count.setText("0");
     }
 
     private void processResultFromScan(String packageId) {
@@ -85,7 +106,7 @@ public class CarSweepActivity extends RoboActivity implements IBluetoothScannerE
         SoundHelper.success(getBaseContext());
 
         // increment correct-package counter
-        ((TextView) findViewById(R.id.correct_package_count)).setText("" + correctPackages.size());
+        correct_package_count.setText("" + correctPackages.size());
     }
 
     /**
@@ -99,17 +120,17 @@ public class CarSweepActivity extends RoboActivity implements IBluetoothScannerE
         SoundHelper.error(getBaseContext());
 
         // apply active color-scheme to counter and header
-        ((TextView) findViewById(R.id.label_misplaced_header)).setTextColor(LOUD_TEXT_COLOR);
-        ((TextView) findViewById(R.id.wrong_package_counter)).setTextColor(LOUD_TEXT_COLOR);
+        label_misplaced_header.setTextColor(LOUD_TEXT_COLOR);
+        wrong_package_counter.setTextColor(LOUD_TEXT_COLOR);
 
         // increment wrong-package counter
-        ((TextView) findViewById(R.id.wrong_package_counter)).setText("" + wrongPackages.size());
+        wrong_package_counter.setText("" + wrongPackages.size());
 
         // show "tap to dismiss" label
-        findViewById(R.id.label_tap_to_dismiss).setVisibility(View.VISIBLE);
+        label_tap_to_dismiss.setVisibility(View.VISIBLE);
 
         // show "wrong car" label
-        findViewById(R.id.wrong_package_car_id).setVisibility(View.VISIBLE);
+        wrong_package_car_id.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -132,11 +153,11 @@ public class CarSweepActivity extends RoboActivity implements IBluetoothScannerE
     private void onTapToDismiss() {
         Log.debug("User tapped to dismiss wrong-package msg");
 
-        findViewById(R.id.label_tap_to_dismiss).setVisibility(View.INVISIBLE);
-        findViewById(R.id.wrong_package_car_id).setVisibility(View.INVISIBLE);
+        label_tap_to_dismiss.setVisibility(View.INVISIBLE);
+        wrong_package_car_id.setVisibility(View.INVISIBLE);
 
-        ((TextView) findViewById(R.id.label_misplaced_header)).setTextColor(QUIET_TEXT_COLOR);
-        ((TextView) findViewById(R.id.wrong_package_counter)).setTextColor(QUIET_TEXT_COLOR);
+        label_misplaced_header.setTextColor(QUIET_TEXT_COLOR);
+        wrong_package_counter.setTextColor(QUIET_TEXT_COLOR);
 
         SoundHelper.dismiss(getBaseContext());
     }
@@ -148,19 +169,19 @@ public class CarSweepActivity extends RoboActivity implements IBluetoothScannerE
 
     @Override
     public void onBtScannerSearching() {
-        ((TextView) findViewById(R.id.scanner_connect_status)).setText("Waiting for scanner..");
-        ((TextView) findViewById(R.id.scanner_connect_status)).setTextColor(0xFFFFFF00);
+        scanner_connect_status.setText("Waiting for scanner..");
+        scanner_connect_status.setTextColor(0xFFFFFF00);
     }
 
     @Override
     public void onBtScannerConnected() {
-        ((TextView) findViewById(R.id.scanner_connect_status)).setText("Scanner Connected");
-        ((TextView) findViewById(R.id.scanner_connect_status)).setTextColor(0x6600FF00);
+        scanner_connect_status.setText("Scanner Connected");
+        scanner_connect_status.setTextColor(0x6600FF00);
     }
 
     @Override
     public void onBtScannerDisconnected() {
-        ((TextView) findViewById(R.id.scanner_connect_status)).setText("Scanner Lost");
-        ((TextView) findViewById(R.id.scanner_connect_status)).setTextColor(0xFFFF0000);
+        scanner_connect_status.setText("Scanner Lost");
+        scanner_connect_status.setTextColor(0xFFFF0000);
     }
 }

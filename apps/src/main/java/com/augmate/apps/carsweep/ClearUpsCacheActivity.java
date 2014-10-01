@@ -1,14 +1,19 @@
 package com.augmate.apps.carsweep;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 import com.augmate.apps.R;
 import com.augmate.apps.datastore.CarLoadingDataStore;
 import com.parse.DeleteCallback;
 import com.parse.ParseException;
+import roboguice.activity.RoboActivity;
+import roboguice.inject.InjectView;
 
-public class ClearUpsCacheActivity extends Activity {
+public class ClearUpsCacheActivity extends RoboActivity {
+
+    @InjectView(R.id.ups_clear_cache)
+    TextView ups_clear_cache;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,15 +24,13 @@ public class ClearUpsCacheActivity extends Activity {
     protected void onStart() {
         super.onStart();
 
-        final TextView view = (TextView) findViewById(R.id.ups_clear_cache);
-
         new CarLoadingDataStore(this).wipeLocalCache(new DeleteCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    view.setText("UPS cache cleared!");
+                    ups_clear_cache.setText("UPS cache cleared!");
                 } else {
-                    view.setText(e.getMessage());
+                    ups_clear_cache.setText(e.getMessage());
                 }
             }
         });
