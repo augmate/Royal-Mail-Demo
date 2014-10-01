@@ -47,8 +47,8 @@ public class IncomingService extends Service {
     public void onCreate() {
         Log.debug("Starting bluetooth barcode-scanner service.");
 
-        registerReceiver(barcodeScannerReceiver, new IntentFilter(ServiceEvents.ACTION_SCANNER_CONNECTED));
-        registerReceiver(barcodeScannerReceiver, new IntentFilter(ServiceEvents.ACTION_SCANNER_DISCONNECTED));
+//        registerReceiver(barcodeScannerReceiver, new IntentFilter(ServiceEvents.ACTION_SCANNER_CONNECTED));
+//        registerReceiver(barcodeScannerReceiver, new IntentFilter(ServiceEvents.ACTION_SCANNER_DISCONNECTED));
 
         BluetoothAdapter bluetoothAdapter = ((BluetoothManager) this.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
 
@@ -56,14 +56,14 @@ public class IncomingService extends Service {
             bluetoothAdapter.enable();
 
         // launch dedicated scanner listening thread
-        new Thread(listenerThread = new IncomingConnection(getBaseContext()), "bt-scanner").start();
+        new Thread(listenerThread = new IncomingConnection(getBaseContext()), "bt-scan").start();
     }
 
     @Override
     public void onDestroy() {
         Log.debug("Shutting down bluetooth barcode-scanner service.");
 
-        unregisterReceiver(barcodeScannerReceiver);
+        //unregisterReceiver(barcodeScannerReceiver);
 
         // shutdown dedicated listening thread
         if (listenerThread != null) {

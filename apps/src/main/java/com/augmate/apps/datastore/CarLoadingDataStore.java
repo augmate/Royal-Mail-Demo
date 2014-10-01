@@ -44,6 +44,7 @@ public class CarLoadingDataStore {
     }
 
     public int numberOfPackages(String load) {
-        return augmateData.countCached(PackageCarLoad.class, PackageCarLoad.LOAD_POSITION_KEY, load);
+        //return augmateData.countCached(PackageCarLoad.class, PackageCarLoad.LOAD_POSITION_KEY, load);
+        return AugmateData.countCachedHack(load);
     }
 }

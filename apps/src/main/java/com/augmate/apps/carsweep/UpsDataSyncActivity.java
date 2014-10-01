@@ -52,15 +52,15 @@ public class UpsDataSyncActivity extends RoboActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        if (new InternetChecker().isConnected(this)) {
-            Log.info("Connected to the internet");
-            startUpsDataDownload();
-        } else {
-            Log.info("Not connected to the internet!");
-            cnxView.setVisibility(View.VISIBLE);
-            findViewById(R.id.download_state).setVisibility(View.INVISIBLE);
-        }
+        startUpsDataDownload();
+//
+//        if (new InternetChecker().isConnected(this)) {
+//            Log.info("Connected to the internet");
+//        } else {
+//            Log.info("Not connected to the internet!");
+//            cnxView.setVisibility(View.VISIBLE);
+//            findViewById(R.id.download_state).setVisibility(View.INVISIBLE);
+//        }
     }
 
     private void startUpsDataDownload() {
@@ -96,7 +96,7 @@ public class UpsDataSyncActivity extends RoboActivity {
                 loadStr += String.format("%s [%d]\n", l, carLoadingDataStore.numberOfPackages(l));
             }
 
-            downloadView.setText("Download complete for load \n\n" + loadStr);
+            downloadView.setText("Download car load \n\n" + loadStr);
 
             delayedFinish();
         }
@@ -110,6 +110,6 @@ public class UpsDataSyncActivity extends RoboActivity {
                 setResult(Activity.RESULT_OK);
                 finish();
             }
-        }, 500);
+        }, 1500);
     }
 }

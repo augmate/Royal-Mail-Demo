@@ -74,8 +74,10 @@ public class IdentifyVehicleActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_DOWNLOAD_DATA) {
-            startActivity(new Intent(this, CarSweepActivity.class)
-                    .putExtra(CarSweepActivity.EXTRA_CAR_LOAD, detectedCarLoadPosition));
+            if(resultCode == RESULT_OK) {
+                startActivity(new Intent(this, CarSweepActivity.class)
+                        .putExtra(CarSweepActivity.EXTRA_CAR_LOAD, detectedCarLoadPosition));
+            }
             finish();
             return;
         }
@@ -92,6 +94,7 @@ public class IdentifyVehicleActivity extends Activity {
         scheduledRegionTest = scheduler.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
+                Thread.currentThread().setName("region");
                 testNearestRegion();
             }
         }, 1000, 500, TimeUnit.MILLISECONDS);

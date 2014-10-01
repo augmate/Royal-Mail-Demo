@@ -44,13 +44,14 @@ class IncomingConnection implements Runnable {
                 BluetoothAdapter bluetoothAdapter = ((BluetoothManager) parentContext.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
                 bluetoothAdapter.cancelDiscovery();
 
-                Log.debug("Opening listening socket..");
+                Log.debug("Listening for SPP connections..");
                 listeningServer = bluetoothAdapter.listenUsingRfcommWithServiceRecord("Server", UUID_SPP);
-
-                Log.debug("Waiting for connection..");
                 listeningSocket = listeningServer.accept();
 
                 onConnected(listeningSocket.getRemoteDevice(), listeningSocket);
+
+                listeningSocket.close();
+                listeningServer.close();
 
                 Thread.sleep(500);
 
@@ -110,9 +111,7 @@ class IncomingConnection implements Runnable {
         }
 
         try {
-            Log.debug("Waiting on thread-exit..");
             threadExitSignal.await(1000, TimeUnit.MILLISECONDS);
-            Log.debug("Waiting on thread-exit.. DONE");
         } catch (InterruptedException e) {
             Log.exception(e, "Interrupted waiting for thread-exit");
         }

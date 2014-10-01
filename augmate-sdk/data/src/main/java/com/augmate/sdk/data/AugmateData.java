@@ -17,7 +17,7 @@ public class AugmateData<T extends ParseObject> {
     public AugmateData(Context context) {
         synchronized (this) {
             if (AugmateData.initialized == false) {
-                Parse.enableLocalDatastore(context);
+                //Parse.enableLocalDatastore(context);
                 ParseObject.registerSubclass(PackageCarLoad.class);
                 Parse.initialize(context, "dXdrCRra51kK5zV2LT7fxT3Q1dnYOM79AmxXvguP", "6On5YIMRg6VAH7w7Svy6WnYmt2fYqBU5qSU0OQEE");
                 AugmateData.initialized = true;
@@ -143,6 +143,16 @@ public class AugmateData<T extends ParseObject> {
         Log.info("Removing all %s elements from cache (%d elements)", clazz.getName(), cacheObjs.size());
 
         ParseObject.unpinAllInBackground(cacheObjs, callback);
+    }
+
+    public static int countCachedHack(String load) {
+        int numOfEntries = 0;
+        for(String key : PackageToCarMap.keySet()) {
+            if(PackageToCarMap.get(key).equals(load)) {
+                numOfEntries++;
+            }
+        }
+        return numOfEntries;
     }
 
     public int countCached(Class<T> clazz, String key, String value) {

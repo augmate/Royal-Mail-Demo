@@ -30,12 +30,12 @@ public class IncomingConnector {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             bluetoothScannerService = ((IncomingService.ScannerBinder) service).getService();
-            Log.debug("Service bound: " + name.flattenToShortString());
+//            Log.debug("Service bound: " + name.flattenToShortString());
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Log.debug("Service unbound: " + name.flattenToShortString());
+//            Log.debug("Service unbound: " + name.flattenToShortString());
             bluetoothScannerService = null;
         }
     };
