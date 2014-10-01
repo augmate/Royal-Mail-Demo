@@ -64,7 +64,7 @@ public class UpsDataSyncActivity extends RoboActivity {
     }
 
     private void startUpsDataDownload() {
-        downloadView.setText("Download started...");
+        downloadView.setText("Downloading Package List..");
         progressBarView.setVisibility(View.VISIBLE);
         Log.info("Download started");
 
@@ -110,6 +110,6 @@ public class UpsDataSyncActivity extends RoboActivity {
                 setResult(Activity.RESULT_OK);
                 finish();
             }
-        }, 2500);
+        }, 500);
     }
 }

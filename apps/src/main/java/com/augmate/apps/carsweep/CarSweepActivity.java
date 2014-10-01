@@ -55,9 +55,13 @@ public class CarSweepActivity extends RoboActivity implements IBluetoothScannerE
     }
 
     private void processResultFromScan(String packageId) {
-        PackageCarLoad loadForTrackingNumber = carLoadingDataStore.findLoadForTrackingNumber(packageId);
+        // could be null or a car-id string
+        String expectedLoadPosition = carLoadingDataStore.findLoadForTrackingNumberHack(packageId);
 
-        if (loadForTrackingNumber != null && loadForTrackingNumber.getLoadPosition().equals(carLoadPosition)) {
+        // HACK: bypassing parse-object local datastore
+        //PackageCarLoad loadForTrackingNumber = carLoadingDataStore.findLoadForTrackingNumber(packageId);
+
+        if (expectedLoadPosition != null && expectedLoadPosition.equals(carLoadPosition)) {
             // success - package is inside the same car as us
             Log.debug("Package in correct car");
             onCorrectPackage(packageId);
@@ -144,14 +148,14 @@ public class CarSweepActivity extends RoboActivity implements IBluetoothScannerE
 
     @Override
     public void onBtScannerSearching() {
-        ((TextView) findViewById(R.id.scanner_connect_status)).setText("Searching for Scanner..");
+        ((TextView) findViewById(R.id.scanner_connect_status)).setText("Waiting for scanner..");
         ((TextView) findViewById(R.id.scanner_connect_status)).setTextColor(0xFFFFFF00);
     }
 
     @Override
     public void onBtScannerConnected() {
         ((TextView) findViewById(R.id.scanner_connect_status)).setText("Scanner Connected");
-        ((TextView) findViewById(R.id.scanner_connect_status)).setTextColor(0xAA00FF00);
+        ((TextView) findViewById(R.id.scanner_connect_status)).setTextColor(0x6600FF00);
     }
 
     @Override

@@ -5,7 +5,9 @@ import com.augmate.sdk.logger.Log;
 import com.google.gson.Gson;
 import com.parse.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AugmateData<T extends ParseObject> {
 
@@ -64,8 +66,31 @@ public class AugmateData<T extends ParseObject> {
 
         Log.info("Caching data for %s->%s (%d elements)", key, value, objs.size());
 
-        ParseObject.pinAllInBackground(objs, callback);
+        if(objs.size() > 0 && objs.get(0) instanceof PackageCarLoad) {
+            insertIntoPackageCarMap((List<PackageCarLoad>) objs, callback);
+        }
+
+        // FIXME: this freezes in the background and makes parse unresponsive to future queries
+        //ParseObject.pinAllInBackground(objs, callback);
     }
+
+    // HACK: quick workaround to slow and crash-prone parseobject local-datastore
+    public static Map<String, String> PackageToCarMap = new HashMap<>();
+    public static void insertIntoPackageCarMap(List<PackageCarLoad> list, SaveCallback callback) {
+        for(PackageCarLoad load : list ) {
+            PackageToCarMap.put(load.getTrackingNumber(), load.getLoadPosition());
+        }
+        callback.done(null);
+    }
+    public static String getCarLoadPositionFromPackageTrackingNumber(String packageId) {
+        if(PackageToCarMap.containsKey(packageId)) {
+            return PackageToCarMap.get(packageId);
+        } else {
+            Log.debug("Hack-map did not contain packageId: [%s]", packageId);
+            return null;
+        }
+    }
+    // </HACK>
 
     public T cacheFind(Class<T> clazz, String key, String value) {
         T foundObj = null;

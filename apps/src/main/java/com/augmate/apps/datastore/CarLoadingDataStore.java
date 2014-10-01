@@ -14,8 +14,12 @@ public class CarLoadingDataStore {
         augmateData = new AugmateData<>(context);
     }
 
-    public PackageCarLoad findLoadForTrackingNumber(String trackingNumber) {
+    // HACK: bypassing slow and crashy parseobject local datastore
+    public String findLoadForTrackingNumberHack(String trackingNumber) {
+        return AugmateData.getCarLoadPositionFromPackageTrackingNumber(trackingNumber);
+    }
 
+    public PackageCarLoad findLoadForTrackingNumber(String trackingNumber) {
         PackageCarLoad packageCarLoad = augmateData.cacheFind(PackageCarLoad.class, PackageCarLoad.TRACKING_NUMBER_KEY, trackingNumber);
 
         if(packageCarLoad != null) {
