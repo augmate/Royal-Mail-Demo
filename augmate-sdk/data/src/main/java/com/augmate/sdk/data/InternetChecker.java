@@ -10,7 +10,7 @@ public class InternetChecker {
 
         NetworkInfo wifiInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         NetworkInfo bluetoothInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_BLUETOOTH);
-        NetworkInfo companionInfo = manager.getNetworkInfo(15);
+        NetworkInfo companionInfo = manager.getNetworkInfo(15); //companion aka phone bluetooth connection
 
         if(wifiInfo.isConnected() || bluetoothInfo.isConnected() || companionInfo.isConnected()){
             return true;

@@ -53,14 +53,14 @@ public class UpsDataSyncActivity extends RoboActivity {
     protected void onStart() {
         super.onStart();
         startUpsDataDownload();
-//
-//        if (new InternetChecker().isConnected(this)) {
-//            Log.info("Connected to the internet");
-//        } else {
-//            Log.info("Not connected to the internet!");
-//            cnxView.setVisibility(View.VISIBLE);
-//            findViewById(R.id.download_state).setVisibility(View.INVISIBLE);
-//        }
+
+        if (new InternetChecker().isConnected(this)) {
+            Log.info("Connected to the internet");
+        } else {
+            Log.info("Not connected to the internet!");
+            cnxView.setVisibility(View.VISIBLE);
+            findViewById(R.id.download_state).setVisibility(View.INVISIBLE);
+        }
     }
 
     private void startUpsDataDownload() {
