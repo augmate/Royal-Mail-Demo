@@ -1,29 +1,27 @@
 package com.augmate.apps.common.activities;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.GridLayout;
-
 import com.augmate.apps.R;
 import com.augmate.apps.common.SoundHelper;
-import com.augmate.apps.common.activities.BaseActivity;
 import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;
-
-import java.util.Timer;
 
 /**
  * @author James Davis (Fuzz)
  */
 public class ExitActivity extends BaseActivity {
     private int taps = 0;
+
+
     private GridLayout gridLayout;
+
+
     Handler handler = new Handler();
     final Runnable returnToApp = new Runnable() {
         @Override
