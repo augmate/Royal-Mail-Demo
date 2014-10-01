@@ -10,7 +10,7 @@ import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
-import com.augmate.sdk.scanner.bluetooth.OutgoingConnector;
+import com.augmate.sdk.scanner.bluetooth.IncomingConnector;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class NonRetailTouchActivity extends BaseActivity implements IBluetoothScannerEvents {
 
-    private OutgoingConnector bluetoothScannerConnector = new OutgoingConnector(this);
+    private IncomingConnector bluetoothScannerConnector = new IncomingConnector(this);
     private NutsApiService nutsApi = new RestAdapter.Builder().setEndpoint("http://nuts.googlex.augmate.com:6969/").build().create(NutsApiService.class);
 
     private ArrayList<String> recordedBarcodes = new ArrayList<>();
