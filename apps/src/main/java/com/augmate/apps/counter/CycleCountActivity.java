@@ -1,69 +1,72 @@
 package com.augmate.apps.counter;
 
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ViewFlipper;
-
 import com.augmate.apps.R;
 import com.augmate.apps.common.ErrorPrompt;
-import com.augmate.apps.common.FlowUtils;
 import com.augmate.apps.common.FontHelper;
 import com.augmate.apps.common.SoundHelper;
-import com.augmate.apps.common.TouchResponseListener;
 import com.augmate.apps.common.UserUtils;
 import com.augmate.apps.common.activities.BaseActivity;
 import com.augmate.sdk.logger.Log;
-import com.google.android.glass.touchpad.GestureDetector;
+import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
+import com.augmate.sdk.scanner.bluetooth.IncomingConnector;
+import com.google.android.glass.media.Sounds;
 
-public class CycleCountActivity extends BaseActivity {
-    ViewFlipper flipper;
-    private GestureDetector mGestureDetector;
+public class CycleCountActivity extends BaseActivity implements IBluetoothScannerEvents {
+
+    private IncomingConnector bluetoothScannerConnector = new IncomingConnector(this);
+    public static final String BARCODE_STRING = "bcs";
+    public boolean btListening = true;
 
     ConnectivityManager cm;
+    private ImageView loading_icon;
+    private Animation rotation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cyclecount);
+        setContentView(R.layout.activity_structured_cyclecount);
 
-
-        FontHelper.updateFontForBrightness(
-                (TextView) findViewById(R.id.lets_cycle_count)
-                ,(TextView) findViewById(R.id.count_description)
-                ,(TextView) findViewById(R.id.tap_to_scan));
+        FontHelper.updateFontForBrightness((TextView) findViewById(R.id.barcodeScannerStatus));
+        loading_icon = (ImageView) findViewById(R.id.loading_icon);
+        rotation = AnimationUtils.loadAnimation(this, R.anim.spin);
 
         cm = ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE));
 
-        TouchResponseListener responseListener = new TouchResponseListener(findViewById(R.id.touch));
-        mGestureDetector = new GestureDetector(this)
-                .setBaseListener(responseListener)
-                .setScrollListener(responseListener)
-                .setFingerListener(responseListener);
-        flipper = ((ViewFlipper) findViewById(R.id.flipper));
-        SharedPreferences prefs = getSharedPreferences(getString(R.string.settings_prefs),MODE_PRIVATE);
-        boolean animationsOn = prefs.getBoolean(getString(R.string.pref_animation_toggle),true);
+        btListening = true;
+        bluetoothScannerConnector.start();
+    }
 
-        flipper.setFlipInterval(FlowUtils.VIEWFLIPPER_TRANSITION_TIMEOUT_LONG);
-        if (animationsOn) {
-            flipper.setInAnimation(this, android.R.anim.slide_in_left);
-            flipper.setOutAnimation(this, android.R.anim.slide_out_right);
-            flipper.getInAnimation().setAnimationListener(getAnimationListener(flipper));
-        } else {
-            flipper.setInAnimation(this, R.anim.no_slide_anim);
-            flipper.setOutAnimation(this, R.anim.no_slide_anim);
-            flipper.getInAnimation().setAnimationListener(getAnimationListener(flipper));
-        }
-        if (savedInstanceState == null || savedInstanceState.getBoolean("LoadAnimation",true)) {
-            flipper.setAutoStart(true);
-        } else {
-            flipper.setDisplayedChild(2);
-        }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.debug("Unbinding from scanner service.");
+        bluetoothScannerConnector.stop();
+    }
+
+    @Override
+    protected void onResume() {
+        btListening = true;
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        btListening = false;
+        super.onPause();
     }
 
     @Override
@@ -74,17 +77,7 @@ public class CycleCountActivity extends BaseActivity {
 
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
-        mGestureDetector.onMotionEvent(event);
         return super.onGenericMotionEvent(event);
-    }
-
-    private boolean handlePromptReturn = true;
-    @Override
-    public void handlePromptReturn() {
-        if (handlePromptReturn) {
-            rescan();
-        }
-        handlePromptReturn = true;
     }
 
     @Override
@@ -97,9 +90,9 @@ public class CycleCountActivity extends BaseActivity {
             } else {
                 SoundHelper.success(this);
                 BinModel model = new BinModel();
-                model.setBinBarcode(barcodeString);
+                model.setBinBarcode (barcodeString);
                 model.setUser(UserUtils.getUser());
-                showConfirmation(getString(R.string.bin_confirmed), RecordCountActivity.class, model);
+                showConfirmation(getString(R.string.bin_confirmed,barcodeString), RecordCountActivity.class, model);
             }
         } else {
             //generic error
@@ -118,14 +111,94 @@ public class CycleCountActivity extends BaseActivity {
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
             if (networkInfo != null && networkInfo.isConnected()) {
                 SoundHelper.tap(this);
-                startScanner();
             } else {
                 SoundHelper.error(this);
                 showError(ErrorPrompt.NETWORK_ERROR);
-                handlePromptReturn = false;
             }
             return true;
         }
         return super.onKeyDown(keyCode,event);
     }
+
+    @Override
+    public void onBtScannerResult(String barcode) {
+        if (!btListening) {
+            return;
+        }
+
+        btListening = false;
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        Log.debug("Got scanning result: [%s]", barcode);
+
+        // TODO: do we need this?
+        setResult(RESULT_OK, new Intent().putExtra(BARCODE_STRING, barcode));
+
+        playSoundEffect(Sounds.SUCCESS);
+
+        // always pass the barcode
+        // eventually.. start "get count" voice activity
+        processBarcodeScanning(barcode, false, true, false);
+    }
+
+    private AudioManager mAudioManager;
+    protected void playSoundEffect(int soundId) {
+        if (mAudioManager == null){
+            mAudioManager = ((AudioManager) getSystemService(Context.AUDIO_SERVICE));
+        }
+        mAudioManager.playSoundEffect(soundId);
+    }
+
+    @Override
+    public void onBtScannerSearching() {
+        startLoader(true);
+        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("Searching for Scanner...");
+        ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFFFFFF00);
+        //((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
+    }
+
+    @Override
+    public void onBtScannerConnected() {
+        startLoader(false);
+        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("Scanner Connected");
+        ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFF00FF00);
+        //((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
+        //beaconDistanceMeasurer.startListening();
+    }
+
+    @Override
+    public void onBtScannerDisconnected() {
+        startLoader(false);
+        ((TextView) findViewById(R.id.barcodeScannerStatus)).setText("No Scanner Detected");
+        ((TextView) findViewById(R.id.barcodeScannerStatus)).setTextColor(0xFFFF0000);
+        //((TextView) findViewById(R.id.barcodeScannerResults)).setText("at " + DateTime.now().toString(DateTimeFormat.mediumDateTime()));
+        //beaconDistanceMeasurer.stopListening();
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN &&
+                (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER
+                        || event.getKeyCode() == KeyEvent.KEYCODE_MENU)) {
+            Log.debug("User requested scanner reconnect.");
+            //bluetoothScannerConnector.reconnect();
+            return true;
+        }
+
+        return super.dispatchKeyEvent(event);
+    }
+
+    private void startLoader(boolean start){
+        if(start){
+            loading_icon.setVisibility(ImageView.VISIBLE);
+            loading_icon.startAnimation(rotation);
+        }
+        else{
+            loading_icon.clearAnimation();
+            rotation.cancel();
+            loading_icon.setVisibility(ImageView.INVISIBLE);
+        }
+
+    }
+
 }

@@ -23,7 +23,7 @@
     <string name="message_try_again">Try Again</string>
     <string name="error_network">Network Error</string>
     <string name="error_number">Say Number</string>
-    <string name="bin_confirmed">Bin\nConfirmed</string>
+    <string name="bin_confirmed">Bin %s\nConfirmed</string>
     <string name="yes_no">\"YES?\"\n\"NO?\"</string>
     <string name="yes">\"YES?\"</string>
     <string name="no">\"NO?\"</string>

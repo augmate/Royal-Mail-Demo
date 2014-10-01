@@ -13,7 +13,7 @@ import com.augmate.apps.common.FontHelper;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.UserUtils;
 import com.augmate.apps.common.activities.BaseActivity;
-import com.augmate.apps.counter.StructuredCycleCountActivity;
+import com.augmate.apps.counter.CycleCountActivity;
 import com.augmate.apps.nonretailtouching.NonRetailTouchActivity;
 import com.google.android.glass.view.WindowUtils;
 import roboguice.inject.InjectView;
@@ -157,7 +157,7 @@ public class ApplicationsActivity extends BaseActivity {
     }
 
     private void goToCycleCounter() {
-        Intent intent = new Intent(this, StructuredCycleCountActivity.class);
+        Intent intent = new Intent(this, CycleCountActivity.class);
         startActivity(intent);
     }
 
