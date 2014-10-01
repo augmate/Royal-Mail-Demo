@@ -64,8 +64,6 @@ public class HandheldScannerActivity extends Activity implements IBluetoothScann
         incomingConnector.stop();
     }
 
-
-
     @Override
     public void onBackPressed() {
         success = true;

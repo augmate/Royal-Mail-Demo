@@ -10,8 +10,7 @@
         <!-- LET'S LOGIN PAGE -->
         <RelativeLayout
             style="@style/MatchParent"
-            android:layout_gravity="center_vertical"
-            >
+            android:layout_gravity="center_vertical">
 
             <TextView
                 android:id="@+id/lets_login"

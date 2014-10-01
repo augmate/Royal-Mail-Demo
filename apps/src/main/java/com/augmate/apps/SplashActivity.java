@@ -13,10 +13,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.augmate.apps.common.FontHelper;
 import com.augmate.apps.common.activities.BaseActivity;
+import roboguice.inject.InjectView;
 
 import static com.augmate.apps.common.FlowUtils.*;
 
 public class SplashActivity extends BaseActivity {
+
+    @InjectView(R.id.augmate_text)
+    TextView augmate_text;
+
+    @InjectView(R.id.background)
+    View background;
+
+    @InjectView(R.id.logo_background)
+    View logoBackground;
+
+    @InjectView(R.id.augmate_logo)
+    ImageView logoView;
+
+    @InjectView(R.id.augmate_text)
+    TextView logoText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +40,7 @@ public class SplashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         startAnimation();
-        FontHelper.updateFontForBrightness((TextView)findViewById(R.id.augmate_text));
+        FontHelper.updateFontForBrightness(augmate_text);
     }
 
     private void goToApplicationList() {
@@ -34,8 +50,6 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void startAnimation() {
-        View background = findViewById(R.id.background);
-        View logoBackground = findViewById(R.id.logo_background);
         final ViewPropertyAnimator animator = logoBackground.animate()
                 .setDuration(SPLASH_ANIMATION_1_DURATION)
                 .setStartDelay(SPLASH_ANIMATION_1_START_DELAY)
@@ -61,9 +75,7 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void endingAnimation() {
-        final ImageView logoView = (ImageView) findViewById(R.id.augmate_logo);
-        final TextView logoText = (TextView) findViewById(R.id.augmate_text);
-        final ValueAnimator animLogo = ValueAnimator.ofInt(Color.WHITE, getResources().getColor(R.color.augmate_blue));
+        final ValueAnimator animLogo = ValueAnimator.ofInt(Color.WHITE, R.color.augmate_blue);
         animLogo.setDuration(SPLASH_ANIMATION_2_DURATION).setStartDelay(0);
         animLogo.setInterpolator(new AccelerateDecelerateInterpolator());
         animLogo.setEvaluator(new ArgbEvaluator());
@@ -75,7 +87,6 @@ public class SplashActivity extends BaseActivity {
             }
         });
 
-        View background = findViewById(R.id.background);
         background.animate()
                 .setStartDelay(SPLASH_ANIMATION_2_START_DELAY)
                 .setDuration(SPLASH_ANIMATION_2_DURATION)

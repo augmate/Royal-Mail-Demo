@@ -28,6 +28,9 @@ public class BrightnessActivity extends RoboActivity {
     @InjectView(R.id.seekbar)
     SeekBar seekBar;
 
+    @InjectView(R.id.brightness_value)
+    TextView brightnessText;
+
     private final class Listener implements GestureDetector.ScrollListener {
 
         @Override
@@ -58,7 +61,7 @@ public class BrightnessActivity extends RoboActivity {
     }
 
     private void setBrightness() {
-        TextView brightnessText = (TextView) findViewById(R.id.brightness_value);
+
         Window w = getWindow();
         WindowManager.LayoutParams lp = w.getAttributes();
         lp.screenBrightness = (float) brightness / 100f;
