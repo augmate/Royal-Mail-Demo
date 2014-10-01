@@ -1,6 +1,5 @@
 package com.augmate.apps.carsweep;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -49,17 +48,16 @@ public class CarSweepActivity extends RoboActivity implements IBluetoothScannerE
         findViewById(R.id.label_tap_to_dismiss).setVisibility(View.INVISIBLE);
         findViewById(R.id.wrong_package_car_id).setVisibility(View.INVISIBLE);
 
-        ((TextView)findViewById(R.id.label_misplaced_header)).setTextColor(QUIET_TEXT_COLOR);
-        ((TextView)findViewById(R.id.wrong_package_counter)).setTextColor(QUIET_TEXT_COLOR);
+        ((TextView) findViewById(R.id.label_misplaced_header)).setTextColor(QUIET_TEXT_COLOR);
+        ((TextView) findViewById(R.id.wrong_package_counter)).setTextColor(QUIET_TEXT_COLOR);
         ((TextView) findViewById(R.id.wrong_package_counter)).setText("0");
-
         ((TextView) findViewById(R.id.correct_package_count)).setText("0");
     }
 
     private void processResultFromScan(String packageId) {
         PackageCarLoad loadForTrackingNumber = carLoadingDataStore.findLoadForTrackingNumber(packageId);
 
-        if(loadForTrackingNumber != null && loadForTrackingNumber.getLoadPosition().equals(carLoadPosition)) {
+        if (loadForTrackingNumber != null && loadForTrackingNumber.getLoadPosition().equals(carLoadPosition)) {
             // success - package is inside the same car as us
             Log.debug("Package in correct car");
             onCorrectPackage(packageId);
@@ -72,6 +70,7 @@ public class CarSweepActivity extends RoboActivity implements IBluetoothScannerE
 
     /**
      * Update correct-package stats UI
+     *
      * @param packageId
      */
     private void onCorrectPackage(String packageId) {
@@ -96,8 +95,8 @@ public class CarSweepActivity extends RoboActivity implements IBluetoothScannerE
         SoundHelper.error(getBaseContext());
 
         // apply active color-scheme to counter and header
-        ((TextView)findViewById(R.id.label_misplaced_header)).setTextColor(LOUD_TEXT_COLOR);
-        ((TextView)findViewById(R.id.wrong_package_counter)).setTextColor(LOUD_TEXT_COLOR);
+        ((TextView) findViewById(R.id.label_misplaced_header)).setTextColor(LOUD_TEXT_COLOR);
+        ((TextView) findViewById(R.id.wrong_package_counter)).setTextColor(LOUD_TEXT_COLOR);
 
         // increment wrong-package counter
         ((TextView) findViewById(R.id.wrong_package_counter)).setText("" + wrongPackages.size());
@@ -132,8 +131,8 @@ public class CarSweepActivity extends RoboActivity implements IBluetoothScannerE
         findViewById(R.id.label_tap_to_dismiss).setVisibility(View.INVISIBLE);
         findViewById(R.id.wrong_package_car_id).setVisibility(View.INVISIBLE);
 
-        ((TextView)findViewById(R.id.label_misplaced_header)).setTextColor(QUIET_TEXT_COLOR);
-        ((TextView)findViewById(R.id.wrong_package_counter)).setTextColor(QUIET_TEXT_COLOR);
+        ((TextView) findViewById(R.id.label_misplaced_header)).setTextColor(QUIET_TEXT_COLOR);
+        ((TextView) findViewById(R.id.wrong_package_counter)).setTextColor(QUIET_TEXT_COLOR);
 
         SoundHelper.dismiss(getBaseContext());
     }
@@ -145,13 +144,19 @@ public class CarSweepActivity extends RoboActivity implements IBluetoothScannerE
 
     @Override
     public void onBtScannerSearching() {
+        ((TextView) findViewById(R.id.scanner_connect_status)).setText("Searching for Scanner..");
+        ((TextView) findViewById(R.id.scanner_connect_status)).setTextColor(0xFFFFFF00);
     }
 
     @Override
     public void onBtScannerConnected() {
+        ((TextView) findViewById(R.id.scanner_connect_status)).setText("Scanner Connected");
+        ((TextView) findViewById(R.id.scanner_connect_status)).setTextColor(0xAA00FF00);
     }
 
     @Override
     public void onBtScannerDisconnected() {
+        ((TextView) findViewById(R.id.scanner_connect_status)).setText("Scanner Lost");
+        ((TextView) findViewById(R.id.scanner_connect_status)).setTextColor(0xFFFF0000);
     }
 }

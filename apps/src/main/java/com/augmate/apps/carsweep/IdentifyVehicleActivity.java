@@ -41,11 +41,11 @@ public class IdentifyVehicleActivity extends Activity {
         List<BeaconInfo> latestBeaconDistances = beaconDistanceMeasurer.getLatestBeaconDistances();
         Log.debug("Found %d beacons nearby", latestBeaconDistances.size());
 
-        if(latestBeaconDistances.size() == 0) {
+        if (latestBeaconDistances.size() == 0) {
             return;
         }
 
-        for(BeaconInfo beaconInfo : latestBeaconDistances){
+        for (BeaconInfo beaconInfo : latestBeaconDistances) {
             Log.info("-> Beacon name=%s minor/id=%s region=%s", beaconInfo.beaconName, beaconInfo.minor, beaconInfo.regionId);
         }
 
@@ -59,7 +59,7 @@ public class IdentifyVehicleActivity extends Activity {
 
         Log.debug("Detected nearest car id: %s", detectedCarLoadPosition);
 
-        if(nearestCarId != -1) {
+        if (nearestCarId != -1) {
             goToDataDownload(detectedCarLoadPosition);
         }
     }
@@ -84,7 +84,7 @@ public class IdentifyVehicleActivity extends Activity {
     }
 
     private void startRegionTesting() {
-        if(scheduledRegionTest != null) {
+        if (scheduledRegionTest != null) {
             return;
         }
 
@@ -98,7 +98,7 @@ public class IdentifyVehicleActivity extends Activity {
     }
 
     private void stopRegionTesting() {
-        if(scheduledRegionTest != null) {
+        if (scheduledRegionTest != null) {
             scheduledRegionTest.cancel(false);
             scheduledRegionTest = null;
             beaconDistanceMeasurer.stopListening();
