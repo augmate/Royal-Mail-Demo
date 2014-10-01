@@ -2,9 +2,10 @@ package com.augmate.apps.nonretailtouching;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.KeyEvent;
-import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 import com.augmate.apps.R;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.activities.BaseActivity;
@@ -15,6 +16,7 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import roboguice.inject.InjectView;
 
 import java.util.ArrayList;
 
@@ -26,11 +28,16 @@ public class NonRetailTouchActivity extends BaseActivity implements IBluetoothSc
     private ArrayList<String> recordedBarcodes = new ArrayList<>();
     private ArrayList<String> submittedBarcodes = new ArrayList<>();
 
+    @InjectView(R.id.scan_content_flipper)
+    ViewFlipper contentFlipper;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_non_retail_touch);
+
+        contentFlipper.setInAnimation(this, android.R.anim.slide_in_left);
+        contentFlipper.setOutAnimation(this, android.R.anim.slide_out_right);
 
         bluetoothScannerConnector.start();
     }
@@ -125,6 +132,14 @@ public class NonRetailTouchActivity extends BaseActivity implements IBluetoothSc
         Log.debug("NRT - Received scan from barcode %s", barcode);
 
         ((TextView)findViewById(R.id.scan_content_view)).setText(barcode);
+        contentFlipper.showNext();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+               contentFlipper.showPrevious();
+            }
+        }, 3000);
 
         processResultFromScan(barcode);
     }

@@ -3,33 +3,50 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:keepScreenOn="true"
     android:orientation="vertical"
     android:paddingLeft="@dimen/glass_card_margin"
     android:paddingRight="@dimen/glass_card_margin">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center">
+    <ViewFlipper
+        android:id="@+id/scan_content_flipper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:padding="30dp"
-            android:src="@drawable/barcode115"
-            />
+            android:layout_gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:padding="30dp"
+                android:src="@drawable/barcode115"
+                />
+
+            <TextView
+                style="@style/WrapContent.MultiTextView"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/scan_shelf_to_report_count"
+                android:textAllCaps="true"
+                />
+        </LinearLayout>
 
         <TextView
-            style="@style/WrapContent.MultiTextView"
-            android:layout_width="170dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:id="@+id/scan_content_view"
+            android:layout_width="fill_parent"
             android:gravity="center"
-            android:text="@string/scan_shelf_to_report_count"
-            android:textAllCaps="true"
+            android:layout_height="fill_parent"
+            android:layout_marginRight="@dimen/pad_edge"
+            android:text="@string/waiting_for_scan"
+            android:textSize="@dimen/big_text_size"
             />
-    </LinearLayout>
+    </ViewFlipper>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,15 +62,6 @@
             android:layout_marginRight="@dimen/pad_edge"
             android:text="No Device"
             android:textColor="@color/grey"
-            android:textSize="@dimen/small_text_size"
-            />
-
-        <TextView
-            android:id="@+id/scan_content_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/pad_edge"
-            android:text="@string/waiting_for_scan"
             android:textSize="@dimen/small_text_size"
             />
 
