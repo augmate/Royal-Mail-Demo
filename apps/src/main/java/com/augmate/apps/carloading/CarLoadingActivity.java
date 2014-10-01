@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
@@ -15,28 +16,41 @@ import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.TouchResponseListener;
 import com.augmate.apps.common.activities.BaseActivity;
 import com.google.android.glass.touchpad.GestureDetector;
+import com.google.inject.Inject;
+import roboguice.inject.InjectView;
 
 public class CarLoadingActivity extends BaseActivity {
 
-    ViewFlipper flipper;
     private GestureDetector mGestureDetector;
+
+    @Inject
+    private SharedPreferences prefs;
+
+    @InjectView(R.id.flipper)
+    ViewFlipper flipper;
+
+    @InjectView(R.id.lets_load_trucks)
+    TextView lets_load_trucks;
+
+    @InjectView(R.id.tap_to_scan)
+    TextView tap_to_scan;
+
+    @InjectView(R.id.background)
+    View background;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_truckloading);
 
-        FontHelper.updateFontForBrightness(
-                (TextView) findViewById(R.id.lets_load_trucks)
-                , (TextView) findViewById(R.id.tap_to_scan));
+        FontHelper.updateFontForBrightness(lets_load_trucks, tap_to_scan);
 
-        TouchResponseListener responseListener = new TouchResponseListener(findViewById(R.id.touch));
+        TouchResponseListener responseListener = new TouchResponseListener(background);
         mGestureDetector = new GestureDetector(this)
                 .setBaseListener(responseListener)
                 .setScrollListener(responseListener)
                 .setFingerListener(responseListener);
-        flipper = ((ViewFlipper) findViewById(R.id.flipper));
-        SharedPreferences prefs = getSharedPreferences(getString(R.string.settings_prefs),MODE_PRIVATE);
+
         boolean animationsOn = prefs.getBoolean(getString(R.string.pref_animation_toggle),true);
 
         flipper.setFlipInterval(FlowUtils.VIEWFLIPPER_TRANSITION_TIMEOUT_LONG);
