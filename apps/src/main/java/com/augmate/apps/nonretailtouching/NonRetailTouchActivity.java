@@ -23,8 +23,6 @@ import roboguice.inject.InjectView;
 import java.util.ArrayList;
 
 public class NonRetailTouchActivity extends BaseActivity implements IBluetoothScannerEvents {
-
-
     private NutsApiService nutsApi = new RestAdapter.Builder().setEndpoint("http://nuts.googlex.augmate.com:6969/").build().create(NutsApiService.class);
     private ArrayList<String> recordedBarcodes = new ArrayList<>();
     private ArrayList<String> submittedBarcodes = new ArrayList<>();

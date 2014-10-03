@@ -63,7 +63,10 @@ dependencies {
     compile project(':augmate-sdk:data')
     compile 'uk.co.chrisjenx:calligraphy:1.1.+'
     compile 'com.squareup.retrofit:retrofit:1.6.1'
-    compile 'org.roboguice:roboguice:2.0'
+
+    compile ('org.roboguice:roboguice:2.0') {
+        exclude module: 'asm'
+    }
     compile ('com.google.inject.extensions:guice-assistedinject:3.0'){
         exclude group: 'com.google.inject', module: 'guice'
     }
