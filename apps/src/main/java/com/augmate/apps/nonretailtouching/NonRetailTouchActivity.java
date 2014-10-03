@@ -9,9 +9,11 @@ import android.widget.ViewFlipper;
 import com.augmate.apps.R;
 import com.augmate.apps.common.SoundHelper;
 import com.augmate.apps.common.activities.BaseActivity;
+import com.augmate.apps.factories.BluetoothConnectorFactory;
 import com.augmate.sdk.logger.Log;
 import com.augmate.sdk.scanner.bluetooth.IBluetoothScannerEvents;
 import com.augmate.sdk.scanner.bluetooth.IncomingConnector;
+import com.google.inject.Inject;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -22,14 +24,16 @@ import java.util.ArrayList;
 
 public class NonRetailTouchActivity extends BaseActivity implements IBluetoothScannerEvents {
 
-    private IncomingConnector bluetoothScannerConnector = new IncomingConnector(this);
-    private NutsApiService nutsApi = new RestAdapter.Builder().setEndpoint("http://nuts.googlex.augmate.com:6969/").build().create(NutsApiService.class);
 
+    private NutsApiService nutsApi = new RestAdapter.Builder().setEndpoint("http://nuts.googlex.augmate.com:6969/").build().create(NutsApiService.class);
     private ArrayList<String> recordedBarcodes = new ArrayList<>();
     private ArrayList<String> submittedBarcodes = new ArrayList<>();
+    private IncomingConnector incomingConnector;
 
     @InjectView(R.id.scan_content_flipper)
     ViewFlipper contentFlipper;
+    @Inject
+    private BluetoothConnectorFactory bluetoothConnectorFactory;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +42,8 @@ public class NonRetailTouchActivity extends BaseActivity implements IBluetoothSc
 
         contentFlipper.setInAnimation(this, android.R.anim.slide_in_left);
         contentFlipper.setOutAnimation(this, android.R.anim.slide_out_right);
-
-        bluetoothScannerConnector.start();
+        incomingConnector = bluetoothConnectorFactory.createIncomingConnector(this);
+        incomingConnector.start();
     }
 
     private void processResultFromScan(String result) {
@@ -62,8 +66,7 @@ public class NonRetailTouchActivity extends BaseActivity implements IBluetoothSc
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        bluetoothScannerConnector.stop();
+        incomingConnector.stop();
     }
 
     /**

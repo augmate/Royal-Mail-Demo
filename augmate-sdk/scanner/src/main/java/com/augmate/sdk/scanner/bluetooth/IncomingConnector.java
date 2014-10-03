@@ -1,41 +1,38 @@
 package com.augmate.sdk.scanner.bluetooth;
 
-import android.app.Activity;
 import android.content.*;
 import android.os.IBinder;
 import com.augmate.sdk.logger.Log;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 
 /**
  * Activities that require bluetooth-scanner should use this connector
  * it is based on a simpler bluetooth-service that listens to pre-bonded devices
  */
 public class IncomingConnector {
-
-    private Activity activity;
     private IBluetoothScannerEvents callbackReceiver;
+    private IncomingService bluetoothScannerService;
+    private Context context;
 
     /**
-     * I'll be honest, Java has a pretty great implementation of generics now: base class and interface in one typename!
-     *
-     * @param activity parent activity that wants to know about scanner activity
-     * @param <T>      must extend Activity and implement IBluetoothScannerConnection
+     * @param context parent context that wants to know about scanner activity
      */
-    public <T extends Activity & IBluetoothScannerEvents> IncomingConnector(T activity) {
-        this.activity = activity;
-        this.callbackReceiver = activity;
+
+    @Inject
+    public IncomingConnector(@Assisted IBluetoothScannerEvents bluetoothListener, Context context) {
+        this.callbackReceiver = bluetoothListener;
+        this.context = context;
     }
 
-    private IncomingService bluetoothScannerService;
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             bluetoothScannerService = ((IncomingService.ScannerBinder) service).getService();
-//            Log.debug("Service bound: " + name.flattenToShortString());
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-//            Log.debug("Service unbound: " + name.flattenToShortString());
             bluetoothScannerService = null;
         }
     };
@@ -74,24 +71,24 @@ public class IncomingConnector {
      */
     public void start() {
         Log.debug("Binding activity to scanner service..");
-        activity.bindService(new Intent(activity, IncomingService.class), connection, Context.BIND_AUTO_CREATE);
+        context.bindService(new Intent(context, IncomingService.class), connection, Context.BIND_AUTO_CREATE);
         callbackReceiver.onBtScannerSearching();
         // register for scanner notifications
-        activity.registerReceiver(receiver, new IntentFilter(ServiceEvents.ACTION_BARCODE_SCANNED)); // barcode scanned
-        activity.registerReceiver(receiver, new IntentFilter(ServiceEvents.ACTION_SCANNER_CONNECTED)); // barcode-scanner connected
-        activity.registerReceiver(receiver, new IntentFilter(ServiceEvents.ACTION_SCANNER_DISCONNECTED)); // barcode-scanner disconnected
+        context.registerReceiver(receiver, new IntentFilter(ServiceEvents.ACTION_BARCODE_SCANNED)); // barcode scanned
+        context.registerReceiver(receiver, new IntentFilter(ServiceEvents.ACTION_SCANNER_CONNECTED)); // barcode-scanner connected
+        context.registerReceiver(receiver, new IntentFilter(ServiceEvents.ACTION_SCANNER_DISCONNECTED)); // barcode-scanner disconnected
     }
 
     /**
      * Async service unbind and notification unsubscribe request
      * Results will not be published because we unsubscribe here as well.
-     * This is a fire-and-forget method
+     * This is  fire-and-forget method
      */
     public void stop() {
         Log.debug("Unbinding activity to scanner service..");
 
         // unregister from scanner notifications
-        activity.unregisterReceiver(receiver);
-        activity.unbindService(connection);
+        context.unregisterReceiver(receiver);
+        context.unbindService(connection);
     }
 }

@@ -27,7 +27,7 @@ import com.google.android.glass.media.Sounds;
 
 public class CycleCountActivity extends BaseActivity implements IBluetoothScannerEvents {
 
-    private IncomingConnector bluetoothScannerConnector = new IncomingConnector(this);
+    private IncomingConnector bluetoothScannerConnector = new IncomingConnector(this, this);
     public static final String BARCODE_STRING = "bcs";
     public boolean btListening = true;
 

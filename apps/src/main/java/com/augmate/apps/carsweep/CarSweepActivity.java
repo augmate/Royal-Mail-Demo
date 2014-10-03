@@ -22,7 +22,7 @@ public class CarSweepActivity extends RoboActivity implements IBluetoothScannerE
     public static final int LOUD_TEXT_COLOR = 0xFFFF3300;
     public static final int QUIET_TEXT_COLOR = 0xFF444444;
 
-    private IncomingConnector scanner = new IncomingConnector(this);
+    private IncomingConnector scanner = new IncomingConnector(this, this);
     CarLoadingDataStore carLoadingDataStore;
 
     public static final String EXTRA_CAR_LOAD = "EXTRA_CAR_LOAD";
