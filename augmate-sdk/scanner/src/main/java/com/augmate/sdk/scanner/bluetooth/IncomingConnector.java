@@ -12,7 +12,6 @@ import com.google.inject.assistedinject.Assisted;
  */
 public class IncomingConnector {
     private IBluetoothScannerEvents callbackReceiver;
-    private IncomingService bluetoothScannerService;
     private Context context;
 
     /**
@@ -27,14 +26,10 @@ public class IncomingConnector {
 
     private ServiceConnection connection = new ServiceConnection() {
         @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            bluetoothScannerService = ((IncomingService.ScannerBinder) service).getService();
-        }
+        public void onServiceConnected(ComponentName name, IBinder service) {       }
 
         @Override
-        public void onServiceDisconnected(ComponentName name) {
-            bluetoothScannerService = null;
-        }
+        public void onServiceDisconnected(ComponentName name) {        }
     };
 
     /**
