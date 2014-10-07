@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BeaconBtScannerActivity extends Activity implements IBluetoothScannerEvents {
-    private IncomingConnector incomingConnector = new IncomingConnector(this);
+    private IncomingConnector incomingConnector = new IncomingConnector(this, this);
     private BeaconDistance beaconDistanceMeasurer = new BeaconDistance();
 
     // captures keys before UI elements can steal them :)

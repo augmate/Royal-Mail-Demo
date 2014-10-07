@@ -24,7 +24,7 @@ import java.util.List;
 
 public class BenchmarkActivity extends Activity implements IBluetoothScannerEvents {
     private BeaconDistance beaconDistanceMeasurer = new BeaconDistance();
-    private IncomingConnector connector = new IncomingConnector(this);
+    private IncomingConnector connector = new IncomingConnector(this, this);
     private int packageCountTruck1 = 0;
     private int packageCountTruck2 = 0;
 

@@ -30,6 +30,7 @@ public class NonRetailTouchActivity extends BaseActivity implements IBluetoothSc
 
     @InjectView(R.id.scan_content_flipper)
     ViewFlipper contentFlipper;
+
     @Inject
     private BluetoothConnectorFactory bluetoothConnectorFactory;
     

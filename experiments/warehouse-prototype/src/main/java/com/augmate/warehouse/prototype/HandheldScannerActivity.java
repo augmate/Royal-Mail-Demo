@@ -21,7 +21,7 @@ import roboguice.inject.InjectView;
  */
 public class HandheldScannerActivity extends Activity implements IBluetoothScannerEvents {
 
-    private IncomingConnector incomingConnector = new IncomingConnector(this);
+    private IncomingConnector incomingConnector = new IncomingConnector(this, this);
     public static final String BARCODE_STRING = "bcs";
     public static final int RESULT_TIMED_OUT = 10;
     public static final int RESULT_ERROR = 11;
