@@ -1,0 +1,8 @@
+<resources>
+    <!-- beacons -->
+    <string name="app_name">Beacons</string>
+
+    <!-- voice capture -->
+    <string name="augmate_logo">augmate_logo</string>
+    <string name="voice_sample_activity">Sample Voice Activity</string>
+</resources>

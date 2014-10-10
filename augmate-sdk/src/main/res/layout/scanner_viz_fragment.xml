@@ -1,15 +1,11 @@
-<!--
-    customize to your desire
-    the only requirement here is the SurfaceView.
-    it can be resized,
--->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ff2435a6">
+    tools:context=".ScannerVisualization"
+    android:background="#ff2435a6"
+    android:alpha="1">
 
-    <!-- required surface for camera -->
     <SurfaceView
         android:id="@+id/camera_preview"
         android:layout_width="fill_parent"
@@ -18,12 +14,9 @@
         android:minWidth="640dp"
         android:minHeight="360dp" />
 
-    <!-- optional debugger overlay to visual scanner's activity -->
     <ScannerVisualDebugger
         android:id="@+id/scanner_visual_debugger"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:minWidth="640dp"
-        android:minHeight="360dp" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </FrameLayout>

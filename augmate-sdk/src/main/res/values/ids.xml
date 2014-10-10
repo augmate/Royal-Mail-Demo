@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- optical scanner -->
+    <item name="decodingThreadNewJob" type="id" />
+    <item name="scannerFragmentJobCompleted" type="id" />
+    <item name="decodingThreadShutdown" type="id" />
+
+    <!-- voice module -->
+    <item type="id" name="slider_control">false</item>
+    <item type="id" name="indeterminate_slider">false</item>
+</resources>

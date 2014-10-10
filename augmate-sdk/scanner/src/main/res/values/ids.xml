@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <item name="decodingThreadNewJob" type="id" />
-    <item name="scannerFragmentJobCompleted" type="id" />
-    <item name="decodingThreadShutdown" type="id" />
-</resources>
