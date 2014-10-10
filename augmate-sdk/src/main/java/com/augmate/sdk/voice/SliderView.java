@@ -12,6 +12,7 @@ import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import com.augmate.sdk.R;
 
 public class SliderView extends FrameLayout {
 	private static final long HIDE_SLIDER_TIMEOUT_MILLIS = 1000L;

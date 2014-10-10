@@ -16,7 +16,7 @@
         >
 
         <!-- voice module -->
-        <activity android:name=".VoiceCaptorActivity" />
+        <activity android:name=".voice.VoiceCaptorActivity" />
 
     </application>
 

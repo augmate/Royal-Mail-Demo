@@ -20,6 +20,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.augmate.sdk.R;
 import com.augmate.sdk.logger.Log;
 
 import java.util.ArrayList;
