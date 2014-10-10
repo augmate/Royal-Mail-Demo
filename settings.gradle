@@ -4,12 +4,9 @@ include ':augmate-sdk'
 // apps
 include ':apps'
 
-/*
 // experiments, demos, samples, and proof of concepts
 include ':experiments:employee-scanner',        // ?
-        ':experiments:warehouse-prototype',     // ?
         ':experiments:bluetooth-scanner',       // bluetooth-scanner experimentation (alex)
         ':experiments:beacon-test',             // bluetooth-beacon experimentation (alex)
         ':experiments:texture-test',            // optical-scanner rendering experimentation (frank)
         ':experiments:voice-test'               // voice recognition experimentation (alex)
-*/
